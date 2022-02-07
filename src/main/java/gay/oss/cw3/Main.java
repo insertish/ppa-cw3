@@ -24,7 +24,7 @@ public class Main {
     }
 
     private void onKeyPress(int key, int modifiers) {
-        if (key == 256) {
+        if (key == GLFW_KEY_ESCAPE) {
             // should quit render loop and clean up
             System.exit(0);
         }
