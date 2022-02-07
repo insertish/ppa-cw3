@@ -1,10 +1,8 @@
 package gay.oss.cw3.provided;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
-import gay.oss.cw3.provided.FieldStats;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,7 +31,7 @@ public class SimulatorView extends JFrame
     private FieldView fieldView;
     
     // A map for storing colors for participants in the simulation
-    private Map<Class, Color> colors;
+    private Map<Class<?>, Color> colors;
     // A statistics object computing and storing simulation information
     private FieldStats stats;
 
@@ -73,7 +71,7 @@ public class SimulatorView extends JFrame
      * @param animalClass The animal's Class object.
      * @param color The color to be used for the given class.
      */
-    public void setColor(Class animalClass, Color color)
+    public void setColor(Class<?> animalClass, Color color)
     {
         colors.put(animalClass, color);
     }
@@ -89,7 +87,7 @@ public class SimulatorView extends JFrame
     /**
      * @return The color to be used for a given class of animal.
      */
-    private Color getColor(Class animalClass)
+    private Color getColor(Class<?> animalClass)
     {
         Color col = colors.get(animalClass);
         if(col == null) {

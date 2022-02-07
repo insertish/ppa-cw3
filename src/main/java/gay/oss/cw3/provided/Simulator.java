@@ -2,8 +2,6 @@ package gay.oss.cw3.provided;
 
 import java.util.Random;
 
-import gay.oss.cw3.provided.Animal;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -159,7 +157,7 @@ public class Simulator
     /**
      * Pause for a given time.
      * @param millisec  The time to pause for, in milliseconds
-     */
+     *
     private void delay(int millisec)
     {
         try {
@@ -168,5 +166,5 @@ public class Simulator
         catch (InterruptedException ie) {
             // wake up
         }
-    }
+    }*/
 }

@@ -1,7 +1,5 @@
 package gay.oss.cw3.provided;
 
-import java.awt.Color;
-
 /**
  * Provide a counter for a participant in the simulation.
  * This includes an identifying string and a count of how
