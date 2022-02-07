@@ -18,8 +18,8 @@ public class Main {
         window.makeVisible();
 
         // Handle key events
-        window.setKeyCallback((win, key, scancode, action, modifiers) -> {
-            if (action == 1) onKeyPress(key, modifiers);
+        window.setKeyCallback((key, action, modifiers) -> {
+            if (action == GLFW_PRESS) onKeyPress(key, modifiers);
         });
     }
 
