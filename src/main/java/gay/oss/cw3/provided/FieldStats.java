@@ -1,4 +1,4 @@
-package gay.oss.cw3;
+package gay.oss.cw3.provided;
 
 import java.awt.Color;
 import java.util.HashMap;

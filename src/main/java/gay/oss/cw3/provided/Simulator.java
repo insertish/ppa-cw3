@@ -1,8 +1,9 @@
-package gay.oss.cw3;
-
-import gay.oss.cw3.Animal;
+package gay.oss.cw3.provided;
 
 import java.util.Random;
+
+import gay.oss.cw3.provided.Animal;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package gay.oss.cw3;
+package gay.oss.cw3.provided;
 
 /**
  * Represent a location in a rectangular grid.

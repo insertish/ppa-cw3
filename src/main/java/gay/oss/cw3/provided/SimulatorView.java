@@ -1,10 +1,11 @@
-package gay.oss.cw3;
-
-import gay.oss.cw3.FieldStats;
+package gay.oss.cw3.provided;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import gay.oss.cw3.provided.FieldStats;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 

@@ -34,7 +34,7 @@ public class Main {
         GL.createCapabilities();
         glViewport(0, 0, window.getWidth(), window.getHeight());
         // Set the clear color
-        glClearColor(0.2f, 0.5f, 0.8f, 0.0f);
+        glClearColor(0.6f, 0.5f, 0.8f, 0.0f);
     }
 
     private void renderLoop() {
