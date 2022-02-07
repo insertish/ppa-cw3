@@ -1,9 +1,11 @@
-package gay.oss.cw3;
+package gay.oss.cw3.renderer;
 
 import org.jetbrains.annotations.NotNull;
 
+import org.lwjgl.opengl.GL;
+
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
@@ -19,7 +21,7 @@ public class Window {
         this.title = title;
     }
 
-    public long getPointer() {
+    private long getPointer() {
         return pointer;
     }
 
@@ -35,6 +37,38 @@ public class Window {
         return title;
     }
 
+    public void useContext() {
+        glfwMakeContextCurrent(this.getPointer());
+    }
+
+    public void makeVisible() {
+        glfwShowWindow(this.getPointer());
+    }
+
+    /**
+     * Swap the framebuffers.
+     */
+    public void swap() {
+        glfwSwapBuffers(this.getPointer());
+    }
+
+    /**
+     * Configure an OpenGL context for rendering to.
+     */
+    public void configureGL() {
+        this.useContext();
+
+        GL.createCapabilities();
+        glfwSwapInterval(1);
+        glViewport(0, 0, this.getWidth(), this.getHeight());
+
+        // Set the clear color
+        glClearColor(0.6f, 0.5f, 0.8f, 0.0f);
+    }
+
+    /**
+     * Tell GLFW what properties the Window should have.
+     */
     public static void setWindowHints() {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -45,7 +79,16 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     }
 
+    /**
+     * Create a new Window.
+     * @param width Width of the Window
+     * @param height Height of the Window
+     * @param title Title used for the Window
+     * @return Window
+     */
     public static Window create(final int width, final int height, final @NotNull String title) {
+        Window.setWindowHints();
+
         final long pointer = glfwCreateWindow(width, height, title, NULL, NULL);
         if (pointer == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
