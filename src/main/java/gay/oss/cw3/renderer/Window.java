@@ -1,7 +1,7 @@
 package gay.oss.cw3.renderer;
 
 import org.jetbrains.annotations.NotNull;
-
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -64,6 +64,10 @@ public class Window {
 
         // Set the clear color
         glClearColor(0.6f, 0.5f, 0.8f, 0.0f);
+    }
+
+    public void setKeyCallback(GLFWKeyCallbackI cbfun) {
+        glfwSetKeyCallback(this.pointer, cbfun);
     }
 
     /**

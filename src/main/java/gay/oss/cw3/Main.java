@@ -16,6 +16,18 @@ public class Main {
         window = Window.create(400, 200, "League of Legends");
         window.configureGL();
         window.makeVisible();
+
+        // Handle key events
+        window.setKeyCallback((win, key, scancode, action, modifiers) -> {
+            if (action == 1) onKeyPress(key, modifiers);
+        });
+    }
+
+    private void onKeyPress(int key, int modifiers) {
+        if (key == 256) {
+            // should quit render loop and clean up
+            System.exit(0);
+        }
     }
 
     private void renderLoop() {
