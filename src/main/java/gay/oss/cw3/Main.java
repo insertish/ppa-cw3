@@ -34,13 +34,19 @@ public class Main {
         program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
         // Create a triangle
-        float data[] = {
+        float vertex[] = {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
+            0.0f, 0.5f, 0.0f,
         };
 
-        mesh = Mesh.builder().vertex(data).build();
+        float uv[] = {
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+        };
+
+        mesh = Mesh.builder().vertex(vertex).render(uv, 2).build();
     }
 
     private void onKeyPress(int key, int modifiers) {
