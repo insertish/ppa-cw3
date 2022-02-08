@@ -53,6 +53,10 @@ public class Window {
         glfwSwapBuffers(this.getPointer());
     }
 
+    public boolean shouldClose() {
+        return glfwWindowShouldClose(this.getPointer());
+    }
+
     /**
      * Configure an OpenGL context for rendering to.
      */

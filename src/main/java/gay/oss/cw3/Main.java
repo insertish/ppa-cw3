@@ -51,6 +51,6 @@ public class Main {
             // shit got fucked, fall back to other renderer and notify user
         }
 
-        for (;;) instance.renderLoop();
+        while (!instance.window.shouldClose()) instance.renderLoop();
     }
 }
