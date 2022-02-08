@@ -2,6 +2,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id 'java'
+    id "com.williambl.bluej_jar.bluej-jar" version "0.1"
 }
 
 switch (OperatingSystem.current()) {
