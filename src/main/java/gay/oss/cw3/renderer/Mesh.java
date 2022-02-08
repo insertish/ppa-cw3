@@ -24,6 +24,18 @@ public class Mesh {
         glDrawArrays(GL_TRIANGLES, 0, this.indices);
     }
 
+    private int bindArray(int attribute, int components, float data[]) {
+        int vbo = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glVertexAttribPointer(0, components, GL_FLOAT, false, 0, 0);
+
+        return vbo;
+    }
+
     public static Mesh from(Builder builder) throws Exception {
         if (builder.vertex == null)
             throw new Exception("Must specify vertices.");
@@ -31,14 +43,7 @@ public class Mesh {
         int vao = glGenVertexArrays();
         final var mesh = new Mesh(vao, builder.indices);
         mesh.bind();
-
-        int vboVertex = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboVertex);
-        glBufferData(GL_ARRAY_BUFFER, builder.vertex, GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vboVertex);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        mesh.bindArray(0, 3, builder.vertex);
 
         Mesh.unbind();
         return mesh;
