@@ -33,7 +33,7 @@ public class Texture {
         int[] height = new int[1];
         int[] channels = new int[1];
 
-        STBImage.stbi_load_from_memory(nativeDataBuf, width, height, channels, 4);
+        ByteBuffer loadedTexture = STBImage.stbi_load_from_memory(nativeDataBuf, width, height, channels, 4);
 
         MemoryUtil.memFree(nativeDataBuf);
 
@@ -48,7 +48,7 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.id);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, loadedTexture);
     }
 
     /**
