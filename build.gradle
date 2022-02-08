@@ -20,6 +20,9 @@ group = project.group_name
 archivesBaseName = project.name
 version = project.version
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
 repositories {
     mavenCentral()
 }
