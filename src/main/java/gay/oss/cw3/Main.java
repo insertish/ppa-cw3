@@ -28,8 +28,8 @@ public class Main {
         });
 
         // Create a shader program
-        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(Main.class.getResourceAsStream("shaders/vertex.glsl").readAllBytes()));
-        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(Main.class.getResourceAsStream("shaders/fragment.glsl").readAllBytes()));
+        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(Main.class.getResourceAsStream("/shaders/vertex.glsl").readAllBytes()));
+        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(Main.class.getResourceAsStream("/shaders/fragment.glsl").readAllBytes()));
 
         program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
