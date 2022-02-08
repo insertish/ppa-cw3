@@ -26,6 +26,7 @@ public class ShaderProgram {
 
         for (Shader shader : shaders) {
             glDetachShader(id, shader.getID());
+            shader.delete();
         }
 
         return new ShaderProgram(id);

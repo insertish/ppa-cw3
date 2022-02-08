@@ -13,6 +13,10 @@ public class Shader {
         return this.id;
     }
 
+    public void delete() {
+        glDeleteShader(this.id);
+    }
+
     public static Shader create(int type, String source) {
         final int id = glCreateShader(type);
 
