@@ -49,7 +49,7 @@ public class Mesh {
         return mesh;
     }
 
-    public static Builder build() {
+    public static Builder builder() {
         return new Builder();
     }
 

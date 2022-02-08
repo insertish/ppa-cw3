@@ -40,7 +40,7 @@ public class Main {
             0.0f, 0.5f, 0.0f
         };
 
-        mesh = Mesh.build().vertex(data).build();
+        mesh = Mesh.builder().vertex(data).build();
     }
 
     private void onKeyPress(int key, int modifiers) {
