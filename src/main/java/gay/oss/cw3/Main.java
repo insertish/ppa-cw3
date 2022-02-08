@@ -14,18 +14,6 @@ public class Main {
     private ShaderProgram program;
     private Mesh mesh;
 
-    private static final String V_SHADER = "#version 330 core\n" +
-    "layout (location = 0) in vec3 vPos;\n" +
-    "void main() {\n" +
-    "    gl_Position = vec4(vPos, 1.0);\n" +
-    "}";
-
-    private static final String F_SHADER = "#version 330 core\n" +
-    "out vec4 color;\n" +
-    "void main() {\n" +
-    "    color = vec4(1.0, 0.0, 0.0, 1.0);\n" +
-    "}";
-
     private void init() throws IllegalStateException, Exception {
         Util.initialiseLWJGL();
 
@@ -40,8 +28,8 @@ public class Main {
         });
 
         // Create a shader program
-        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, V_SHADER);
-        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, F_SHADER);
+        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(Main.class.getResourceAsStream("shaders/vertex.glsl").readAllBytes()));
+        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(Main.class.getResourceAsStream("shaders/fragment.glsl").readAllBytes()));
 
         program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
