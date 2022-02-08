@@ -2,17 +2,24 @@ package gay.oss.cw3.renderer;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class Mesh {
-    private final int id;
-    private final int indices;
+import java.util.ArrayList;
+import java.util.List;
 
-    private Mesh(int id, int indices) {
-        this.id = id;
+public class Mesh {
+    private final int vao;
+    private final int indices;
+    
+    private List<Integer> vbo;
+
+    private Mesh(int vao, int indices) {
+        this.vao = vao;
         this.indices = indices;
+
+        this.vbo = new ArrayList<>();
     }
 
     public void bind() {
-        glBindVertexArray(this.id);
+        glBindVertexArray(this.vao);
     }
 
     public static void unbind() {
@@ -29,10 +36,11 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
 
-        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(attribute);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glVertexAttribPointer(0, components, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(attribute, components, GL_FLOAT, false, 0, 0);
 
+        this.vbo.add(vbo);
         return vbo;
     }
 
@@ -42,8 +50,13 @@ public class Mesh {
 
         int vao = glGenVertexArrays();
         final var mesh = new Mesh(vao, builder.indices);
+
         mesh.bind();
         mesh.bindArray(0, 3, builder.vertex);
+
+        if (builder.render != null) {
+            mesh.bindArray(1, builder.renderComponents, builder.render);
+        }
 
         Mesh.unbind();
         return mesh;
@@ -57,9 +70,24 @@ public class Mesh {
         private float vertex[];
         private int indices;
 
+        private float render[];
+        private int renderComponents;
+
         public Builder vertex(float vertex[]) {
             this.vertex = vertex;
             this.indices = vertex.length / 3;
+            return this;
+        }
+
+        /**
+         * 
+         * @param render
+         * @param components Components used in this array. UV = 2, RGB = 3, RGBA = 4
+         * @return
+         */
+        public Builder render(float render[], int components) {
+            this.render = render;
+            this.renderComponents = components;
             return this;
         }
 
