@@ -1,5 +1,7 @@
 package gay.oss.cw3.renderer;
 
+import org.jetbrains.annotations.Nullable;
+
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
@@ -9,16 +11,23 @@ public class Mesh {
     private final int vao;
     private final int indices;
     
-    private List<Integer> vbo;
+    private final List<Integer> vbo;
 
-    private Mesh(int vao, int indices) {
+    private final @Nullable Material material;
+
+    private Mesh(int vao, int indices, @Nullable Material material) {
         this.vao = vao;
         this.indices = indices;
+        this.material = material;
 
         this.vbo = new ArrayList<>();
     }
 
     public void bind() {
+        if (this.material != null) {
+            this.material.use();
+        }
+
         glBindVertexArray(this.vao);
     }
 
@@ -31,7 +40,7 @@ public class Mesh {
         glDrawArrays(GL_TRIANGLES, 0, this.indices);
     }
 
-    private int bindArray(int attribute, int components, float data[]) {
+    private int bindArray(int attribute, int components, float[] data) {
         int vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
@@ -49,7 +58,7 @@ public class Mesh {
             throw new Exception("Must specify vertices.");
 
         int vao = glGenVertexArrays();
-        final var mesh = new Mesh(vao, builder.indices);
+        final var mesh = new Mesh(vao, builder.indices, builder.material);
 
         mesh.bind();
         mesh.bindArray(0, 3, builder.vertex);
@@ -67,13 +76,15 @@ public class Mesh {
     }
 
     public static class Builder {
-        private float vertex[];
+        private float[] vertex;
         private int indices;
 
-        private float render[];
+        private float[] render;
         private int renderComponents;
 
-        public Builder vertex(float vertex[]) {
+        private @Nullable Material material = null;
+
+        public Builder vertex(float[] vertex) {
             this.vertex = vertex;
             this.indices = vertex.length / 3;
             return this;
@@ -85,9 +96,20 @@ public class Mesh {
          * @param components Components used in this array. UV = 2, RGB = 3, RGBA = 4
          * @return
          */
-        public Builder render(float render[], int components) {
+        public Builder render(float[] render, int components) {
             this.render = render;
             this.renderComponents = components;
+            return this;
+        }
+
+        /**
+         * Sets this mesh's material. Optional.
+         *
+         * @param material  the material to set for the mesh.
+         * @return this, for chaining
+         */
+        public Builder material(Material material) {
+            this.material = material;
             return this;
         }
 

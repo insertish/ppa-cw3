@@ -1,20 +1,15 @@
 package gay.oss.cw3;
 
-import gay.oss.cw3.renderer.Mesh;
-import gay.oss.cw3.renderer.Shader;
-import gay.oss.cw3.renderer.ShaderProgram;
-import gay.oss.cw3.renderer.Util;
-import gay.oss.cw3.renderer.Window;
+import gay.oss.cw3.renderer.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 
 public class Main {
     private Window window;
-    private ShaderProgram program;
     private Mesh mesh;
 
-    private void init() throws IllegalStateException, Exception {
+    private void init() throws Exception {
         Util.initialiseLWJGL();
 
         // Configure Window
@@ -31,22 +26,24 @@ public class Main {
         Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(Main.class.getResourceAsStream("/shaders/vertex.glsl").readAllBytes()));
         Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(Main.class.getResourceAsStream("/shaders/fragment.glsl").readAllBytes()));
 
-        program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
+        ShaderProgram program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
         // Create a triangle
-        float vertex[] = {
+        float[] vertex = {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f,
         };
 
-        float uv[] = {
+        float[] uv = {
             0.0f, 0.0f,
             1.0f, 0.0f,
             0.0f, 1.0f,
+            1.0f, 1.0f,
         };
 
-        mesh = Mesh.builder().vertex(vertex).render(uv, 2).build();
+        mesh = Mesh.builder().vertex(vertex).material(new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")) )).render(uv, 2).build();
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -63,9 +60,6 @@ public class Main {
         // Poll for window events. The key callback above will only be
         // invoked during this call.
         glfwPollEvents();
-
-        // Use shader
-        program.use();
 
         // Draw mesh
         mesh.draw();
