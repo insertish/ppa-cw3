@@ -1,5 +1,8 @@
 package gay.oss.cw3.simulation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Entity {
     private final World world;
     private Coordinate location;
@@ -12,6 +15,7 @@ public abstract class Entity {
         this.location = location;
         this.ageTicks = initialAgeTicks;
         this.alive = alive;
+        this.world.spawn(this);
     }
 
     public Entity(World world, int initialAgeTicks, boolean alive) {
@@ -19,7 +23,7 @@ public abstract class Entity {
     }
 
     public World getWorld() {
-        return world;
+        return this.world;
     }
 
     public Coordinate getLocation() {
@@ -27,14 +31,15 @@ public abstract class Entity {
     }
 
     public boolean isAlive() {
-        return alive;
+        return this.alive;
     }
 
     public int getAgeTicks() {
-        return ageTicks;
+        return this.ageTicks;
     }
 
     public void setLocation(Coordinate location) {
+        // this should cascade into Grid in World
         this.location = location;
     }
     
@@ -44,6 +49,22 @@ public abstract class Entity {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
+    }
+
+    public List<Entity> getAdjacentEntities(int radius) {
+        Coordinate location = this.getLocation();
+        int x = location.x;
+        int z = location.z;
+
+        List<Entity> entities = new ArrayList<>();
+        for (int i=-radius;i<radius+1;i++) {
+            for (int j=-radius;j<radius+1;j++) {
+                Entity e = this.world.getEntity(x + i, z + j);
+                if (e != null) entities.add(e);
+            }
+        }
+
+        return entities;
     }
 
     public abstract void tick();
