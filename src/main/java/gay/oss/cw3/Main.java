@@ -28,19 +28,25 @@ public class Main {
 
         ShaderProgram program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
-        // Create a triangle
-        float[] vertex = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
-            -0.5f, 0.5f, 0.0f,
+        // Create a square
+        float vertex[] = {
+            -0.5f, -0.5f, 0.0f, // BL
+            0.5f, -0.5f, 0.0f, // BR
+            0.5f, 0.5f, 0.0f, // TR
+
+            -0.5f, -0.5f, 0.0f, // BL
+            0.5f, 0.5f, 0.0f, // TR
+            -0.5f, 0.5f, 0.0f, // TL
         };
 
         float[] uv = {
-            0.0f, 0.0f,
-            1.0f, 0.0f,
             0.0f, 1.0f,
             1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
         };
 
         mesh = Mesh.builder().vertex(vertex).material(new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")) )).render(uv, 2).build();
