@@ -30,13 +30,13 @@ public class Main {
 
         // Create a square
         float vertex[] = {
-            -0.5f, -0.5f, 0.0f, // BL
-            0.5f, -0.5f, 0.0f, // BR
-            0.5f, 0.5f, 0.0f, // TR
+            -0.8f, -0.8f, 0.0f, // BL
+            0.8f, -0.8f, 0.0f, // BR
+            0.8f, 0.8f, 0.0f, // TR
 
-            -0.5f, -0.5f, 0.0f, // BL
-            0.5f, 0.5f, 0.0f, // TR
-            -0.5f, 0.5f, 0.0f, // TL
+            -0.8f, -0.8f, 0.0f, // BL
+            0.8f, 0.8f, 0.0f, // TR
+            -0.8f, 0.8f, 0.0f, // TL
         };
 
         float[] uv = {
