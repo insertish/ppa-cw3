@@ -1,5 +1,7 @@
 package gay.oss.cw3.simulation;
 
+import gay.oss.cw3.simulation.brain.EntityBrain;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
  */
 public abstract class Entity {
     private final World world;
+    private final EntityBrain brain = new EntityBrain();
     private Coordinate location;
 
     private int ageTicks;
