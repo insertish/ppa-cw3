@@ -4,6 +4,7 @@ import java.util.List;
 
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
+import gay.oss.cw3.simulation.brain.behaviours.WanderAroundBehaviour;
 
 public class Tester {
     public static void main(String[] args) {
@@ -22,10 +23,12 @@ public class Tester {
                 }
             }
         }
-        
+
         for (int x=0;x<128;x++) {
             for (int z=0;z<128;z++) {
-                new EntityCell(world, new Coordinate(x, z));
+                var e = new EntityCell(world, new Coordinate(x, z));
+                e.getBrain().addBehaviour(new WanderAroundBehaviour(e));
+                world.spawn(e);
             }
         }
 
@@ -48,7 +51,7 @@ public class Tester {
             iterations++;
 
             f.clear();
-            
+
             for (Entity entity : world.getEntities()) {
                 Coordinate loc = entity.getLocation();
                 f.place("", loc.x, loc.z);

@@ -11,7 +11,6 @@ import java.util.List;
  */
 public abstract class Entity {
     private final World world;
-    private final EntityBrain brain = new EntityBrain();
     private Coordinate location;
 
     private int ageTicks;
@@ -19,6 +18,8 @@ public abstract class Entity {
 
     private int health;
     private final int maxHealth;
+
+    protected final EntityBrain brain = new EntityBrain();
 
     /**
      * Creates <em>and automatically spawns</em> an entity.
@@ -137,6 +138,13 @@ public abstract class Entity {
      */
     public void addHealth(final int amount) {
         this.setHealth(this.getHealth()+amount);
+    }
+
+    /**
+     * @return the entity's brain
+     */
+    public EntityBrain getBrain() {
+        return brain;
     }
 
     /**
