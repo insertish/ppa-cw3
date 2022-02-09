@@ -5,7 +5,7 @@ import java.util.List;
 
 public final class EntityBrain {
     private final List<Behaviour> behaviours = new ArrayList<>();
-    private final List<Behaviour> lastRunBehaviours = new ArrayList<>();
+    private Behaviour lastRunBehaviour = null;
 
     public void addBehaviour(final Behaviour behaviour) {
         this.behaviours.add(behaviour);
@@ -17,19 +17,17 @@ public final class EntityBrain {
 
     public void tick() {
         for (Behaviour behaviour : this.behaviours) {
-            final boolean wasOnLastTime = this.lastRunBehaviours.contains(behaviour);
+            final boolean wasOnLastTime = behaviour == this.lastRunBehaviour;
             if (wasOnLastTime) {
                 if (behaviour.canContinue()) {
                     behaviour.tick();
-                    this.lastRunBehaviours.clear();
-                    this.lastRunBehaviours.add(behaviour);
+                    this.lastRunBehaviour = behaviour;
                     break;
                 }
             } else if (behaviour.canStart()) {
                 behaviour.start();
                 behaviour.tick();
-                this.lastRunBehaviours.clear();
-                this.lastRunBehaviours.add(behaviour);
+                this.lastRunBehaviour = behaviour;
                 break;
             }
         }
