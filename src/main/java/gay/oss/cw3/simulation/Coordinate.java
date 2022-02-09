@@ -64,7 +64,7 @@ public class Coordinate {
      * @return          the result of the multiplication
      */
     public Coordinate multiply(double amount) {
-        return new Coordinate((int) (this.x*amount), (int) (this.z*amount));
+        return new Coordinate((int) Math.round(this.x*amount), (int) Math.round(this.z*amount));
     }
 
     /**
@@ -142,6 +142,15 @@ public class Coordinate {
      */
     public double distanceTo(Coordinate value) {
         return this.subtract(value).distanceToOrigin();
+    }
+
+    /**
+     * Calculate this coordinate normalised (length 1, or as close to as the int precision allows)
+     *
+     * @return this coordinate, normalised
+     */
+    public Coordinate normalised() {
+        return this.multiply(1.0/(this.distanceToOrigin()));
     }
 
     public String toString() {
