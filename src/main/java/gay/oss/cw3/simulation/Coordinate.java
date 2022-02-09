@@ -1,5 +1,7 @@
 package gay.oss.cw3.simulation;
 
+import java.util.Objects;
+
 /**
  * Encodes a position on the 2D plane as cartesian coordinates.
  *
@@ -146,11 +148,16 @@ public class Coordinate {
         return String.format("Coordinate { x = %d, z = %d }", this.x, this.z);
     }
 
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (!(obj instanceof Coordinate)) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coordinate that = (Coordinate) o;
+        return x == that.x && z == that.z;
+    }
 
-        Coordinate c = (Coordinate) obj;
-        return c.x == this.x && c.z == this.z;
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, z);
     }
 }
