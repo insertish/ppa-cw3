@@ -19,7 +19,7 @@ public abstract class Entity {
     }
 
     public Entity(World world, int initialAgeTicks, boolean alive) {
-        this(world, new Coordinate(), initialAgeTicks, alive);
+        this(world, Coordinate.ORIGIN, initialAgeTicks, alive);
     }
 
     public World getWorld() {
