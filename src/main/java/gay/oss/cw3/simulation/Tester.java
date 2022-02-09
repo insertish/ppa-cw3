@@ -1,10 +1,12 @@
 package gay.oss.cw3.simulation;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
+import gay.oss.cw3.simulation.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.brain.behaviours.WanderAroundBehaviour;
 
 public class Tester {
@@ -22,10 +24,27 @@ public class Tester {
             }
         }
 
+        class Hunter extends Entity {
+            public Hunter(World world, Coordinate location) {
+                super(world, location, 0, true);
+            }
+
+            @Override
+            public void tick() {
+                this.getBrain().tick();
+            }
+        }
+
         for (int x=0;x<128;x++) {
             for (int z=0;z<128;z++) {
                 if (new Random().nextFloat() < 0.05) {
                     var e = new EntityCell(world, new Coordinate(x, z));
+                    e.getBrain().addBehaviour(new WanderAroundBehaviour(e));
+                }
+
+                if (new Random().nextFloat() < 0.005) {
+                    var e = new Hunter(world, new Coordinate(x, z));
+                    e.getBrain().addBehaviour(new HuntBehaviour(e, EntityCell.class));
                     e.getBrain().addBehaviour(new WanderAroundBehaviour(e));
                 }
             }
@@ -44,6 +63,8 @@ public class Tester {
 
         var view = new SimulatorView(128, 128);
         var f = new Field(128, 128);
+        view.setColor(Hunter.class, Color.ORANGE);
+        view.setColor(EntityCell.class, Color.LIGHT_GRAY);
         while (true) {
             lastIter = world.getTime();
             world.tick();
@@ -52,7 +73,7 @@ public class Tester {
 
             for (Entity entity : world.getEntities()) {
                 Coordinate loc = entity.getLocation();
-                f.place("", loc.x, loc.z);
+                f.place(entity, loc.x, loc.z);
             }
 
             view.showStatus(lastIter, f);
