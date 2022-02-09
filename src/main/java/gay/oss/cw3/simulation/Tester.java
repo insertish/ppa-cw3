@@ -1,6 +1,7 @@
 package gay.oss.cw3.simulation;
 
 import java.util.List;
+import java.util.Random;
 
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
@@ -17,22 +18,20 @@ public class Tester {
 
             @Override
             public void tick() {
-                List<Entity> entities = this.getAdjacentEntities(1);
-                if (entities.size() > 1 && Math.random() > 0.8) {
-                    this.setAlive(false);
-                }
+                this.getBrain().tick();
             }
         }
 
         for (int x=0;x<128;x++) {
             for (int z=0;z<128;z++) {
-                var e = new EntityCell(world, new Coordinate(x, z));
-                e.getBrain().addBehaviour(new WanderAroundBehaviour(e));
-                world.spawn(e);
+                if (new Random().nextFloat() < 0.05) {
+                    var e = new EntityCell(world, new Coordinate(x, z));
+                    e.getBrain().addBehaviour(new WanderAroundBehaviour(e));
+                }
             }
         }
 
-        int lastIter = 0, iterations = 0;
+        int lastIter;
         /*
         long start = System.currentTimeMillis();
         while (lastIter != world.getEntityCount()) {
@@ -45,10 +44,9 @@ public class Tester {
 
         var view = new SimulatorView(128, 128);
         var f = new Field(128, 128);
-        while (lastIter != world.getEntityCount()) {
-            lastIter = world.getEntityCount();
+        while (true) {
+            lastIter = world.getTime();
             world.tick();
-            iterations++;
 
             f.clear();
 
@@ -57,7 +55,12 @@ public class Tester {
                 f.place("", loc.x, loc.z);
             }
 
-            view.showStatus(iterations, f);
+            view.showStatus(lastIter, f);
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         /*FastNoiseLite noise = new FastNoiseLite();

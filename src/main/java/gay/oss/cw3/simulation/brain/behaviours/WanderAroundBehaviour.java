@@ -32,6 +32,9 @@ public class WanderAroundBehaviour implements Behaviour {
 
     @Override
     public void tick() {
-        this.entity.setLocation(this.entity.getLocation().add(new Coordinate(random.nextInt(3)-1, random.nextInt(3)-1)));
+        var newLoc = this.entity.getLocation().add(random.nextInt(3)-1, random.nextInt(3)-1);
+        if (this.entity.getWorld().isInBounds(newLoc) && this.entity.getWorld().getEntity(newLoc.x, newLoc.z) == null) {
+            this.entity.setLocation(newLoc);
+        }
     }
 }

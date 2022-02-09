@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class World {
     private Grid<Entity> map;
     private List<Entity> entities;
+    private int time = 0;
 
     public World(int width, int depth) {
         this.map = new Grid<>(width, depth);
@@ -18,6 +19,7 @@ public class World {
 
     public void tick() {
         synchronized (entities) {
+            time++;
             Iterator<Entity> iter = entities.iterator();
             while (iter.hasNext()) {
                 Entity entity = iter.next();
@@ -48,6 +50,14 @@ public class World {
 
     public List<Entity> getEntities() {
         return this.entities;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public boolean isInBounds(Coordinate location) {
+        return this.map.isInBounds(location.x, location.z);
     }
 
     public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
