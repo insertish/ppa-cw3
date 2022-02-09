@@ -12,7 +12,7 @@ import java.util.List;
  */
 public final class EntityBrain {
     private final List<Behaviour> behaviours = new ArrayList<>();
-    private Behaviour lastRunBehaviour = null;
+    private Behaviour currentBehaviour = null;
 
     /**
      * Adds a behaviour to this brain, at the lowest priority.
@@ -37,18 +37,20 @@ public final class EntityBrain {
      * Ticks this brain, checking behaviours and ticking the relevant one.
      */
     public void tick() {
+        final var lastRunBehaviour = this.currentBehaviour;
+        this.currentBehaviour = null;
         for (Behaviour behaviour : this.behaviours) {
-            final boolean wasOnLastTime = behaviour == this.lastRunBehaviour;
+            final boolean wasOnLastTime = behaviour == lastRunBehaviour;
             if (wasOnLastTime) {
                 if (behaviour.canContinue()) {
                     behaviour.tick();
-                    this.lastRunBehaviour = behaviour;
+                    this.currentBehaviour = behaviour;
                     break;
                 }
             } else if (behaviour.canStart()) {
                 behaviour.start();
                 behaviour.tick();
-                this.lastRunBehaviour = behaviour;
+                this.currentBehaviour = behaviour;
                 break;
             }
         }
