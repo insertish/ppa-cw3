@@ -81,7 +81,7 @@ public abstract class Entity {
      * @param location the location
      */
     public void setLocation(Coordinate location) {
-        // this should cascade into Grid in World
+        this.world.moveEntity(this, this.location, location);
         this.location = location;
     }
 

@@ -49,4 +49,13 @@ public class World {
     public List<Entity> getEntities() {
         return this.entities;
     }
+
+    public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
+        if (this.map.get(from) != entity) {
+            throw new IllegalStateException(String.format("Attempted to move %1$s from %2$s to %3$s but it is not at %2$s!", entity, from, to));
+        }
+
+        this.map.set(from, null);
+        this.map.set(to, entity);
+    }
 }
