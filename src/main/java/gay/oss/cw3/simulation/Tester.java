@@ -2,7 +2,6 @@ package gay.oss.cw3.simulation;
 
 import java.util.List;
 
-import gay.oss.cw3.lib.FastNoiseLite;
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
 
@@ -12,7 +11,7 @@ public class Tester {
 
         class EntityCell extends Entity {
             public EntityCell(World world, Coordinate location) {
-                super(world, location, 0, true);
+                super(world, location, 0, true, 1);
             }
 
             @Override

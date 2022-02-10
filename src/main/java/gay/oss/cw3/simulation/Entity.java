@@ -10,16 +10,20 @@ public abstract class Entity {
     private int ageTicks;
     private boolean alive;
 
-    public Entity(World world, Coordinate location, int initialAgeTicks, boolean alive) {
+    private int health;
+    private final int maxHealth;
+
+    public Entity(World world, Coordinate location, int initialAgeTicks, boolean alive, int maxHealth) {
         this.world = world;
         this.location = location;
         this.ageTicks = initialAgeTicks;
         this.alive = alive;
+        this.maxHealth = maxHealth;
         this.world.spawn(this);
     }
 
-    public Entity(World world, int initialAgeTicks, boolean alive) {
-        this(world, Coordinate.ORIGIN, initialAgeTicks, alive);
+    public Entity(World world, int initialAgeTicks, boolean alive, int maxHealth) {
+        this(world, Coordinate.ORIGIN, initialAgeTicks, alive, maxHealth);
     }
 
     public World getWorld() {
@@ -49,6 +53,41 @@ public abstract class Entity {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
+    }
+
+    /**
+     * @return the entity's current health
+     */
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * @return the entity's maximum health
+     */
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    /**
+     * Sets the entity's current health, within bounds. Will kill the entity if health is set below one.
+     *
+     * @param amount the amount of health to set to
+     */
+    public void setHealth(final int amount) {
+        this.health = Math.max(0, Math.min(this.getMaxHealth(), amount));
+        if (this.health <= 0) {
+            this.setAlive(false);
+        }
+    }
+
+    /**
+     * Adds an amount of health to the entity, with the same logic as {@link #setHealth(int)}
+     *
+     * @param amount the amount to add to the entity's health
+     */
+    public void addHealth(final int amount) {
+        this.setHealth(this.getHealth()+amount);
     }
 
     public List<Entity> getAdjacentEntities(int radius) {
