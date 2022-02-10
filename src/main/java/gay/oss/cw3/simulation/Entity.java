@@ -3,6 +3,10 @@ package gay.oss.cw3.simulation;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An Entity is a basic actor in the world. It has a position in the world, an age, and a health value. It can die,
+ * if its health goes to zero. It can run custom logic per-tick.
+ */
 public abstract class Entity {
     private final World world;
     private Coordinate location;
@@ -13,6 +17,15 @@ public abstract class Entity {
     private int health;
     private final int maxHealth;
 
+    /**
+     * Creates <em>and automatically spawns</em> an entity.
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     * @param initialAgeTicks   the entity's initial age
+     * @param alive             whether the entity is alive
+     * @param maxHealth         the entity's max health
+     */
     public Entity(World world, Coordinate location, int initialAgeTicks, boolean alive, int maxHealth) {
         this.world = world;
         this.location = location;
@@ -22,35 +35,68 @@ public abstract class Entity {
         this.world.spawn(this);
     }
 
+    /**
+     * Creates <em>and automatically spawns</em> an entity at the origin of the world.
+     *
+     * @param world             the world the entity will reside in
+     * @param initialAgeTicks   the entity's initial age
+     * @param alive             whether the entity is alive
+     * @param maxHealth         the entity's max health
+     */
     public Entity(World world, int initialAgeTicks, boolean alive, int maxHealth) {
         this(world, Coordinate.ORIGIN, initialAgeTicks, alive, maxHealth);
     }
 
+    /**
+     * @return the entity's world
+     */
     public World getWorld() {
         return this.world;
     }
 
+    /**
+     * @return the entity's current location
+     */
     public Coordinate getLocation() {
         return this.location;
     }
 
+    /**
+     * @return whether the entity is currently alive
+     */
     public boolean isAlive() {
         return this.alive;
     }
 
+    /**
+     * @return the entity's current age in ticks
+     */
     public int getAgeTicks() {
         return this.ageTicks;
     }
 
+    /**
+     * Sets the entity's location.
+     *
+     * @param location the location
+     */
     public void setLocation(Coordinate location) {
         // this should cascade into Grid in World
         this.location = location;
     }
-    
+
+    /**
+     * Increments the entity's age by one tick.
+     */
     public void incrementAge() {
         this.ageTicks++;
     }
 
+    /**
+     * Sets the entity to be alive or not.
+     *
+     * @param alive the aliveness value
+     */
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
@@ -90,6 +136,13 @@ public abstract class Entity {
         this.setHealth(this.getHealth()+amount);
     }
 
+    /**
+     * Finds a list of entities within the square of radius given around this entity.
+     *
+     * @param radius    the half-side-length of the square to search around
+     *
+     * @return          a list of nearby entities
+     */
     public List<Entity> getAdjacentEntities(int radius) {
         Coordinate location = this.getLocation();
         int x = location.x;
@@ -106,5 +159,8 @@ public abstract class Entity {
         return entities;
     }
 
+    /**
+     * Ticks this entity.
+     */
     public abstract void tick();
 }
