@@ -20,18 +20,22 @@ public class Tester {
 
             @Override
             public void tick() {
-                this.getBrain().tick();
+                if (this.isAlive()) {
+                    this.getBrain().tick();
+                }
             }
         }
 
         class Hunter extends Entity {
             public Hunter(World world, Coordinate location) {
-                super(world, location, 0, true);
+                super(world, location, 0, true, 2);
             }
 
             @Override
             public void tick() {
-                this.getBrain().tick();
+                if (this.isAlive()) {
+                    this.getBrain().tick();
+                }
             }
         }
 
@@ -39,13 +43,11 @@ public class Tester {
             for (int z=0;z<128;z++) {
                 if (new Random().nextFloat() < 0.05) {
                     var e = new EntityCell(world, new Coordinate(x, z));
-                    e.getBrain().addBehaviour(new WanderAroundBehaviour(e));
-                }
-
-                if (new Random().nextFloat() < 0.005) {
+                    e.getBrain().addBehaviour(new WanderAroundBehaviour(e, 1.0));
+                } else if (new Random().nextFloat() < 0.005) {
                     var e = new Hunter(world, new Coordinate(x, z));
-                    e.getBrain().addBehaviour(new HuntBehaviour(e, EntityCell.class));
-                    e.getBrain().addBehaviour(new WanderAroundBehaviour(e));
+                    e.getBrain().addBehaviour(new HuntBehaviour(e, 1.3, EntityCell.class));
+                    e.getBrain().addBehaviour(new WanderAroundBehaviour(e, 0.6));
                 }
             }
         }

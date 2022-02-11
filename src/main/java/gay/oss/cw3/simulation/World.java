@@ -61,11 +61,11 @@ public class World {
     }
 
     public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
-        if (this.map.get(from) != entity) {
-            throw new IllegalStateException(String.format("Attempted to move %1$s from %2$s to %3$s but it is not at %2$s!", entity, from, to));
+        final @Nullable Entity previous;
+        if ((previous = this.map.set(from, null)) != entity) {
+            throw new IllegalStateException(String.format("Attempted to move %1$s from %2$s to %3$s but it is not at %2$s, instead found %4$s!", entity, from, to, previous));
         }
 
-        this.map.set(from, null);
         this.map.set(to, entity);
     }
 }
