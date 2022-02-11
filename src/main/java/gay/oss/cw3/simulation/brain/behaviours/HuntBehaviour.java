@@ -6,7 +6,7 @@ import gay.oss.cw3.simulation.brain.Behaviour;
 
 import java.util.Random;
 
-public class HuntBehaviour implements Behaviour {
+public class HuntBehaviour extends MovementBehaviour {
     private final Random random = new Random();
     private final Entity entity;
     private final Class<? extends Entity>[] targetClasses;
@@ -15,7 +15,8 @@ public class HuntBehaviour implements Behaviour {
     private int ticksCouldntMove = 0;
 
     @SafeVarargs
-    public HuntBehaviour(Entity entity, Class<? extends Entity>... targetClasses) {
+    public HuntBehaviour(Entity entity, double speed, Class<? extends Entity>... targetClasses) {
+        super(speed);
         this.entity = entity;
         this.targetClasses = targetClasses;
     }
@@ -82,13 +83,4 @@ public class HuntBehaviour implements Behaviour {
         }
     }
 
-    private Coordinate calculateMovementInDirection(final Coordinate direction) {
-        double magnitude = direction.distanceToOrigin();
-        double chanceToMoveX = Math.abs(direction.x/magnitude);
-        double chanceToMoveZ = Math.abs(direction.z/magnitude);
-        return new Coordinate(
-                Math.round(chanceToMoveZ == 0 || this.random.nextDouble() < chanceToMoveX ? Math.signum(direction.x) : 0f),
-                Math.round(chanceToMoveX == 0 || this.random.nextDouble() < chanceToMoveZ ? Math.signum(direction.z) : 0f)
-        );
-    }
 }

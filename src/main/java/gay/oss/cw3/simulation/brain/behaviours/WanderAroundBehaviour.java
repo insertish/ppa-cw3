@@ -7,11 +7,12 @@ import gay.oss.cw3.simulation.brain.Behaviour;
 
 import java.util.Random;
 
-public class WanderAroundBehaviour implements Behaviour {
+public class WanderAroundBehaviour extends MovementBehaviour {
     private final Random random = new Random();
     private final Entity entity;
 
-    public WanderAroundBehaviour(Entity entity) {
+    public WanderAroundBehaviour(Entity entity, double speed) {
+        super(speed);
         this.entity = entity;
     }
 
@@ -32,7 +33,10 @@ public class WanderAroundBehaviour implements Behaviour {
 
     @Override
     public void tick() {
-        var newLoc = this.entity.getLocation().add(random.nextInt(3)-1, random.nextInt(3)-1);
+        var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(
+                        new Coordinate(random.nextInt(3)-1, random.nextInt(3)-1))
+                );
+
         if (this.entity.getWorld().isInBounds(newLoc) && this.entity.getWorld().getEntity(newLoc.x, newLoc.z) == null) {
             this.entity.setLocation(newLoc);
         }
