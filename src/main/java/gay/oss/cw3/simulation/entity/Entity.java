@@ -1,6 +1,8 @@
-package gay.oss.cw3.simulation;
+package gay.oss.cw3.simulation.entity;
 
-import gay.oss.cw3.simulation.brain.EntityBrain;
+import gay.oss.cw3.simulation.Coordinate;
+import gay.oss.cw3.simulation.World;
+import gay.oss.cw3.simulation.entity.brain.EntityBrain;
 
 import java.util.ArrayList;
 import java.util.List;

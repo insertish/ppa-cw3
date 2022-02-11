@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 public class World {

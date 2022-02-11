@@ -1,8 +1,6 @@
-package gay.oss.cw3.simulation.brain.behaviours;
+package gay.oss.cw3.simulation.entity.brain.behaviours;
 
-import gay.oss.cw3.simulation.Coordinate;
-import gay.oss.cw3.simulation.Entity;
-import gay.oss.cw3.simulation.brain.Behaviour;
+import gay.oss.cw3.simulation.entity.Entity;
 
 import java.util.Random;
 

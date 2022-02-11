@@ -1,7 +1,9 @@
-package gay.oss.cw3.simulation.brain;
+package gay.oss.cw3.simulation.entity.brain;
+
+import gay.oss.cw3.simulation.entity.Entity;
 
 /**
- * A Behaviour is the basic 'unit of AI' for an {@link gay.oss.cw3.simulation.Entity Entity}.
+ * A Behaviour is the basic 'unit of AI' for an {@link Entity Entity}.
  *
  * <p>Behaviours are attached to an entity through their {@link EntityBrain Brain}.</p>
  *

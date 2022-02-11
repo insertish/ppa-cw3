@@ -1,10 +1,12 @@
-package gay.oss.cw3.simulation.brain;
+package gay.oss.cw3.simulation.entity.brain;
+
+import gay.oss.cw3.simulation.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An EntityBrain controls the AI of an {@link gay.oss.cw3.simulation.Entity Entity}, managing its
+ * An EntityBrain controls the AI of an {@link Entity Entity}, managing its
  * {@link Behaviour Behaviours}.
  *
  * <p>It has a list of behaviours, and will tick the first behaviour in the list which can start/continue. Therefore,

@@ -1,13 +1,13 @@
 package gay.oss.cw3.simulation;
 
 import java.awt.*;
-import java.util.List;
 import java.util.Random;
 
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
-import gay.oss.cw3.simulation.brain.behaviours.HuntBehaviour;
-import gay.oss.cw3.simulation.brain.behaviours.WanderAroundBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
+import gay.oss.cw3.simulation.entity.Entity;
 
 public class Tester {
     public static void main(String[] args) {
