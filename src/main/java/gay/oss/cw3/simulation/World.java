@@ -9,13 +9,15 @@ import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 public class World {
-    private Grid<Entity> map;
-    private List<Entity> entities;
+    private final Grid<Entity> map;
+    private final List<Entity> entities;
+    private final List<Entity> entitiesToSpawn;
     private int time = 0;
 
     public World(int width, int depth) {
         this.map = new Grid<>(width, depth);
         this.entities = Collections.synchronizedList(new ArrayList<>());
+        this.entitiesToSpawn = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void tick() {
@@ -32,9 +34,18 @@ public class World {
                 }
             }
         }
+
+        synchronized (entitiesToSpawn) {
+            this.entitiesToSpawn.forEach(this::spawnInternal);
+            this.entitiesToSpawn.clear();
+        }
     }
 
     public void spawn(Entity entity) {
+        this.entitiesToSpawn.add(entity);
+    }
+
+    private void spawnInternal(Entity entity) {
         this.entities.add(entity);
 
         Entity old_entity = this.map.set(entity.getLocation(), entity);
