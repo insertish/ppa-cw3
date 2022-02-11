@@ -8,6 +8,7 @@ import gay.oss.cw3.provided.SimulatorView;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Breedable;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.entity.Entity;
@@ -15,46 +16,6 @@ import gay.oss.cw3.simulation.entity.Entity;
 public class Tester {
     public static void main(String[] args) {
         World world = new World(128, 128);
-
-        class EntityCell extends AbstractBreedableEntity {
-            public EntityCell(World world, Coordinate location) {
-                super(world, location, 0, true, 1, 100, 50);
-                this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
-                this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
-            }
-
-            @Override
-            public void tick() {
-                if (this.isAlive()) {
-                    this.getBrain().tick();
-                }
-            }
-
-            @Override
-            public Entity createChild(Entity otherParent, Coordinate location) {
-                return new EntityCell(this.getWorld(), location);
-            }
-
-            @Override
-            public boolean isCompatible(Entity entity) {
-                return entity.isAlive();
-            }
-        }
-
-        class Hunter extends Entity {
-            public Hunter(World world, Coordinate location) {
-                super(world, location, 0, true, 2);
-                this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
-                this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
-            }
-
-            @Override
-            public void tick() {
-                if (this.isAlive()) {
-                    this.getBrain().tick();
-                }
-            }
-        }
 
         for (int x=0;x<128;x++) {
             for (int z=0;z<128;z++) {
@@ -120,5 +81,47 @@ public class Tester {
         }
 
         view.showStatus(0, f);*/
+    }
+
+
+    static class EntityCell extends AbstractBreedableEntity {
+        public EntityCell(World world, Coordinate location) {
+            super(world, location, 0, true, 1, 100, 100);
+            this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
+            this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
+            this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                this.getBrain().tick();
+            }
+        }
+
+        @Override
+        public Entity createChild(Entity otherParent, Coordinate location) {
+            return new EntityCell(this.getWorld(), location);
+        }
+
+        @Override
+        public boolean isCompatible(Entity entity) {
+            return entity.isAlive();
+        }
+    }
+
+    static class Hunter extends Entity {
+        public Hunter(World world, Coordinate location) {
+            super(world, location, 0, true, 2);
+            this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
+            this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                this.getBrain().tick();
+            }
+        }
     }
 }
