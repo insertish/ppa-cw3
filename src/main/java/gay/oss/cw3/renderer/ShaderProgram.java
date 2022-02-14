@@ -57,12 +57,7 @@ public class ShaderProgram {
             String log = glGetProgramInfoLog(id);
             System.err.println(log);
 
-            for (Shader shader : shaders) {
-                log = glGetShaderInfoLog(shader.getID());
-                System.err.println(log);
-            }
-
-            throw new Exception();
+            throw new Exception("Failed to link shader program!");
         }
 
         // After compilation, you can detach shaders
