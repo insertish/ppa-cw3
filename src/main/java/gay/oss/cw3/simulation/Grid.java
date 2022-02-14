@@ -13,6 +13,14 @@ public class Grid<T> {
         this.depth = depth;
     }
 
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getDepth() {
+        return this.depth;
+    }
+
     @SuppressWarnings("unchecked")
     public T set(int x, int z, T obj) {
         if (!this.isInBounds(x, z)) return null; // or throw

@@ -31,6 +31,10 @@ public class Map {
         return this.entities;
     }
 
+    public Grid<Float> getHeightMap() {
+        return this.heightMap;
+    }
+
     public Grid<BiomeType> getBiomeMap() {
         return this.biomeMap;
     }
@@ -67,7 +71,8 @@ public class Map {
         // 2. Generate a heightmap
         FastNoiseLite heightNoise = new FastNoiseLite(seed);
         heightNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-        heightNoise.SetFrequency(0.025f);
+        //heightNoise.SetFrequency(0.025f);
+        heightNoise.SetFrequency(0.08f);
         heightNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
         heightNoise.SetFractalOctaves(4);
         heightNoise.SetFractalLacunarity(0.60f);
