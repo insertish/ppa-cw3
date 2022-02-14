@@ -6,6 +6,7 @@ import java.util.Random;
 
 public final class EntityAttributeMap {
     private final Map<EntityAttribute, Double> map = new EnumMap<>(EntityAttribute.class);
+    private final Random random = new Random();
 
     private EntityAttributeMap(final Map<EntityAttribute, Double> map) {
         this.map.putAll(map);
@@ -15,13 +16,15 @@ public final class EntityAttributeMap {
     }
 
     public void set(final EntityAttribute attribute, final double value) {
-        if (value < attribute.min) {
-            throw new IllegalArgumentException(String.format("Tried to set %s to %f, which is less than its minimum value %f!", attribute.name(), value, attribute.min));
-        }
+        checkBounds(attribute, value);
 
-        if (value > attribute.max) {
-            throw new IllegalArgumentException(String.format("Tried to set %s to %f, which is greater than its maximum value %f!", attribute.name(), value, attribute.max));
-        }
+        this.map.put(attribute, value);
+    }
+
+    public void set(final EntityAttribute attribute, final double value, final double variation) {
+        checkBounds(attribute, value);
+
+        final double modifiedValue = Math.max(attribute.min, Math.min(attribute.max, value + calculateRandomVariation(attribute, variation, random)));
 
         this.map.put(attribute, value);
     }
@@ -55,5 +58,15 @@ public final class EntityAttributeMap {
         final double variation = random.nextGaussian() * randomness;
 
         return variation * range;
+    }
+
+    private static void checkBounds(final EntityAttribute attribute, final double value) {
+        if (value < attribute.min) {
+            throw new IllegalArgumentException(String.format("Tried to set %s to %f, which is less than its minimum value %f!", attribute.name(), value, attribute.min));
+        }
+
+        if (value > attribute.max) {
+            throw new IllegalArgumentException(String.format("Tried to set %s to %f, which is greater than its maximum value %f!", attribute.name(), value, attribute.max));
+        }
     }
 }
