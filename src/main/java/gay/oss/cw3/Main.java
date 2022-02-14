@@ -1,20 +1,20 @@
 package gay.oss.cw3;
 
-import gay.oss.cw3.renderer.Mesh;
-import gay.oss.cw3.renderer.Shader;
-import gay.oss.cw3.renderer.ShaderProgram;
-import gay.oss.cw3.renderer.Util;
-import gay.oss.cw3.renderer.Window;
+import gay.oss.cw3.renderer.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 public class Main {
     private Window window;
-    private ShaderProgram program;
     private Mesh mesh;
 
-    private void init() throws IllegalStateException, Exception {
+    private ShaderProgram program;
+
+    private void init() throws Exception {
         Util.initialiseLWJGL();
 
         // Configure Window
@@ -33,20 +33,28 @@ public class Main {
 
         program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
-        // Create a triangle
+        // Create a square
         float vertex[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
+            -0.8f, -0.8f, 0.0f, // BL
+            0.8f, -0.8f, 0.0f, // BR
+            0.8f, 0.8f, 0.0f, // TR
+
+            -0.8f, -0.8f, 0.0f, // BL
+            0.8f, 0.8f, 0.0f, // TR
+            -0.8f, 0.8f, 0.0f, // TL
         };
 
-        float uv[] = {
-            0.0f, 0.0f,
-            1.0f, 0.0f,
+        float[] uv = {
             0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
         };
 
-        mesh = Mesh.builder().vertex(vertex).render(uv, 2).build();
+        mesh = Mesh.builder().vertex(vertex).material(new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")) )).render(uv, 2).build();
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -55,6 +63,13 @@ public class Main {
             System.exit(0);
         }
     }
+
+    private float r = 0;
+    private float g = 0;
+    private float b = 0;
+
+    private float pos = -10.0f;
+    private float y = -0.5f;
 
     private void renderLoop() {
         // Clear the framebuffer.
@@ -66,6 +81,34 @@ public class Main {
 
         // Use shader
         program.use();
+
+        // Setup transformation matrix
+        Matrix4f model = new Matrix4f()
+            .identity()
+            .setTranslation(0.0f, y, 0.0f);
+
+        // Setup camera projection
+        Matrix4f viewProjection = new Matrix4f()
+            .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 100.0f)
+            .lookAt(5.0f, 5.0f, pos,
+                    0.0f, 0.0f, 0.0f,
+                    0.0f, 1.0f, 0.0f);
+        
+        program.setUniform("modelViewProjection", model.mul(viewProjection));
+
+        // Do some simple colour rotation
+        r += 0.01f;
+        g += 0.02f;
+        b += 0.04f;
+        pos += 0.1f;
+        y += 0.01f;
+        program.setUniform("deez", new Vector3f(r,g,b));
+
+        if (r >= 1) r = 0;
+        if (g >= 1) g = 0;
+        if (b >= 1) b = 0;
+        if (pos >= 10) pos = -10.0f;
+        if (y >= 0.5f) y = -0.5f;
 
         // Draw mesh
         mesh.draw();
@@ -81,6 +124,8 @@ public class Main {
             instance.init();
         } catch (Exception e) {
             // shit got fucked, fall back to other renderer and notify user
+            e.printStackTrace();
+            System.exit(1);
         }
 
         while (!instance.window.shouldClose())
