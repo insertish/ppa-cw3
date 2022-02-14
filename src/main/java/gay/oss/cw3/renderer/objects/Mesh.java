@@ -34,6 +34,14 @@ public class Mesh {
         glBindVertexArray(this.vao);
     }
 
+    public void destroy() {
+        glDeleteVertexArrays(this.vao);
+        
+        for (int vbo : this.vbo) {
+            glDeleteBuffers(vbo);
+        }
+    }
+
     /**
      * Unbind Vertex Array Object for this mesh.
      */
