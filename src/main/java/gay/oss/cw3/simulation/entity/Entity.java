@@ -19,6 +19,7 @@ public abstract class Entity {
     private boolean alive;
 
     private int health;
+    private double fullness;
 
     protected final EntityBrain brain = new EntityBrain();
     protected final EntityAttributeMap attributes = new EntityAttributeMap();
@@ -139,6 +140,26 @@ public abstract class Entity {
      */
     public void addHealth(final int amount) {
         this.setHealth(this.getHealth()+amount);
+    }
+
+    public double getFullness() {
+        return fullness;
+    }
+
+    public double getMaxFullness() {
+        return this.getAttributes().get(EntityAttribute.MAX_FULLNESS);
+    }
+
+    public void setFullness(final double amount) {
+        this.fullness = Math.max(0, Math.min(this.getMaxFullness(), amount));
+    }
+
+    public void addFullness(final double amount) {
+        this.setFullness(this.getFullness() + amount);
+    }
+
+    public void removeFullness(final double amount) {
+        this.setFullness(this.getFullness() - amount);
     }
 
     /**
