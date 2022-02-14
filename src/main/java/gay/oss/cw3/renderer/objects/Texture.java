@@ -1,4 +1,4 @@
-package gay.oss.cw3.renderer;
+package gay.oss.cw3.renderer.objects;
 
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;

@@ -1,4 +1,4 @@
-package gay.oss.cw3.renderer;
+package gay.oss.cw3.renderer.shaders;
 
 import static org.lwjgl.opengl.GL20.*;
 
