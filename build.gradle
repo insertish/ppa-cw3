@@ -60,6 +60,8 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opus::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+
+    implementation 'org.joml:joml:1.10.4'
 }
 
 test {

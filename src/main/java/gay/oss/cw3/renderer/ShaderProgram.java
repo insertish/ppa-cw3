@@ -5,6 +5,11 @@ import static org.lwjgl.opengl.GL20.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.lwjgl.system.MemoryStack;
+
 public class ShaderProgram {
     private final int id;
     private final Map<String, Integer> uniformLocations;
@@ -71,15 +76,21 @@ public class ShaderProgram {
         glUniform1i(this.getUniformLocation(key), value);
     }
 
-    public void setUniformVec3(String key, float[] value) {
-        glUniform3fv(this.getUniformLocation(key), value);
+    public void setUniform(String key, Vector3f vec) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            glUniform3fv(this.getUniformLocation(key), vec.get(stack.mallocFloat(3)));
+        }
     }
 
-    public void setUniformVec4(String key, float[] value) {
-        glUniform4fv(this.getUniformLocation(key), value);
+    public void setUniform(String key, Vector4f vec) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            glUniform4fv(this.getUniformLocation(key), vec.get(stack.mallocFloat(4)));
+        }
     }
 
-    public void setUniformMat4(String key, float[] value) {
-        glUniformMatrix4fv(this.getUniformLocation(key), false, value);
+    public void setUniform(String key, Matrix4f matrix) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            glUniformMatrix4fv(this.getUniformLocation(key), false, matrix.get(stack.mallocFloat(16)));
+        }
     }
 }
