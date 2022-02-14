@@ -111,6 +111,8 @@ public class Main {
             instance.init();
         } catch (Exception e) {
             // shit got fucked, fall back to other renderer and notify user
+            e.printStackTrace();
+            System.exit(1);
         }
 
         while (!instance.window.shouldClose())
