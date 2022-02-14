@@ -5,32 +5,58 @@ import static org.lwjgl.opengl.GL30.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Wrapper class around an OpenGL Vertex Array Object
+ * which includes Vertex Buffer Objects and other related information.
+ */
 public class Mesh {
     private final int vao;
-    private final int indices;
+    private final int vertices;
     
     private List<Integer> vbo;
 
-    private Mesh(int vao, int indices) {
+    /**
+     * Construct a new Mesh
+     * @param vao Vertex Array Object ID
+     * @param vertices Number of vertices in this mesh
+     */
+    private Mesh(int vao, int vertices) {
         this.vao = vao;
-        this.indices = indices;
+        this.vertices = vertices;
 
         this.vbo = new ArrayList<>();
     }
 
+    /**
+     * Bind Vertex Array Object for this mesh.
+     */
     public void bind() {
         glBindVertexArray(this.vao);
     }
 
+    /**
+     * Unbind Vertex Array Object for this mesh.
+     */
     public static void unbind() {
         glBindVertexArray(0);
     }
 
+    /**
+     * Draw this mesh using provided attributes.
+     * This does not support indexed rendering.
+     */
     public void draw() {
         this.bind();
-        glDrawArrays(GL_TRIANGLES, 0, this.indices);
+        glDrawArrays(GL_TRIANGLES, 0, this.vertices);
     }
 
+    /**
+     * Simultaneously bind attribute and associated array
+     * @param attribute Attribute ID, used as the layout position in the GLSL shader code.
+     * @param components Number of components per element in the array.
+     * @param data Float data array.
+     * @return Vertex Buffer Object ID
+     */
     private int bindArray(int attribute, int components, float data[]) {
         int vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -44,6 +70,12 @@ public class Mesh {
         return vbo;
     }
 
+    /**
+     * Construct a new Mesh using data given by the {@link Builder}
+     * @param builder Builder with mesh data
+     * @return Newly constructed {@link Mesh}
+     * @throws Exception if no vertices were specified
+     */
     public static Mesh from(Builder builder) throws Exception {
         if (builder.vertex == null)
             throw new Exception("Must specify vertices.");
@@ -62,10 +94,17 @@ public class Mesh {
         return mesh;
     }
 
+    /**
+     * Create a new {@link Builder} for {@link Mesh}
+     * @return Mesh Builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Builder class for constructing meshes from their constituent parts
+     */
     public static class Builder {
         private float vertex[];
         private int indices;
@@ -73,6 +112,10 @@ public class Mesh {
         private float render[];
         private int renderComponents;
 
+        /**
+         * Specify a vertex array
+         * @param vertex Vertex array
+         */
         public Builder vertex(float vertex[]) {
             this.vertex = vertex;
             this.indices = vertex.length / 3;
@@ -80,10 +123,9 @@ public class Mesh {
         }
 
         /**
-         * 
-         * @param render
+         * Specify a "render" array, could be colour or UV data.
+         * @param render Render array
          * @param components Components used in this array. UV = 2, RGB = 3, RGBA = 4
-         * @return
          */
         public Builder render(float render[], int components) {
             this.render = render;
@@ -91,6 +133,11 @@ public class Mesh {
             return this;
         }
 
+        /**
+         * Consturct a new {@link Mesh} from the data provided in this builder
+         * @return Newly constructed {@link Mesh}
+         * @throws Exception if no vertices were specified
+         */
         public Mesh build() throws Exception {
             return Mesh.from(this);
         }

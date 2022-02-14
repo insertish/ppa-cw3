@@ -9,12 +9,22 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+/**
+ * Wrapper class around a GLFW Window
+ */
 public class Window {
     private final long pointer;
     private int width;
     private int height;
     private @NotNull String title;
 
+    /**
+     * Construct a new Window
+     * @param pointer Pointer to the GLFW Window
+     * @param width Width of the window
+     * @param height Height of the window
+     * @param title Title used for the window
+     */
     private Window(long pointer, final int width, int height, @NotNull String title) {
         this.pointer = pointer;
         this.width = width;
@@ -22,43 +32,61 @@ public class Window {
         this.title = title;
     }
 
-    private long getPointer() {
-        return pointer;
-    }
-
+    /**
+     * Get the width of this window
+     * @return Window width
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Get the height of this window
+     * @return Window height
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Get the title shown on this window
+     * @return Window title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Use GL context for this window
+     */
     public void useContext() {
-        glfwMakeContextCurrent(this.getPointer());
-    }
-
-    public void makeVisible() {
-        glfwShowWindow(this.getPointer());
+        glfwMakeContextCurrent(this.pointer);
     }
 
     /**
-     * Swap the framebuffers.
+     * Make this window visible
+     */
+    public void makeVisible() {
+        glfwShowWindow(this.pointer);
+    }
+
+    /**
+     * Swap the framebuffers
      */
     public void swap() {
-        glfwSwapBuffers(this.getPointer());
-    }
-
-    public boolean shouldClose() {
-        return glfwWindowShouldClose(this.getPointer());
+        glfwSwapBuffers(this.pointer);
     }
 
     /**
-     * Configure an OpenGL context for rendering to.
+     * Check whether the window is requesting close
+     * @return Whether we should close.
+     */
+    public boolean shouldClose() {
+        return glfwWindowShouldClose(this.pointer);
+    }
+
+    /**
+     * Configure an OpenGL context for rendering to
      */
     public void configureGL() {
         this.useContext();
@@ -78,7 +106,7 @@ public class Window {
     }
 
     /**
-     * Tell GLFW what properties the Window should have.
+     * Tell GLFW what properties the Window should have
      */
     public static void setWindowHints() {
         glfwDefaultWindowHints();
@@ -91,7 +119,7 @@ public class Window {
     }
 
     /**
-     * Create a new Window.
+     * Create a new Window
      * @param width Width of the Window
      * @param height Height of the Window
      * @param title Title used for the Window
