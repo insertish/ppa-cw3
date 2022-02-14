@@ -69,6 +69,7 @@ public class Main {
     private float b = 0;
 
     private float pos = -10.0f;
+    private float y = -0.5f;
 
     private void renderLoop() {
         // Clear the framebuffer.
@@ -81,26 +82,33 @@ public class Main {
         // Use shader
         program.use();
 
+        // Setup transformation matrix
+        Matrix4f model = new Matrix4f()
+            .identity()
+            .setTranslation(0.0f, y, 0.0f);
+
         // Setup camera projection
-        Matrix4f m = new Matrix4f()
+        Matrix4f viewProjection = new Matrix4f()
             .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 100.0f)
             .lookAt(5.0f, 5.0f, pos,
                     0.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f);
         
-        program.setUniform("viewProjection", m);
+        program.setUniform("modelViewProjection", model.mul(viewProjection));
 
         // Do some simple colour rotation
         r += 0.01f;
         g += 0.02f;
         b += 0.04f;
         pos += 0.1f;
+        y += 0.01f;
         program.setUniform("deez", new Vector3f(r,g,b));
 
         if (r >= 1) r = 0;
         if (g >= 1) g = 0;
         if (b >= 1) b = 0;
         if (pos >= 10) pos = -10.0f;
+        if (y >= 0.5f) y = -0.5f;
 
         // Draw mesh
         mesh.draw();
