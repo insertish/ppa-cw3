@@ -13,17 +13,27 @@ public class ShaderProgram {
         glUseProgram(this.id);
     }
 
-    public static ShaderProgram create(Shader[] shaders) {
+    public static ShaderProgram create(Shader[] shaders) throws Exception {
         final int id = glCreateProgram();
 
+        // Attach shaders and compile
         for (Shader shader : shaders) {
             glAttachShader(id, shader.getID());
         }
 
         glLinkProgram(id);
 
-        // FIXME: handle failure
+        // Handle link error
+        int[] params = new int[] { 1 };
+        glGetProgramiv(id, GL_LINK_STATUS, params);
 
+        if (params[0] == 0) {
+            String log = glGetProgramInfoLog(id);
+            System.err.println(log);
+            throw new Exception();
+        }
+
+        // After compilation, you can detach shaders
         for (Shader shader : shaders) {
             glDetachShader(id, shader.getID());
         }
