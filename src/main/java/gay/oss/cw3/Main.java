@@ -56,6 +56,10 @@ public class Main {
         }
     }
 
+    private float r = 0;
+    private float g = 0;
+    private float b = 0;
+
     private void renderLoop() {
         // Clear the framebuffer.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -66,6 +70,16 @@ public class Main {
 
         // Use shader
         program.use();
+
+        // Do some simple colour rotation
+        r += 0.01f;
+        g += 0.02f;
+        b += 0.04f;
+        program.setUniformVec3("deez", new float[] { r,g,b });
+
+        if (r >= 1) r = 0;
+        if (g >= 1) g = 0;
+        if (b >= 1) b = 0;
 
         // Draw mesh
         mesh.draw();
