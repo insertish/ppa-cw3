@@ -7,11 +7,9 @@ import java.util.Random;
 
 public class WanderAroundBehaviour extends MovementBehaviour {
     private final Random random = new Random();
-    private final Entity entity;
 
     public WanderAroundBehaviour(Entity entity, double speed) {
-        super(speed);
-        this.entity = entity;
+        super(speed, entity);
     }
 
     @Override

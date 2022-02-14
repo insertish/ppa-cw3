@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 //TODO: sexes
-//TODO: attribute averaging
 public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehaviour {
     private final Random random = new Random();
     private final T entity;
@@ -17,7 +16,7 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
     private int ticksCouldntMove;
 
     public BreedBehaviour(T entity, double speed) {
-        super(speed);
+        super(speed, entity);
         this.entity = entity;
     }
 

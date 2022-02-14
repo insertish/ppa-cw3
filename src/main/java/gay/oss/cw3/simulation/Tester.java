@@ -6,11 +6,13 @@ import java.util.Random;
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
+import gay.oss.cw3.simulation.entity.EntityAttribute;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.entity.Entity;
+import org.jetbrains.annotations.Nullable;
 
 public class Tester {
     public static void main(String[] args) {
@@ -64,10 +66,14 @@ public class Tester {
 
     static class EntityCell extends AbstractBreedableEntity {
         public EntityCell(World world, Coordinate location) {
-            super(world, location, 0, true, 1, 100, 100);
+            super(world, location, 0, true);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
+
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
+            this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
+            this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
         }
 
         @Override
@@ -79,7 +85,9 @@ public class Tester {
 
         @Override
         public Entity createChild(Entity otherParent, Coordinate location) {
-            return new EntityCell(this.getWorld(), location);
+            var result = new EntityCell(this.getWorld(), location);
+            result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
+            return result;
         }
 
         @Override
@@ -90,9 +98,11 @@ public class Tester {
 
     static class Hunter extends Entity {
         public Hunter(World world, Coordinate location) {
-            super(world, location, 0, true, 2);
+            super(world, location, 0, true);
             this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
+
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
         }
 
         @Override

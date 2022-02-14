@@ -19,9 +19,9 @@ public abstract class Entity {
     private boolean alive;
 
     private int health;
-    private final int maxHealth;
 
     protected final EntityBrain brain = new EntityBrain();
+    protected final EntityAttributeMap attributes = new EntityAttributeMap();
 
     /**
      * Creates <em>and automatically spawns</em> an entity.
@@ -32,12 +32,11 @@ public abstract class Entity {
      * @param alive             whether the entity is alive
      * @param maxHealth         the entity's max health
      */
-    public Entity(World world, Coordinate location, int initialAgeTicks, boolean alive, int maxHealth) {
+    public Entity(World world, Coordinate location, int initialAgeTicks, boolean alive) {
         this.world = world;
         this.location = location;
         this.ageTicks = initialAgeTicks;
         this.alive = alive;
-        this.maxHealth = maxHealth;
         this.world.spawn(this);
     }
 
@@ -49,8 +48,8 @@ public abstract class Entity {
      * @param alive             whether the entity is alive
      * @param maxHealth         the entity's max health
      */
-    public Entity(World world, int initialAgeTicks, boolean alive, int maxHealth) {
-        this(world, Coordinate.ORIGIN, initialAgeTicks, alive, maxHealth);
+    public Entity(World world, int initialAgeTicks, boolean alive) {
+        this(world, Coordinate.ORIGIN, initialAgeTicks, alive);
     }
 
     /**
@@ -118,7 +117,7 @@ public abstract class Entity {
      * @return the entity's maximum health
      */
     public int getMaxHealth() {
-        return maxHealth;
+        return (int) Math.round(this.getAttributes().get(EntityAttribute.MAX_HEALTH));
     }
 
     /**
@@ -147,6 +146,13 @@ public abstract class Entity {
      */
     public EntityBrain getBrain() {
         return brain;
+    }
+
+    /**
+     * @return the entity's attribute map
+     */
+    public EntityAttributeMap getAttributes() {
+        return attributes;
     }
 
     /**
