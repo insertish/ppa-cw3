@@ -22,6 +22,7 @@ public abstract class Entity {
     private final int maxHealth;
 
     protected final EntityBrain brain = new EntityBrain();
+    protected final EntityAttributeMap attributes = new EntityAttributeMap();
 
     /**
      * Creates <em>and automatically spawns</em> an entity.
@@ -147,6 +148,13 @@ public abstract class Entity {
      */
     public EntityBrain getBrain() {
         return brain;
+    }
+
+    /**
+     * @return the entity's attribute map
+     */
+    public EntityAttributeMap getAttributes() {
+        return attributes;
     }
 
     /**
