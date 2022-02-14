@@ -7,12 +7,14 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import gay.oss.cw3.simulation.world.Map;
+
 public class World {
-    private Grid<Entity> map;
+    private final Map map;
     private List<Entity> entities;
 
     public World(int width, int depth) {
-        this.map = new Grid<>(width, depth);
+        this.map = new Map(width, depth);
         this.entities = Collections.synchronizedList(new ArrayList<>());
     }
 
@@ -34,12 +36,12 @@ public class World {
     public void spawn(Entity entity) {
         this.entities.add(entity);
 
-        Entity old_entity = this.map.set(entity.getLocation(), entity);
+        Entity old_entity = this.map.getEntities().set(entity.getLocation(), entity);
         if (old_entity != null) old_entity.setAlive(false);
     }
 
     public @Nullable Entity getEntity(int x, int z) {
-        return this.map.get(x, z);
+        return this.map.getEntities().get(x, z);
     }
 
     public int getEntityCount() {
