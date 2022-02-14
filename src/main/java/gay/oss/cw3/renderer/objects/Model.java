@@ -34,7 +34,7 @@ public class Model {
 
         var program = ShaderProgram.getCurrent();
         program.setUniform("model", this.transformation);
-        program.setUniform("modelViewProjection", new Matrix4f(this.transformation).mul(viewProjection));
+        program.setUniform("modelViewProjection", new Matrix4f(viewProjection).mul(this.transformation));
 
         this.mesh.draw();
     }

@@ -1,7 +1,6 @@
 #version 330 core
 
 in vec2 fragUV;
-in float yCoord;
 
 out vec4 color;
 
