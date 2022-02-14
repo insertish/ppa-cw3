@@ -24,16 +24,16 @@ public final class EntityAttributeMap {
     public void set(final EntityAttribute attribute, final double value, final double variation) {
         checkBounds(attribute, value);
 
-        final double modifiedValue = Math.max(attribute.min, Math.min(attribute.max, value + calculateRandomVariation(attribute, variation, random)));
+        final double modifiedValue = Math.max(attribute.min, Math.min(attribute.max, value + calculateRandomVariation(attribute, value, variation, random)));
 
-        this.map.put(attribute, value);
+        this.map.put(attribute, modifiedValue);
     }
 
     public double get(final EntityAttribute attribute) {
         return this.map.getOrDefault(attribute, attribute.defaultValue);
     }
 
-    public void inheritFromParents(final EntityAttributeMap parentA, final EntityAttributeMap parentB, final double randomness, final Random random) {
+    public void inheritFromParents(final EntityAttributeMap parentA, final EntityAttributeMap parentB, final double randomness) {
         final Map<EntityAttribute, Double> results = new EnumMap<>(EntityAttribute.class);
 
         for (EntityAttribute attribute : EntityAttribute.values()) {
@@ -41,19 +41,20 @@ public final class EntityAttributeMap {
             final Double valueB = parentB.map.get(attribute);
 
             if (valueA == null && valueB != null) {
-                results.put(attribute, valueB + calculateRandomVariation(attribute, randomness, random));
+                results.put(attribute, valueB + calculateRandomVariation(attribute, valueB, randomness, random));
             } else if (valueB == null && valueA != null) {
-                results.put(attribute, valueA + calculateRandomVariation(attribute, randomness, random));
+                results.put(attribute, valueA + calculateRandomVariation(attribute, valueA, randomness, random));
             } else if (valueA != null) {
-                results.put(attribute, ((valueA+valueB)/2.0) + calculateRandomVariation(attribute, randomness, random));
+                final double average = ((valueA+valueB)/2.0);
+                results.put(attribute, average + calculateRandomVariation(attribute, average, randomness, random));
             }
         }
 
         this.map.putAll(results);
     }
 
-    private static double calculateRandomVariation(final EntityAttribute attribute, final double randomness, final Random random) {
-        final double range = attribute.max-attribute.min;
+    private static double calculateRandomVariation(final EntityAttribute attribute, final double currentValue, final double randomness, final Random random) {
+        final double range = Math.abs(1.0/((Math.abs(currentValue - attribute.defaultValue))/attribute.defaultValue))*attribute.variation;
 
         final double variation = random.nextGaussian() * randomness;
 

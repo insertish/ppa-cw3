@@ -106,7 +106,9 @@ public class Tester {
 
         @Override
         public Entity createChild(Entity otherParent, Coordinate location) {
-            return new EntityCell(this.getWorld(), location);
+            var result = new EntityCell(this.getWorld(), location);
+            result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
+            return result;
         }
 
         @Override
