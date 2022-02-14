@@ -140,6 +140,31 @@ public class ShaderProgram {
         return new ShaderProgram(id);
     }
 
+    /**
+     * Short-hand for creating a shader program from vertex and fragment shaders in resources.
+     * Also prefixes /shaders/ and suffixes .glsl to the path given.
+     * @param vertex Vertex shader path
+     * @param fragment Fragment shader path
+     * @return Newly constructed {@link ShaderProgram}
+     * @throws Exception if the shaders fail to compile or the shader program fails to link
+     */
+    public static ShaderProgram fromResources(String vertex, String fragment) throws Exception {
+        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + vertex + ".glsl").readAllBytes()));
+        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + fragment + ".glsl").readAllBytes()));
+
+        return ShaderProgram.create(new Shader[] { vertexShader, fragShader });
+    }
+
+    /**
+     * Short-hand for {@link fromResources} which automatically applies frag and vert suffixes.
+     * @param name Name of the shader path
+     * @return Newly constructed {@link ShaderProgram}
+     * @throws Exception if the shaders fail to compile or the shader program fails to link
+     */
+    public static ShaderProgram fromName(String name) throws Exception {
+        return ShaderProgram.fromResources(name + ".vert", name + ".frag");
+    }
+
     public static ShaderProgram getCurrent() {
         return ShaderProgram.CURRENT_SHADER;
     }

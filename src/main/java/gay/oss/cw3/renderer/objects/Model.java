@@ -38,4 +38,8 @@ public class Model {
 
         this.mesh.draw();
     }
+
+    public void destroyMesh() {
+        this.mesh.destroy();
+    }
 }

@@ -2,6 +2,7 @@ package gay.oss.cw3;
 
 import gay.oss.cw3.renderer.*;
 import gay.oss.cw3.renderer.objects.Material;
+import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Shader;
@@ -17,9 +18,11 @@ import org.joml.Matrix4f;
 public class Main {
     private Window window;
     
-    private Material material;
+    private Material terrainMaterial;
     private Model model;
     private Map map;
+
+    private Model amongUsModel;
 
     private void init() throws Exception {
         Util.initialiseLWJGL();
@@ -34,14 +37,8 @@ public class Main {
             if (action == GLFW_PRESS) onKeyPress(key, modifiers);
         });
 
-        // Create a shader program
-        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(Main.class.getResourceAsStream("/shaders/vertex.glsl").readAllBytes()));
-        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(Main.class.getResourceAsStream("/shaders/fragment.glsl").readAllBytes()));
-
-        var program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
-
-        // Create a square
-        /*float vertex[] = {
+        // Create a spinning among us square
+        float vertex[] = {
             -0.8f, -0.8f, 0.0f, // BL
             0.8f, -0.8f, 0.0f, // BR
             0.8f, 0.8f, 0.0f, // TR
@@ -66,18 +63,27 @@ public class Main {
             .render(uv, 2)
             .build();
         
-            
-            model = new Model(mesh, material);*/
-            
-        this.material = new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")));
-        this.map = new Map(64, 64);
-        this.generateMesh();
+        var material = new Material(
+            ShaderProgram.fromName("texturedObject"),
+            new Texture(Main.class.getResourceAsStream("/textures/amogus.png"))
+        );
+
+        amongUsModel = new Model(mesh, material);
+        amongUsModel.getTransformation()
+            .translation(32.0f, 15.0f, 32.0f);
+        
+        // Generate the terrain
+        var terrainProgram = ShaderProgram.fromName("terrain");
+        this.terrainMaterial = new Material(terrainProgram);
+        this.generateMap();
     }
     
-    private void generateMesh() {
+    private void generateMap() {
+        this.map = new Map(64, 64);
         map.generate();
+        if (model != null) model.destroyMesh();
         var mesh = MeshUtil.generateMeshFromHeightmap(map.getHeightMap());
-        model = new Model(mesh, material);
+        model = new Model(mesh, terrainMaterial);
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -103,15 +109,22 @@ public class Main {
             .lookAt(-32.0f, 60.0f, 32.0f,
                     32.0f, 0.0f, 32.0f,
                     0.0f, 1.0f, 0.0f);
+        
+        // Rotate Among Us
+        amongUsModel.getTransformation()
+            .rotate(1, 0, 1, 0);
             
-        i += 1;
-        if (i > 20) {
+        /*i += 1;
+        if (i > 10) {
             i = 0;
             this.generateMesh();
-        }
+        }*/
 
         // Draw model
         this.model.draw(viewProjection);
+
+        // Draw Among Us
+        this.amongUsModel.draw(viewProjection);
 
         // Swap framebuffers.
         window.swap();

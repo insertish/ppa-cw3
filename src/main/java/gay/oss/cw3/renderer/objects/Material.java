@@ -12,13 +12,21 @@ public class Material {
     private final @Nullable Texture texture;
 
     /**
-     * Creates a new material.
-     * @param shaderProgram the shader program to use
-     * @param texture       the texture to use
+     * Creates a new material
+     * @param shaderProgram Shader program to use
+     * @param texture Texture to use
      */
     public Material(ShaderProgram shaderProgram, @Nullable Texture texture) {
         this.shaderProgram = shaderProgram;
         this.texture = texture;
+    }
+
+    /**
+     * Creates a new material
+     * @param shaderProgram Shader program to use
+     */
+    public Material(ShaderProgram shaderProgram) {
+        this(shaderProgram, null);
     }
 
     /**
