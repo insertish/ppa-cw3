@@ -7,6 +7,7 @@ import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Breedable;
+import gay.oss.cw3.simulation.entity.EntityAttribute;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;

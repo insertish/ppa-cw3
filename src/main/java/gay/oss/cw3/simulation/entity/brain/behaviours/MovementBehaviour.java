@@ -1,16 +1,20 @@
 package gay.oss.cw3.simulation.entity.brain.behaviours;
 
 import gay.oss.cw3.simulation.Coordinate;
+import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.entity.EntityAttribute;
 import gay.oss.cw3.simulation.entity.brain.Behaviour;
 
 import java.util.Random;
 
 public abstract class MovementBehaviour implements Behaviour {
-    protected double speed;
-    protected Random random = new Random();
+    protected final double speed;
+    protected final Entity entity;
+    protected final Random random = new Random();
 
-    protected MovementBehaviour(double speed) {
+    protected MovementBehaviour(double speed, Entity entity) {
         this.speed = speed;
+        this.entity = entity;
     }
 
     protected Coordinate calculateMovementInDirection(final Coordinate direction) {
@@ -20,6 +24,6 @@ public abstract class MovementBehaviour implements Behaviour {
         return new Coordinate(
                 Math.round(chanceToMoveZ == 0 || this.random.nextDouble() < chanceToMoveX ? Math.signum(direction.x) : 0f),
                 Math.round(chanceToMoveX == 0 || this.random.nextDouble() < chanceToMoveZ ? Math.signum(direction.z) : 0f)
-        ).multiply(Math.round(this.speed * random.nextDouble()));
+        ).multiply(Math.round(this.speed * this.entity.getAttributes().get(EntityAttribute.MOVEMENT_SPEED) * random.nextDouble()));
     }
 }

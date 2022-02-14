@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class HuntBehaviour extends MovementBehaviour {
     private final Random random = new Random();
-    private final Entity entity;
     private final Class<? extends Entity>[] targetClasses;
 
     private Entity target;
@@ -14,8 +13,7 @@ public class HuntBehaviour extends MovementBehaviour {
 
     @SafeVarargs
     public HuntBehaviour(Entity entity, double speed, Class<? extends Entity>... targetClasses) {
-        super(speed);
-        this.entity = entity;
+        super(speed, entity);
         this.targetClasses = targetClasses;
     }
 

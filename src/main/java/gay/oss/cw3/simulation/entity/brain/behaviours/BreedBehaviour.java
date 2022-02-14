@@ -17,7 +17,7 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
     private int ticksCouldntMove;
 
     public BreedBehaviour(T entity, double speed) {
-        super(speed);
+        super(speed, entity);
         this.entity = entity;
     }
 

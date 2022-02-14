@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class FleeBehaviour extends MovementBehaviour {
     private final Random random = new Random();
-    private final Entity entity;
     private final int fearDistance;
     private final Class<? extends Entity>[] fearedClasses;
 
@@ -15,8 +14,7 @@ public class FleeBehaviour extends MovementBehaviour {
 
     @SafeVarargs
     public FleeBehaviour(Entity entity, double speed, int fearDistance, Class<? extends Entity>... fearedClasses) {
-        super(speed);
-        this.entity = entity;
+        super(speed, entity);
         this.fearDistance = fearDistance;
         this.fearedClasses = fearedClasses;
     }
