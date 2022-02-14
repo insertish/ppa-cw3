@@ -1,19 +1,23 @@
 package gay.oss.cw3;
 
-import gay.oss.cw3.renderer.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+
+import org.joml.Matrix4f;
+
+import gay.oss.cw3.renderer.Util;
+import gay.oss.cw3.renderer.Window;
 import gay.oss.cw3.renderer.objects.Material;
 import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
-import gay.oss.cw3.renderer.shaders.Shader;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.renderer.simulation.MeshUtil;
 import gay.oss.cw3.simulation.world.Map;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL20.*;
-
-import org.joml.Matrix4f;
 
 public class Main {
     private Window window;
@@ -28,7 +32,7 @@ public class Main {
         Util.initialiseLWJGL();
 
         // Configure Window
-        window = Window.create(400, 200, "League of Legends");
+        window = Window.create(1280, 720, "League of Legends");
         window.configureGL();
         window.makeVisible();
 
@@ -70,7 +74,8 @@ public class Main {
 
         amongUsModel = new Model(mesh, material);
         amongUsModel.getTransformation()
-            .translation(32.0f, 15.0f, 32.0f);
+            .translate(32.0f, 20.0f, 32.0f)
+            .scale(5.0f, 5.0f, 5.0f);
         
         // Generate the terrain
         var terrainProgram = ShaderProgram.fromName("terrain");
@@ -106,19 +111,21 @@ public class Main {
         // Setup camera projection
         Matrix4f viewProjection = new Matrix4f()
             .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 1000.0f)
-            .lookAt(-32.0f, 60.0f, 32.0f,
+            .lookAt(0.0f, 60.0f, 0.0f,
                     32.0f, 0.0f, 32.0f,
+                    // 32.0f, 2.0f, 32.0f,
+                    // 0.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f);
         
         // Rotate Among Us
         amongUsModel.getTransformation()
-            .rotate(1, 0, 1, 0);
+            .rotate(0.2f, 0, 1, 0);
             
-        /*i += 1;
+        i += 1;
         if (i > 10) {
             i = 0;
-            this.generateMesh();
-        }*/
+            this.generateMap();
+        }
 
         // Draw model
         this.model.draw(viewProjection);
