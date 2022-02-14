@@ -7,6 +7,7 @@ import java.util.List;
 
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.DayCycle;
+import gay.oss.cw3.simulation.world.Season;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +26,7 @@ public class World {
     public void tick() {
         synchronized (entities) {
             time++;
+            System.out.println(this.getSeason());
             Iterator<Entity> iter = entities.iterator();
             while (iter.hasNext()) {
                 Entity entity = iter.next();
@@ -71,13 +73,11 @@ public class World {
     }
 
     public DayCycle getDayCycle() {
-        switch ((this.time / 100) % 4) {
-            default:
-            case 0: return DayCycle.MORNING;
-            case 1: return DayCycle.AFTERNOON;
-            case 2: return DayCycle.EVENING;
-            case 3: return DayCycle.NIGHT;
-        }
+        return DayCycle.fromTick(this.time);
+    }
+
+    public Season getSeason() {
+        return Season.fromTick(this.time);
     }
 
     public boolean isInBounds(Coordinate location) {
