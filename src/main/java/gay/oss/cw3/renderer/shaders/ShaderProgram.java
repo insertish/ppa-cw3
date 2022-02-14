@@ -1,4 +1,4 @@
-package gay.oss.cw3.renderer;
+package gay.oss.cw3.renderer.shaders;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -14,6 +14,8 @@ import org.lwjgl.system.MemoryStack;
  * Wrapper class around OpenGL shader program
  */
 public class ShaderProgram {
+    private static ShaderProgram CURRENT_SHADER;
+
     private final int id;
     private final Map<String, Integer> uniformLocations;
 
@@ -31,42 +33,7 @@ public class ShaderProgram {
      */
     public void use() {
         glUseProgram(this.id);
-    }
-
-    /**
-     * Create a new shader program from the provided shaders
-     * @param shaders Array of shaders
-     * @return Newly constructed {@link ShaderProgram}
-     * @throws Exception if the shader program fails to compile
-     */
-    public static ShaderProgram create(Shader[] shaders) throws Exception {
-        final int id = glCreateProgram();
-
-        // Attach shaders and compile
-        for (Shader shader : shaders) {
-            glAttachShader(id, shader.getID());
-        }
-
-        glLinkProgram(id);
-
-        // Handle link error
-        int[] params = new int[] { 1 };
-        glGetProgramiv(id, GL_LINK_STATUS, params);
-
-        if (params[0] == 0) {
-            String log = glGetProgramInfoLog(id);
-            System.err.println(log);
-
-            throw new Exception("Failed to link shader program!");
-        }
-
-        // After compilation, you can detach shaders
-        for (Shader shader : shaders) {
-            glDetachShader(id, shader.getID());
-            shader.delete();
-        }
-
-        return new ShaderProgram(id);
+        CURRENT_SHADER = this;
     }
 
     /**
@@ -135,5 +102,45 @@ public class ShaderProgram {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             glUniformMatrix4fv(this.getUniformLocation(key), false, matrix.get(stack.mallocFloat(16)));
         }
+    }
+
+    /**
+     * Create a new shader program from the provided shaders
+     * @param shaders Array of shaders
+     * @return Newly constructed {@link ShaderProgram}
+     * @throws Exception if the shader program fails to compile
+     */
+    public static ShaderProgram create(Shader[] shaders) throws Exception {
+        final int id = glCreateProgram();
+
+        // Attach shaders and compile
+        for (Shader shader : shaders) {
+            glAttachShader(id, shader.getID());
+        }
+
+        glLinkProgram(id);
+
+        // Handle link error
+        int[] params = new int[] { 1 };
+        glGetProgramiv(id, GL_LINK_STATUS, params);
+
+        if (params[0] == 0) {
+            String log = glGetProgramInfoLog(id);
+            System.err.println(log);
+
+            throw new Exception("Failed to link shader program!");
+        }
+
+        // After compilation, you can detach shaders
+        for (Shader shader : shaders) {
+            glDetachShader(id, shader.getID());
+            shader.delete();
+        }
+
+        return new ShaderProgram(id);
+    }
+
+    public static ShaderProgram getCurrent() {
+        return ShaderProgram.CURRENT_SHADER;
     }
 }

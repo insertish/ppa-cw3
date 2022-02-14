@@ -1,6 +1,4 @@
-package gay.oss.cw3.renderer;
-
-import org.jetbrains.annotations.Nullable;
+package gay.oss.cw3.renderer.objects;
 
 import static org.lwjgl.opengl.GL30.*;
 
@@ -17,17 +15,14 @@ public class Mesh {
     
     private final List<Integer> vbo;
 
-    private final @Nullable Material material;
-
     /**
      * Construct a new Mesh
      * @param vao Vertex Array Object ID
      * @param vertices Number of vertices in this mesh
      */
-    private Mesh(int vao, int vertices, @Nullable Material material) {
+    private Mesh(int vao, int vertices) {
         this.vao = vao;
         this.vertices = vertices;
-        this.material = material;
 
         this.vbo = new ArrayList<>();
     }
@@ -36,10 +31,6 @@ public class Mesh {
      * Bind Vertex Array Object for this mesh.
      */
     public void bind() {
-        if (this.material != null) {
-            this.material.use();
-        }
-
         glBindVertexArray(this.vao);
     }
 
@@ -90,7 +81,7 @@ public class Mesh {
             throw new Exception("Must specify vertices.");
 
         int vao = glGenVertexArrays();
-        final var mesh = new Mesh(vao, builder.indices, builder.material);
+        final var mesh = new Mesh(vao, builder.indices);
 
         mesh.bind();
         mesh.bindArray(0, 3, builder.vertex);
@@ -120,8 +111,6 @@ public class Mesh {
 
         private float[] render;
         private int renderComponents;
-        
-        private @Nullable Material material = null;
 
         /**
          * Specify a vertex array
@@ -141,15 +130,6 @@ public class Mesh {
         public Builder render(float[] render, int components) {
             this.render = render;
             this.renderComponents = components;
-            return this;
-        }
-
-        /**
-         * Sets this mesh's material (optional).
-         * @param material Materila to set for this Mesh
-         */
-        public Builder material(Material material) {
-            this.material = material;
             return this;
         }
 
