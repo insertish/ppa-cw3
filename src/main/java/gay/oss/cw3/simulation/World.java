@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.DayCycle;
+
 import org.jetbrains.annotations.Nullable;
 
 public class World {
@@ -66,6 +68,16 @@ public class World {
 
     public int getTime() {
         return time;
+    }
+
+    public DayCycle getDayCycle() {
+        switch ((this.time / 100) % 4) {
+            default:
+            case 0: return DayCycle.MORNING;
+            case 1: return DayCycle.AFTERNOON;
+            case 2: return DayCycle.EVENING;
+            case 3: return DayCycle.NIGHT;
+        }
     }
 
     public boolean isInBounds(Coordinate location) {
