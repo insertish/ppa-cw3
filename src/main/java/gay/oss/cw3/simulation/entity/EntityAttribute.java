@@ -6,6 +6,7 @@ public enum EntityAttribute {
     MINIMUM_BREEDING_AGE(10, 0, Double.POSITIVE_INFINITY, 10),
     TICKS_BETWEEN_BREEDING_ATTEMPTS(10, 0, Double.POSITIVE_INFINITY, 10),
     MAX_FULLNESS(10, 0, Double.POSITIVE_INFINITY, 3),
+    FULLNESS_TO_BREED(2.0, 1.0, 10.0, 0.2)
     ;
 
     final double defaultValue;

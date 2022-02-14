@@ -22,6 +22,10 @@ public class HuntBehaviour extends MovementBehaviour {
         this.target = null;
         this.ticksCouldntMove = 0;
 
+        if (this.entity.getFullness() >= this.entity.getMaxFullness()) {
+            return false;
+        }
+
         var potentialTargets = this.entity.getAdjacentEntities(5);
         if (potentialTargets.isEmpty()) {
             return false;
@@ -53,6 +57,7 @@ public class HuntBehaviour extends MovementBehaviour {
             this.ticksCouldntMove = 0;
             this.target.setAlive(false);
             this.entity.setLocation(this.target.getLocation());
+            this.entity.addFullness(this.target.getFullness()*0.7);
             return;
         }
 
@@ -69,6 +74,7 @@ public class HuntBehaviour extends MovementBehaviour {
                 this.ticksCouldntMove = 0;
                 this.target.setAlive(false);
                 this.entity.setLocation(newLoc);
+                this.entity.addFullness(this.target.getFullness()*0.7);
             } else {
                 this.ticksCouldntMove++;
             }

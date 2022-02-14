@@ -74,12 +74,17 @@ public class Tester {
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
             this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
             this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+            this.setFullness(this.getMaxFullness());
         }
 
         @Override
         public void tick() {
             if (this.isAlive()) {
                 this.getBrain().tick();
+                this.removeFullness(0.01);
+                if (this.getFullness() <= 0) {
+                    this.addHealth(-1);
+                }
             }
         }
 
@@ -103,12 +108,17 @@ public class Tester {
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
 
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
+            this.setFullness(this.getMaxFullness());
         }
 
         @Override
         public void tick() {
             if (this.isAlive()) {
                 this.getBrain().tick();
+                this.removeFullness(0.01);
+                if (this.getFullness() <= 0) {
+                    this.addHealth(-1);
+                }
             }
         }
     }

@@ -16,12 +16,14 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
 
     @Override
     public boolean canBreed() {
-        return this.getAgeTicks() >= this.getAttributes().get(EntityAttribute.MINIMUM_BREEDING_AGE)
+        return this.getFullness() >= this.attributes.get(EntityAttribute.FULLNESS_TO_BREED)
+                && this.getAgeTicks() >= this.getAttributes().get(EntityAttribute.MINIMUM_BREEDING_AGE)
                 && this.getAgeTicks() >= this.lastBreedAttempt + this.getAttributes().get(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS);
     }
 
     @Override
     public void startBreedingAttempt() {
         this.lastBreedAttempt = this.getAgeTicks();
+        this.removeFullness(this.attributes.get(EntityAttribute.FULLNESS_TO_BREED));
     }
 }
