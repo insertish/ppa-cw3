@@ -72,7 +72,7 @@ public class Map {
         FastNoiseLite heightNoise = new FastNoiseLite(seed);
         heightNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
         //heightNoise.SetFrequency(0.025f);
-        heightNoise.SetFrequency(0.08f);
+        heightNoise.SetFrequency(0.05f);
         heightNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
         heightNoise.SetFractalOctaves(4);
         heightNoise.SetFractalLacunarity(0.60f);

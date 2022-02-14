@@ -2,7 +2,6 @@ package gay.oss.cw3;
 
 import gay.oss.cw3.renderer.*;
 import gay.oss.cw3.renderer.objects.Material;
-import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Shader;
@@ -14,11 +13,13 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 public class Main {
     private Window window;
+    
+    private Material material;
     private Model model;
+    private Map map;
 
     private void init() throws Exception {
         Util.initialiseLWJGL();
@@ -40,7 +41,7 @@ public class Main {
         var program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
         // Create a square
-        float vertex[] = {
+        /*float vertex[] = {
             -0.8f, -0.8f, 0.0f, // BL
             0.8f, -0.8f, 0.0f, // BR
             0.8f, 0.8f, 0.0f, // TR
@@ -65,14 +66,18 @@ public class Main {
             .render(uv, 2)
             .build();
         
-        var material = new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")));
-
-        model = new Model(mesh, material);
-
-        var map = new Map(64, 64);
+            
+            model = new Model(mesh, material);*/
+            
+        this.material = new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")));
+        this.map = new Map(64, 64);
+        this.generateMesh();
+    }
+    
+    private void generateMesh() {
         map.generate();
-        var mesh2 = MeshUtil.generateMeshFromHeightmap(map.getHeightMap());
-        model = new Model(mesh2, material);
+        var mesh = MeshUtil.generateMeshFromHeightmap(map.getHeightMap());
+        model = new Model(mesh, material);
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -81,6 +86,8 @@ public class Main {
             System.exit(0);
         }
     }
+
+    private static int i = 0;
 
     private void renderLoop() {
         // Clear the framebuffer.
@@ -93,10 +100,16 @@ public class Main {
         // Setup camera projection
         Matrix4f viewProjection = new Matrix4f()
             .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 1000.0f)
-            .lookAt(-32.0f, 80.0f, 32.0f,
+            .lookAt(-32.0f, 60.0f, 32.0f,
                     32.0f, 0.0f, 32.0f,
                     0.0f, 1.0f, 0.0f);
             
+        i += 1;
+        if (i > 20) {
+            i = 0;
+            this.generateMesh();
+        }
+
         // Draw model
         this.model.draw(viewProjection);
 
