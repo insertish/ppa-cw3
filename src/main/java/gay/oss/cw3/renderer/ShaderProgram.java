@@ -63,6 +63,7 @@ public class ShaderProgram {
         // After compilation, you can detach shaders
         for (Shader shader : shaders) {
             glDetachShader(id, shader.getID());
+            shader.delete();
         }
 
         return new ShaderProgram(id);

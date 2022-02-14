@@ -25,6 +25,13 @@ public class Shader {
     }
 
     /**
+     * Delete this shader
+     */
+    public void delete() {
+        glDeleteShader(this.id);
+    }
+
+    /**
      * Create a new shader from the provided source code
      * @param type Type of shader to be created. One of: {@link org.lwjgl.opengl.GL20C#GL_VERTEX_SHADER VERTEX_SHADER} {@link org.lwjgl.opengl.GL20C#GL_FRAGMENT_SHADER FRAGMENT_SHADER} {@link org.lwjgl.opengl.GL32#GL_GEOMETRY_SHADER GEOMETRY_SHADER} {@link org.lwjgl.opengl.GL40#GL_TESS_CONTROL_SHADER TESS_CONTROL_SHADER} {@link org.lwjgl.opengl.GL40#GL_TESS_EVALUATION_SHADER TESS_EVALUATION_SHADER}
      * @param source GLSL source code

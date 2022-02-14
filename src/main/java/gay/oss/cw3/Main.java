@@ -1,10 +1,6 @@
 package gay.oss.cw3;
 
-import gay.oss.cw3.renderer.Mesh;
-import gay.oss.cw3.renderer.Shader;
-import gay.oss.cw3.renderer.ShaderProgram;
-import gay.oss.cw3.renderer.Util;
-import gay.oss.cw3.renderer.Window;
+import gay.oss.cw3.renderer.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -14,10 +10,11 @@ import org.joml.Vector3f;
 
 public class Main {
     private Window window;
-    private ShaderProgram program;
     private Mesh mesh;
 
-    private void init() throws IllegalStateException, Exception {
+    private ShaderProgram program;
+
+    private void init() throws Exception {
         Util.initialiseLWJGL();
 
         // Configure Window
@@ -36,20 +33,28 @@ public class Main {
 
         program = ShaderProgram.create(new Shader[] { vertexShader, fragShader });
 
-        // Create a triangle
+        // Create a square
         float vertex[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
+            -0.8f, -0.8f, 0.0f, // BL
+            0.8f, -0.8f, 0.0f, // BR
+            0.8f, 0.8f, 0.0f, // TR
+
+            -0.8f, -0.8f, 0.0f, // BL
+            0.8f, 0.8f, 0.0f, // TR
+            -0.8f, 0.8f, 0.0f, // TL
         };
 
-        float uv[] = {
-            0.0f, 0.0f,
-            1.0f, 0.0f,
+        float[] uv = {
             0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
         };
 
-        mesh = Mesh.builder().vertex(vertex).render(uv, 2).build();
+        mesh = Mesh.builder().vertex(vertex).material(new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")) )).render(uv, 2).build();
     }
 
     private void onKeyPress(int key, int modifiers) {

@@ -1,5 +1,7 @@
 package gay.oss.cw3.renderer;
 
+import org.jetbrains.annotations.Nullable;
+
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
@@ -13,16 +15,19 @@ public class Mesh {
     private final int vao;
     private final int vertices;
     
-    private List<Integer> vbo;
+    private final List<Integer> vbo;
+
+    private final @Nullable Material material;
 
     /**
      * Construct a new Mesh
      * @param vao Vertex Array Object ID
      * @param vertices Number of vertices in this mesh
      */
-    private Mesh(int vao, int vertices) {
+    private Mesh(int vao, int vertices, @Nullable Material material) {
         this.vao = vao;
         this.vertices = vertices;
+        this.material = material;
 
         this.vbo = new ArrayList<>();
     }
@@ -31,6 +36,10 @@ public class Mesh {
      * Bind Vertex Array Object for this mesh.
      */
     public void bind() {
+        if (this.material != null) {
+            this.material.use();
+        }
+
         glBindVertexArray(this.vao);
     }
 
@@ -57,7 +66,7 @@ public class Mesh {
      * @param data Float data array.
      * @return Vertex Buffer Object ID
      */
-    private int bindArray(int attribute, int components, float data[]) {
+    private int bindArray(int attribute, int components, float[] data) {
         int vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
@@ -81,7 +90,7 @@ public class Mesh {
             throw new Exception("Must specify vertices.");
 
         int vao = glGenVertexArrays();
-        final var mesh = new Mesh(vao, builder.indices);
+        final var mesh = new Mesh(vao, builder.indices, builder.material);
 
         mesh.bind();
         mesh.bindArray(0, 3, builder.vertex);
@@ -106,11 +115,13 @@ public class Mesh {
      * Builder class for constructing meshes from their constituent parts
      */
     public static class Builder {
-        private float vertex[];
+        private float[] vertex;
         private int indices;
 
-        private float render[];
+        private float[] render;
         private int renderComponents;
+        
+        private @Nullable Material material = null;
 
         /**
          * Specify a vertex array
@@ -127,9 +138,18 @@ public class Mesh {
          * @param render Render array
          * @param components Components used in this array. UV = 2, RGB = 3, RGBA = 4
          */
-        public Builder render(float render[], int components) {
+        public Builder render(float[] render, int components) {
             this.render = render;
             this.renderComponents = components;
+            return this;
+        }
+
+        /**
+         * Sets this mesh's material (optional).
+         * @param material Materila to set for this Mesh
+         */
+        public Builder material(Material material) {
+            this.material = material;
             return this;
         }
 
