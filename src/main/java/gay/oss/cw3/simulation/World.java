@@ -28,7 +28,6 @@ public class World {
     public void tick() {
         synchronized (entities) {
             time++;
-            System.out.println(this.getSeason());
             Iterator<Entity> iter = entities.iterator();
             while (iter.hasNext()) {
                 Entity entity = iter.next();

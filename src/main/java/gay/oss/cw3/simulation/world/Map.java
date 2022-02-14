@@ -1,10 +1,8 @@
 package gay.oss.cw3.simulation.world;
 
 import java.util.Random;
-import java.awt.Color;
 
 import gay.oss.cw3.lib.FastNoiseLite;
-import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.simulation.Grid;
 import gay.oss.cw3.simulation.entity.Entity;
 
@@ -31,6 +29,10 @@ public class Map {
 
     public Grid<Entity> getEntities() {
         return this.entities;
+    }
+
+    public Grid<BiomeType> getBiomeMap() {
+        return this.biomeMap;
     }
 
     public float getHeight(int x, int z) {
@@ -81,32 +83,5 @@ public class Map {
 
     public void generate() {
         this.generate(new Random().nextInt());
-    }
-
-    public static void main(String[] args) {
-        int SIZE=256;
-
-        var map = new Map(SIZE, SIZE);
-
-        var view = new SimulatorViewButCursed(SIZE, SIZE);
-        var f = new Field(SIZE, SIZE);
-
-        view.setColor(BiomeType.Plains, new Color(0, 255, 0));
-        view.setColor(BiomeType.Forest, new Color(0, 255, 255));
-        view.setColor(BiomeType.Jungle, new Color(255, 255, 0));
-
-        for (;;) {
-            map.generate();
-
-            for (int x=0;x<SIZE;x++) {
-                for (int y=0;y<SIZE;y++) {
-                    f.place(map.biomeMap.get(x, y), x, y);
-                }
-            }
-
-            view.showStatus(0, f);
-
-            try {Thread.sleep(1000);}catch(Exception ex){System.exit(0);}
-        }
     }
 }

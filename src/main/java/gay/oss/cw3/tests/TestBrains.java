@@ -1,10 +1,12 @@
-package gay.oss.cw3.simulation;
+package gay.oss.cw3.tests;
 
 import java.awt.*;
 import java.util.Random;
 
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
+import gay.oss.cw3.simulation.Coordinate;
+import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
@@ -12,9 +14,8 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.entity.Entity;
-import org.jetbrains.annotations.Nullable;
 
-public class Tester {
+public class TestBrains {
     public static void main(String[] args) {
         World world = new World(128, 128);
 
