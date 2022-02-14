@@ -55,7 +55,6 @@ public class HuntBehaviour extends MovementBehaviour {
             this.ticksCouldntMove = 0;
             this.target.setAlive(false);
             this.entity.setLocation(this.target.getLocation());
-            System.out.println("gotcha A");
             return;
         }
 
@@ -72,7 +71,6 @@ public class HuntBehaviour extends MovementBehaviour {
                 this.ticksCouldntMove = 0;
                 this.target.setAlive(false);
                 this.entity.setLocation(newLoc);
-                System.out.println("gotcha B");
             } else {
                 this.ticksCouldntMove++;
             }
