@@ -6,7 +6,6 @@ import java.util.Random;
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
-import gay.oss.cw3.simulation.entity.Breedable;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
@@ -60,27 +59,6 @@ public class Tester {
                 e.printStackTrace();
             }
         }
-
-        /*FastNoiseLite noise = new FastNoiseLite();
-        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-
-        float[] data = new float[128 * 128];
-        int index = 0;
-
-        var view = new SimulatorView(128, 128);
-        var f = new Field(128, 128);
-
-        for (int x=0;x<128;x++) {
-            for (int y=0;y<128;y++) {
-                data[index++] = noise.GetNoise(x, y);
-
-                if (data[index-1] > 0) {
-                    f.place("", x, y);
-                }
-            }
-        }
-
-        view.showStatus(0, f);*/
     }
 
 

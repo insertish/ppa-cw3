@@ -8,14 +8,16 @@ import java.util.List;
 import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
+import gay.oss.cw3.simulation.world.Map;
+
 public class World {
-    private final Grid<Entity> map;
+    private final Map map;
     private final List<Entity> entities;
     private final List<Entity> entitiesToSpawn;
     private int time = 0;
 
     public World(int width, int depth) {
-        this.map = new Grid<>(width, depth);
+        this.map = new Map(width, depth);
         this.entities = Collections.synchronizedList(new ArrayList<>());
         this.entitiesToSpawn = Collections.synchronizedList(new ArrayList<>());
     }
@@ -48,12 +50,12 @@ public class World {
     private void spawnInternal(Entity entity) {
         this.entities.add(entity);
 
-        Entity old_entity = this.map.set(entity.getLocation(), entity);
+        Entity old_entity = this.map.getEntities().set(entity.getLocation(), entity);
         if (old_entity != null) old_entity.setAlive(false);
     }
 
     public @Nullable Entity getEntity(int x, int z) {
-        return this.map.get(x, z);
+        return this.map.getEntities().get(x, z);
     }
 
     public int getEntityCount() {
@@ -74,10 +76,10 @@ public class World {
 
     public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
         final @Nullable Entity previous;
-        if ((previous = this.map.set(from, null)) != entity) {
+        if ((previous = this.map.getEntities().set(from, null)) != entity) {
             throw new IllegalStateException(String.format("Attempted to move %1$s from %2$s to %3$s but it is not at %2$s, instead found %4$s!", entity, from, to, previous));
         }
 
-        this.map.set(to, entity);
+        this.map.getEntities().set(to, entity);
     }
 }
