@@ -12,6 +12,7 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.entity.Entity;
+import org.jetbrains.annotations.Nullable;
 
 public class Tester {
     public static void main(String[] args) {
@@ -86,12 +87,14 @@ public class Tester {
 
     static class EntityCell extends AbstractBreedableEntity {
         public EntityCell(World world, Coordinate location) {
-            super(world, location, 0, true, 100, 100);
+            super(world, location, 0, true);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
 
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
+            this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
+            this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
         }
 
         @Override

@@ -4,27 +4,20 @@ import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.World;
 
 public abstract class AbstractBreedableEntity extends Entity implements Breedable {
-    private final int minBreedingAge;
-    private final int ticksBetweenBreedAttempts;
-
     private int lastBreedAttempt;
 
-    public AbstractBreedableEntity(World world, Coordinate location, int initialAgeTicks, boolean alive, int minBreedingAge, int ticksBetweenBreedAttempts) {
+    public AbstractBreedableEntity(World world, Coordinate location, int initialAgeTicks, boolean alive) {
         super(world, location, initialAgeTicks, alive);
-        this.minBreedingAge = minBreedingAge;
-        this.ticksBetweenBreedAttempts = ticksBetweenBreedAttempts;
     }
 
-    public AbstractBreedableEntity(World world, int initialAgeTicks, boolean alive, int minBreedingAge, int ticksBetweenBreedAttempts) {
+    public AbstractBreedableEntity(World world, int initialAgeTicks, boolean alive) {
         super(world, initialAgeTicks, alive);
-        this.minBreedingAge = minBreedingAge;
-        this.ticksBetweenBreedAttempts = ticksBetweenBreedAttempts;
     }
 
     @Override
     public boolean canBreed() {
-        return this.getAgeTicks() >= this.minBreedingAge
-                && this.getAgeTicks() >= this.lastBreedAttempt + this.ticksBetweenBreedAttempts;
+        return this.getAgeTicks() >= this.getAttributes().get(EntityAttribute.MINIMUM_BREEDING_AGE)
+                && this.getAgeTicks() >= this.lastBreedAttempt + this.getAttributes().get(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS);
     }
 
     @Override
