@@ -2,7 +2,7 @@ package gay.oss.cw3.simulation.entity;
 
 public enum EntityAttribute {
     MOVEMENT_SPEED(1, 0.5, Double.POSITIVE_INFINITY),
-    //MAX_HEALTH(1, 1, Double.POSITIVE_INFINITY),
+    MAX_HEALTH(1, 1, Double.POSITIVE_INFINITY),
     ;
 
     final double defaultValue;

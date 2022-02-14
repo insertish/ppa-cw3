@@ -9,14 +9,14 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
 
     private int lastBreedAttempt;
 
-    public AbstractBreedableEntity(World world, Coordinate location, int initialAgeTicks, boolean alive, int maxHealth, int minBreedingAge, int ticksBetweenBreedAttempts) {
-        super(world, location, initialAgeTicks, alive, maxHealth);
+    public AbstractBreedableEntity(World world, Coordinate location, int initialAgeTicks, boolean alive, int minBreedingAge, int ticksBetweenBreedAttempts) {
+        super(world, location, initialAgeTicks, alive);
         this.minBreedingAge = minBreedingAge;
         this.ticksBetweenBreedAttempts = ticksBetweenBreedAttempts;
     }
 
-    public AbstractBreedableEntity(World world, int initialAgeTicks, boolean alive, int maxHealth, int minBreedingAge, int ticksBetweenBreedAttempts) {
-        super(world, initialAgeTicks, alive, maxHealth);
+    public AbstractBreedableEntity(World world, int initialAgeTicks, boolean alive, int minBreedingAge, int ticksBetweenBreedAttempts) {
+        super(world, initialAgeTicks, alive);
         this.minBreedingAge = minBreedingAge;
         this.ticksBetweenBreedAttempts = ticksBetweenBreedAttempts;
     }

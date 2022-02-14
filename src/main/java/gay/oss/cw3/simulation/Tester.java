@@ -6,7 +6,6 @@ import java.util.Random;
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
-import gay.oss.cw3.simulation.entity.Breedable;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
@@ -87,10 +86,12 @@ public class Tester {
 
     static class EntityCell extends AbstractBreedableEntity {
         public EntityCell(World world, Coordinate location) {
-            super(world, location, 0, true, 1, 100, 100);
+            super(world, location, 0, true, 100, 100);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
+
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
         }
 
         @Override
@@ -113,9 +114,11 @@ public class Tester {
 
     static class Hunter extends Entity {
         public Hunter(World world, Coordinate location) {
-            super(world, location, 0, true, 2);
+            super(world, location, 0, true);
             this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
+
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
         }
 
         @Override
