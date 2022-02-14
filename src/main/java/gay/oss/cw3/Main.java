@@ -7,6 +7,8 @@ import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Shader;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
+import gay.oss.cw3.renderer.simulation.MeshUtil;
+import gay.oss.cw3.simulation.world.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -66,6 +68,11 @@ public class Main {
         var material = new Material(program, new Texture(Main.class.getResourceAsStream("/textures/amogus.png")));
 
         model = new Model(mesh, material);
+
+        var map = new Map(64, 64);
+        map.generate();
+        var mesh2 = MeshUtil.generateMeshFromHeightmap(map.getHeightMap());
+        model = new Model(mesh2, material);
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -74,8 +81,6 @@ public class Main {
             System.exit(0);
         }
     }
-
-    private float pos = -10.0f;
 
     private void renderLoop() {
         // Clear the framebuffer.
@@ -87,33 +92,13 @@ public class Main {
 
         // Setup camera projection
         Matrix4f viewProjection = new Matrix4f()
-            .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 100.0f)
-            .lookAt(5.0f, 5.0f, 10.0f,
-                    0.0f, 0.0f, 0.0f,
+            .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 1000.0f)
+            .lookAt(-32.0f, 80.0f, 32.0f,
+                    32.0f, 0.0f, 32.0f,
                     0.0f, 1.0f, 0.0f);
             
         // Draw model
-        this.model.getTransformation().rotate(0.01f, 0, 0, 1);
         this.model.draw(viewProjection);
-        
-        // do some trolling
-        pos += 0.1f;
-        if (pos >= 10) pos = -10.0f;
-
-        /* // Do some simple colour rotation
-        r += 0.01f;
-        g += 0.02f;
-        b += 0.04f;
-        y += 0.01f;
-        program.setUniform("deez", new Vector3f(r,g,b));
-
-        if (r >= 1) r = 0;
-        if (g >= 1) g = 0;
-        if (b >= 1) b = 0;
-        if (y >= 0.5f) y = -0.5f;
-
-        // Draw mesh
-        mesh.draw();*/
 
         // Swap framebuffers.
         window.swap();

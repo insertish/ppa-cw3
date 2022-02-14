@@ -74,11 +74,11 @@ public class Mesh {
      * Construct a new Mesh using data given by the {@link Builder}
      * @param builder Builder with mesh data
      * @return Newly constructed {@link Mesh}
-     * @throws Exception if no vertices were specified
+     * @throws IllegalStateException if no vertices were specified
      */
-    public static Mesh from(Builder builder) throws Exception {
+    public static Mesh from(Builder builder) throws IllegalStateException {
         if (builder.vertex == null)
-            throw new Exception("Must specify vertices.");
+            throw new IllegalStateException("Must specify vertices.");
 
         int vao = glGenVertexArrays();
         final var mesh = new Mesh(vao, builder.indices);
@@ -136,9 +136,9 @@ public class Mesh {
         /**
          * Consturct a new {@link Mesh} from the data provided in this builder
          * @return Newly constructed {@link Mesh}
-         * @throws Exception if no vertices were specified
+         * @throws IllegalStateException if no vertices were specified
          */
-        public Mesh build() throws Exception {
+        public Mesh build() throws IllegalStateException {
             return Mesh.from(this);
         }
     }
