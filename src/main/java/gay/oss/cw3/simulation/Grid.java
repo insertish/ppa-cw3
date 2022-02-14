@@ -15,7 +15,7 @@ public class Grid<T> {
 
     @SuppressWarnings("unchecked")
     public T set(int x, int z, T obj) {
-        if (x < 0 || z < 0 || x >= width || z >= depth) return null; // or throw
+        if (!this.isInBounds(x, z)) return null; // or throw
         T t = (T) this.grid[x][z];
         this.grid[x][z] = obj;
         return t;
@@ -27,11 +27,15 @@ public class Grid<T> {
 
     @SuppressWarnings("unchecked")
     public @Nullable T get(int x, int z) {
-        if (x < 0 || z < 0 || x >= width || z >= depth) return null;
+        if (!this.isInBounds(x, z)) return null;
         return (T) this.grid[x][z];
     }
 
     public @Nullable T get(Coordinate location) {
         return this.get(location.x, location.z);
+    }
+
+    public boolean isInBounds(int x, int z) {
+        return !(x < 0 || z < 0 || x >= width || z >= depth);
     }
 }

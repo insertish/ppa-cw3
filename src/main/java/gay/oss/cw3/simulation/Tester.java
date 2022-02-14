@@ -1,36 +1,33 @@
 package gay.oss.cw3.simulation;
 
-import java.util.List;
+import java.awt.*;
+import java.util.Random;
 
-import gay.oss.cw3.lib.FastNoiseLite;
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
+import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
+import gay.oss.cw3.simulation.entity.Breedable;
+import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
+import gay.oss.cw3.simulation.entity.Entity;
 
 public class Tester {
     public static void main(String[] args) {
         World world = new World(128, 128);
 
-        class EntityCell extends Entity {
-            public EntityCell(World world, Coordinate location) {
-                super(world, location, 0, true);
-            }
-
-            @Override
-            public void tick() {
-                List<Entity> entities = this.getAdjacentEntities(1);
-                if (entities.size() > 1 && Math.random() > 0.8) {
-                    this.setAlive(false);
+        for (int x=0;x<128;x++) {
+            for (int z=0;z<128;z++) {
+                if (new Random().nextFloat() < 0.05) {
+                    new EntityCell(world, new Coordinate(x, z));
+                } else if (new Random().nextFloat() < 0.005) {
+                    new Hunter(world, new Coordinate(x, z));
                 }
             }
         }
-        
-        for (int x=0;x<128;x++) {
-            for (int z=0;z<128;z++) {
-                new EntityCell(world, new Coordinate(x, z));
-            }
-        }
 
-        int lastIter = 0, iterations = 0;
+        int lastIter;
         /*
         long start = System.currentTimeMillis();
         while (lastIter != world.getEntityCount()) {
@@ -43,19 +40,25 @@ public class Tester {
 
         var view = new SimulatorView(128, 128);
         var f = new Field(128, 128);
-        while (lastIter != world.getEntityCount()) {
-            lastIter = world.getEntityCount();
+        view.setColor(Hunter.class, Color.ORANGE);
+        view.setColor(EntityCell.class, Color.LIGHT_GRAY);
+        while (true) {
+            lastIter = world.getTime();
             world.tick();
-            iterations++;
 
             f.clear();
-            
+
             for (Entity entity : world.getEntities()) {
                 Coordinate loc = entity.getLocation();
-                f.place("", loc.x, loc.z);
+                f.place(entity, loc.x, loc.z);
             }
 
-            view.showStatus(iterations, f);
+            view.showStatus(lastIter, f);
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         /*FastNoiseLite noise = new FastNoiseLite();
@@ -78,5 +81,47 @@ public class Tester {
         }
 
         view.showStatus(0, f);*/
+    }
+
+
+    static class EntityCell extends AbstractBreedableEntity {
+        public EntityCell(World world, Coordinate location) {
+            super(world, location, 0, true, 1, 100, 100);
+            this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
+            this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
+            this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                this.getBrain().tick();
+            }
+        }
+
+        @Override
+        public Entity createChild(Entity otherParent, Coordinate location) {
+            return new EntityCell(this.getWorld(), location);
+        }
+
+        @Override
+        public boolean isCompatible(Entity entity) {
+            return entity.isAlive();
+        }
+    }
+
+    static class Hunter extends Entity {
+        public Hunter(World world, Coordinate location) {
+            super(world, location, 0, true, 2);
+            this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
+            this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                this.getBrain().tick();
+            }
+        }
     }
 }
