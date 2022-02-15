@@ -21,6 +21,7 @@ import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.renderer.simulation.MeshUtil;
+import gay.oss.cw3.renderer.simulation.ModelEntity;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
@@ -49,8 +50,8 @@ public class Main {
     private Model amongUsModel;
     private Model entityModel;
     private Model entity2Model;
-
-    private ShaderProgram normalProgram;
+    
+    private Model cubeModel;
 
     private void init() throws Exception {
         // BRAINS TEST
@@ -94,10 +95,11 @@ public class Main {
             0.0f, 0.0f, 1.0f,
         };
 
-        var waterMesh = Mesh.builder()
+        var waterMesh = MeshUtil.makePlane(1, 1, false, 5);
+        /*var waterMesh = Mesh.builder()
             .vertex(flatPlaneVertex)
             .render(uv, 2)
-            .build();
+            .build();*/
         
         var waterMaterial = new Material(
             ShaderProgram.fromName("water"),
@@ -144,6 +146,9 @@ public class Main {
         entityModel = new Model(mesh, material);
 
         entity2Model = new Model(waterMesh, waterMaterial);
+
+        // Cube
+        cubeModel = new ModelEntity(Texture.fromResource("amogus.png"));
     }
 
     private void generateWorld() {
@@ -182,6 +187,7 @@ public class Main {
     }
 
     private static float Z_POS = -WORLD_SIZE;
+    private static float i = 0;
 
     private void renderLoop() {
         // Clear the framebuffer.
@@ -193,13 +199,19 @@ public class Main {
 
         // Setup camera projection
         Matrix4f viewProjection = new Matrix4f()
-            .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 1000.0f)
-            .lookAt(//0.0f, /*80.0f*/ /*120.0f*/ 70.0f, 0.0f,
-                    WORLD_SIZE / 4, 200.0f, WORLD_SIZE / 4,
+            .perspective((float) Math.toRadians(45.0f), window.getWidth() / window.getHeight(), 0.01f, 1000.0f)
+            .lookAt(
+                    //2, 2, 2,
+                    //0, 0, 0,
+                    0, 80.0f, 0,
                     WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
-                    // 32.0f, 2.0f, 32.0f,
-                    // 0.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f);
+
+        // testing
+        //cubeModel.getTransformation()
+            //.rotate(0.05f, 1, 1, 0);
+
+        //cubeModel.draw(viewProjection);
         
         // Rotate Among Us
         amongUsModel.getTransformation()
@@ -216,13 +228,17 @@ public class Main {
         this.model.draw(viewProjection);
 
         // Draw water level
+        this.waterModel.use();
+        ShaderProgram.getCurrent().setUniform("time", i);
         this.waterModel.draw(viewProjection);
+
+        i += 0.01f;
 
         // Draw Among Us
         // this.amongUsModel.draw(viewProjection);
 
         // Tick
-        world.tick();
+        /*world.tick();
 
         // Draw all entities
         for (int x=0;x<this.map.getWidth();x++) {
@@ -242,7 +258,7 @@ public class Main {
                     model.draw(viewProjection);
                 }
             }
-        }
+        }*/
 
         // Swap framebuffers.
         window.swap();
