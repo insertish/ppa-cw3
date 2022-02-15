@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import java.util.Random;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import gay.oss.cw3.renderer.Util;
@@ -48,6 +49,8 @@ public class Main {
     private Model amongUsModel;
     private Model entityModel;
     private Model entity2Model;
+
+    private ShaderProgram normalProgram;
 
     private void init() throws Exception {
         // BRAINS TEST
@@ -126,20 +129,21 @@ public class Main {
             textureProgram,
             Texture.fromResource("amogus.png")
         );
-
-        amongUsModel = new Model(mesh, material);
-        amongUsModel.getTransformation()
-            .translate(WORLD_SIZE / 2, 20.0f, WORLD_SIZE / 2)
-            .scale(5.0f, 5.0f, 5.0f);
-
-        entityModel = new Model(mesh, material);
-
-        entity2Model = new Model(waterMesh, waterMaterial);
         
         // Generate the terrain
         var terrainProgram = ShaderProgram.fromName("terrain");
         this.terrainMaterial = new Material(terrainProgram);
         this.generateMap();
+
+        // Make Among Us
+        amongUsModel = new Model(mesh, material);
+        amongUsModel.getTransformation()
+            .translate(WORLD_SIZE / 2, WORLD_SIZE/2 + map.getHeight(WORLD_SIZE / 2, WORLD_SIZE / 2) * 2, WORLD_SIZE / 2)
+            .scale(WORLD_SIZE / 10, WORLD_SIZE / 5, WORLD_SIZE / 10);
+
+        entityModel = new Model(mesh, material);
+
+        entity2Model = new Model(waterMesh, waterMaterial);
     }
 
     private void generateWorld() {
@@ -164,13 +168,6 @@ public class Main {
         if (model != null) model.destroyMesh();
         var mesh = MeshUtil.generateMeshFromMap(map);
         model = new Model(mesh, terrainMaterial);
-
-        amongUsModel.getTransformation()
-            .translation(
-                WORLD_SIZE / 2,
-                map.getHeight(WORLD_SIZE / 2, WORLD_SIZE / 2) + 2,
-                WORLD_SIZE / 2
-            );
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -183,6 +180,8 @@ public class Main {
             this.generateWorld();
         }
     }
+
+    private static float Z_POS = -WORLD_SIZE;
 
     private void renderLoop() {
         // Clear the framebuffer.
@@ -207,13 +206,20 @@ public class Main {
             .rotate(0.2f, 0, 1, 0);
 
         // Draw model
+        this.model.use();
+        var program = ShaderProgram.getCurrent();
+        program.setUniform("lightPos", new Vector3f(Z_POS, 64.0f, Z_POS));
+
+        Z_POS += 0.3f;
+        if (Z_POS > WORLD_SIZE) Z_POS = -WORLD_SIZE;
+
         this.model.draw(viewProjection);
 
         // Draw water level
         this.waterModel.draw(viewProjection);
 
         // Draw Among Us
-        this.amongUsModel.draw(viewProjection);
+        // this.amongUsModel.draw(viewProjection);
 
         // Tick
         world.tick();

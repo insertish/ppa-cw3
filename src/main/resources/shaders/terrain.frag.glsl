@@ -9,13 +9,15 @@ out vec4 color;
 
 uniform sampler2D texSampler;
 
+uniform vec3 lightPos;
+
 vec3 lighting(vec3 objectColour) {
     float ambientStrength = 0.3;
     vec3 ambientColour = vec3(1.0, 1.0, 1.0);
 
     float diffuseStrength = 0.7;
     vec3 diffuseColour = vec3(1.0, 1.0, 1.0);
-    vec3 lightPos = vec3(32.0, 64.0, 32.0);
+    // vec3 lightPos = vec3(32.0, 64.0, 32.0);
 
     // Ambient
     vec3 ambient = ambientStrength * ambientColour;
