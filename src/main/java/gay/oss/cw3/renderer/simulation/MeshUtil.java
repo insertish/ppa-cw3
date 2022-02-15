@@ -4,6 +4,8 @@ import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.simulation.world.Map;
 
 public class MeshUtil {
+    public static final float HEIGHT_SCALE = 40.0f;
+
     public static Mesh generateMeshFromMap(Map map) {
         int width = map.getWidth();
         int depth = map.getDepth();
@@ -12,10 +14,10 @@ public class MeshUtil {
         float[] colour = new float[(width) * (depth) * 36];
         for (int x=0;x<width-1;x++) {
             for (int z=0;z<depth-1;z++) {
-                float x0z0 = map.getHeight(x, z) * 10.0f;
-                float x1z0 = map.getHeight(x + 1, z) * 10.0f;
-                float x0z1 = map.getHeight(x, z + 1) * 10.0f;
-                float x1z1 = map.getHeight(x + 1, z + 1) * 10.0f;
+                float x0z0 = map.getHeight(x, z) * HEIGHT_SCALE;
+                float x1z0 = map.getHeight(x + 1, z) * HEIGHT_SCALE;
+                float x0z1 = map.getHeight(x, z + 1) * HEIGHT_SCALE;
+                float x1z1 = map.getHeight(x + 1, z + 1) * HEIGHT_SCALE;
 
                 float[] c_x0z0 = map.getAverageBiomeColour(x, z);
                 float[] c_x1z0 = map.getAverageBiomeColour(x + 1, z);
@@ -79,22 +81,22 @@ public class MeshUtil {
                 vertices[offset + 18] = x;
                 vertices[offset + 19] = x0z1;
                 vertices[offset + 20] = z + 1;
-                vertices[offset + 21] = cx;
-                vertices[offset + 22] = cy;
-                vertices[offset + 23] = cz;
-                vertices[offset + 24] = x + 1;
-                vertices[offset + 25] = x1z1;
-                vertices[offset + 26] = z + 1;
+                vertices[offset + 21] = x + 1;
+                vertices[offset + 22] = x1z1;
+                vertices[offset + 23] = z + 1;
+                vertices[offset + 24] = cx;
+                vertices[offset + 25] = cy;
+                vertices[offset + 26] = cz;
 
                 colour[offset + 18] = c_x0z1[0];
                 colour[offset + 19] = c_x0z1[1];
                 colour[offset + 20] = c_x0z1[2];
-                colour[offset + 21] = c_blend[0];
-                colour[offset + 22] = c_blend[1];
-                colour[offset + 23] = c_blend[2];
-                colour[offset + 24] = c_x1z1[0];
-                colour[offset + 25] = c_x1z1[1];
-                colour[offset + 26] = c_x1z1[2];
+                colour[offset + 21] = c_x1z1[0];
+                colour[offset + 22] = c_x1z1[1];
+                colour[offset + 23] = c_x1z1[2];
+                colour[offset + 24] = c_blend[0];
+                colour[offset + 25] = c_blend[1];
+                colour[offset + 26] = c_blend[2];
 
                 // Top Triangle
                 vertices[offset + 27] = cx;
@@ -122,6 +124,7 @@ public class MeshUtil {
         return Mesh.builder()
             .vertex(vertices)
             .render(colour, 3)
+            .generateNormalsForTriangles()
             .build();
     }
 }
