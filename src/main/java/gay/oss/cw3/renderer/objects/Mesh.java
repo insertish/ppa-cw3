@@ -3,7 +3,13 @@ package gay.oss.cw3.renderer.objects;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
+
+import org.joml.Vector3f;
+
+import gay.oss.cw3.renderer.Util;
 
 /**
  * Wrapper class around an OpenGL Vertex Array Object
@@ -14,6 +20,9 @@ public class Mesh {
 
     private final int vao;
     private final int vertices;
+
+    // ! FIXME: FIXME
+    public boolean indexed;
     
     private final List<Integer> vbo;
 
@@ -25,6 +34,7 @@ public class Mesh {
     private Mesh(int vao, int vertices) {
         this.vao = vao;
         this.vertices = vertices;
+        this.indexed = false;
 
         this.vbo = new ArrayList<>();
     }
@@ -60,7 +70,12 @@ public class Mesh {
      */
     public void draw() {
         this.bind();
-        glDrawArrays(GL_TRIANGLES, 0, this.vertices);
+
+        if (this.indexed) {
+            glDrawElements(GL_TRIANGLES, this.vertices * 6, GL_UNSIGNED_INT, 0);
+        } else {
+            glDrawArrays(GL_TRIANGLES, 0, this.vertices);
+        }
     }
 
     /**
@@ -107,6 +122,14 @@ public class Mesh {
             mesh.bindArray(2, 3, builder.normal);
         }
 
+        if (builder.indices != null) {
+            int vbo = glGenBuffers();
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, builder.indices, GL_STATIC_DRAW);
+            mesh.indexed = true;
+            // add vbo
+        }
+
         Mesh.unbind();
         return mesh;
     }
@@ -130,6 +153,7 @@ public class Mesh {
         private int renderComponents;
 
         private float[] normal;
+        private int[] indices;
 
         /**
          * Specify a vertex array
@@ -162,6 +186,15 @@ public class Mesh {
         }
 
         /**
+         * Specify an element buffer array
+         * @param indicies Element buffer array
+         */
+        public Builder indices(int indices[]) {
+            this.indices = indices;
+            return this;
+        }
+
+        /**
          * Generate normals for the given mesh data.
          */
         public Builder generateNormalsForTriangles() {
@@ -170,28 +203,20 @@ public class Mesh {
 
             float normals[] = new float[this.vertices * 3];
             float vert[] = this.vertex;
-
-            // Based on pseudo-code from Khronos OpenGL wiki
-            // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Pseudo-code
+            
             for (int triangle=0;triangle<this.vertices/3;triangle++) {
                 int offset = triangle * 9;
 
-                float ux = vert[offset + 3] - vert[offset];
-                float uy = vert[offset + 4] - vert[offset + 1];
-                float uz = vert[offset + 5] - vert[offset + 2];
-
-                float vx = vert[offset + 6] - vert[offset];
-                float vy = vert[offset + 7] - vert[offset + 1];
-                float vz = vert[offset + 8] - vert[offset + 2];
-
-                float nx = (uy * vz) - (uz * vy);
-                float ny = (uz * vx) - (ux * vz);
-                float nz = (ux * vy) - (uy * vx);
+                float[] n = Util.calculateNormal(
+                    vert[offset  ], vert[offset+1], vert[offset+2],
+                    vert[offset+3], vert[offset+4], vert[offset+5],
+                    vert[offset+6], vert[offset+7], vert[offset+8]
+                );
 
                 for (int vertex=0;vertex<3;vertex++) {
-                    normals[offset + vertex * 3] = nx;
-                    normals[offset + vertex * 3 + 1] = ny;
-                    normals[offset + vertex * 3 + 2] = nz;
+                    normals[offset + vertex * 3] = n[0];
+                    normals[offset + vertex * 3 + 1] = n[1];
+                    normals[offset + vertex * 3 + 2] = n[2];
                 }
             }
 
