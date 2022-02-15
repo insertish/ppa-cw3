@@ -57,4 +57,14 @@ public class Texture {
     void bind() {
         glBindTexture(GL_TEXTURE_2D, this.id);
     }
+
+    /**
+     * Load a texture from a given resource name.
+     * This will prefix /textures/ automatically.
+     * @param resource Path to the resource
+     * @returns Newly constructed {@link Texture}
+     */
+    public static Texture fromResource(String resource) throws IOException {
+        return new Texture(Texture.class.getResourceAsStream("/textures/" + resource));
+    }
 }
