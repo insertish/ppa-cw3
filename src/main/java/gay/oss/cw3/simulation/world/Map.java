@@ -1,5 +1,6 @@
 package gay.oss.cw3.simulation.world;
 
+import java.util.EnumMap;
 import java.util.Random;
 
 import gay.oss.cw3.lib.FastNoiseLite;
@@ -10,7 +11,7 @@ public class Map {
     private final int width;
     private final int depth;
 
-    private final Grid<Entity> entities;
+    private final java.util.Map<EntityLayer, Grid<Entity>> entities;
     private final Grid<Float> heightMap;
     private final Grid<BiomeType> biomeMap;
 
@@ -18,7 +19,10 @@ public class Map {
         this.width = width;
         this.depth = depth;
 
-        this.entities = new Grid<>(width, depth);
+        this.entities = new EnumMap<>(EntityLayer.class);
+        for (EntityLayer layer : EntityLayer.values()) {
+            this.entities.put(layer, new Grid<>(width, depth));
+        }
         this.heightMap = new Grid<>(width, depth);
         this.biomeMap = new Grid<>(width, depth);
     }
@@ -27,8 +31,8 @@ public class Map {
         return !(x < 0 || z < 0 || x >= width || z >= depth);
     }
 
-    public Grid<Entity> getEntities() {
-        return this.entities;
+    public Grid<Entity> getEntities(EntityLayer layer) {
+        return this.entities.get(layer);
     }
 
     public Grid<BiomeType> getBiomeMap() {

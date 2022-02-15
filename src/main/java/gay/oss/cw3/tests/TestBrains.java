@@ -14,6 +14,7 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.EntityLayer;
 
 public class TestBrains {
     public static void main(String[] args) {
@@ -67,7 +68,7 @@ public class TestBrains {
 
     static class EntityCell extends AbstractBreedableEntity {
         public EntityCell(World world, Coordinate location) {
-            super(world, location, 0, true);
+            super(world, location, 0, true, EntityLayer.ANIMALS);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
@@ -99,7 +100,7 @@ public class TestBrains {
 
     static class Hunter extends Entity {
         public Hunter(World world, Coordinate location) {
-            super(world, location, 0, true);
+            super(world, EntityLayer.ANIMALS, location, 0, true);
             this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
 

@@ -3,6 +3,7 @@ package gay.oss.cw3.simulation.entity;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.brain.EntityBrain;
+import gay.oss.cw3.simulation.world.EntityLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  */
 public abstract class Entity {
     private final World world;
+    private final EntityLayer layer;
     private Coordinate location;
 
     private int ageTicks;
@@ -26,14 +28,16 @@ public abstract class Entity {
     /**
      * Creates <em>and automatically spawns</em> an entity.
      *
+     * @param maxHealth         the entity's max health
      * @param world             the world the entity will reside in
+     * @param layer
      * @param location          the entity's initial location
      * @param initialAgeTicks   the entity's initial age
      * @param alive             whether the entity is alive
-     * @param maxHealth         the entity's max health
      */
-    public Entity(World world, Coordinate location, int initialAgeTicks, boolean alive) {
+    public Entity(World world, EntityLayer layer, Coordinate location, int initialAgeTicks, boolean alive) {
         this.world = world;
+        this.layer = layer;
         this.location = location;
         this.ageTicks = initialAgeTicks;
         this.alive = alive;
@@ -43,13 +47,14 @@ public abstract class Entity {
     /**
      * Creates <em>and automatically spawns</em> an entity at the origin of the world.
      *
+     * @param maxHealth         the entity's max health
      * @param world             the world the entity will reside in
      * @param initialAgeTicks   the entity's initial age
      * @param alive             whether the entity is alive
-     * @param maxHealth         the entity's max health
+     * @param layer
      */
-    public Entity(World world, int initialAgeTicks, boolean alive) {
-        this(world, Coordinate.ORIGIN, initialAgeTicks, alive);
+    public Entity(World world, int initialAgeTicks, boolean alive, EntityLayer layer) {
+        this(world, layer, Coordinate.ORIGIN, initialAgeTicks, alive);
     }
 
     /**
@@ -57,6 +62,10 @@ public abstract class Entity {
      */
     public World getWorld() {
         return this.world;
+    }
+
+    public EntityLayer getLayer() {
+        return layer;
     }
 
     /**
@@ -170,7 +179,7 @@ public abstract class Entity {
         List<Entity> entities = new ArrayList<>();
         for (int i=-radius;i<radius+1;i++) {
             for (int j=-radius;j<radius+1;j++) {
-                Entity e = this.world.getEntity(x + i, z + j);
+                Entity e = this.world.getEntity(this.getLayer(), x + i, z + j);
                 if (e != null) entities.add(e);
             }
         }

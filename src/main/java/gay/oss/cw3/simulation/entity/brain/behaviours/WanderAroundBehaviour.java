@@ -33,7 +33,7 @@ public class WanderAroundBehaviour extends MovementBehaviour {
                         new Coordinate(random.nextInt(3)-1, random.nextInt(3)-1))
                 );
 
-        if (this.entity.getWorld().isInBounds(newLoc) && this.entity.getWorld().getEntity(newLoc.x, newLoc.z) == null) {
+        if (this.entity.getWorld().isInBounds(newLoc) && this.entity.getWorld().getEntity(entity.getLayer(), newLoc.x, newLoc.z) == null) {
             this.entity.setLocation(newLoc);
         }
     }
