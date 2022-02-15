@@ -27,20 +27,57 @@ public class Map {
         return !(x < 0 || z < 0 || x >= width || z >= depth);
     }
 
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getDepth() {
+        return this.depth;
+    }
+
     public Grid<Entity> getEntities() {
         return this.entities;
     }
 
     public Grid<Float> getHeightMap() {
+        // ! FIXME: deprecate this
         return this.heightMap;
     }
 
     public Grid<BiomeType> getBiomeMap() {
+        // ! FIXME: deprecate this
         return this.biomeMap;
     }
 
     public float getHeight(int x, int z) {
         return this.heightMap.get(x, z);
+    }
+
+    public float[] getBiomeColour(int x, int z) {
+        return this.biomeMap.get(x, z).getColour();
+    }
+
+    public float[] getAverageBiomeColour(int x, int z) {
+        float r = 0, g = 0, b = 0, count = 0;
+
+        for (int X=x-1;X<x+2;X++) {
+            for (int Z=z-1;Z<z+2;Z++) {
+                BiomeType entry = this.biomeMap.get(X, Z);
+                if (entry != null) {
+                    count++;
+                    float[] colours = entry.getColour();
+                    r += colours[0];
+                    g += colours[1];
+                    b += colours[2];
+                }
+            }
+        }
+
+        return new float[] {
+            r / count,
+            g / count,
+            b / count
+        };
     }
 
     public void generate(int seed) {
