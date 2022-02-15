@@ -1,8 +1,13 @@
 package gay.oss.cw3.simulation.world;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import gay.oss.cw3.lib.FastNoiseLite;
+import gay.oss.cw3.renderer.ColorAverageCollector;
+import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.simulation.Grid;
 import gay.oss.cw3.simulation.entity.Entity;
 
@@ -57,28 +62,26 @@ public class Map {
         return this.biomeMap.get(x, z).getColour();
     }
 
-    public float[] getAverageBiomeColour(int x, int z) {
-        float r = 0, g = 0, b = 0, count = 0;
+    public float[] getAverageBiomeColour(int xCentre, int zCentre) {
+        final int radius = 5;
+        final List<float[]> colours = new ArrayList<>();
         final int RADIUS = 5;
 
-        for (int X=x-RADIUS;X<x+RADIUS+1;X++) {
-            for (int Z=z-RADIUS;Z<z+RADIUS+1;Z++) {
-                BiomeType entry = this.biomeMap.get(X, Z);
+        for (int x=xCentre-radius;x<=xCentre+radius;x++) {
+            for (int dZ=zCentre-radius;dZ<=zCentre+radius;dZ++) {
+                BiomeType entry = this.biomeMap.get(x, dZ);
                 if (entry != null) {
-                    count++;
-                    float[] colours = entry.getColour();
-                    r += colours[0];
-                    g += colours[1];
-                    b += colours[2];
+                    float[] colour = entry.getColour();
+                    colours.add(colour);
                 }
             }
         }
 
-        return new float[] {
-            r / count,
-            g / count,
-            b / count
-        };
+        float[] avgResults = colours.stream()
+                .map(Util::rgbToOklab)
+                .collect(new ColorAverageCollector());
+
+        return Util.oklabToRgb(avgResults);
     }
 
     public void generate(int seed) {
