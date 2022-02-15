@@ -21,12 +21,20 @@ public class Model {
         this(mesh, null);
     }
 
+    public Mesh getMesh() {
+        return this.mesh;
+    }
+
     public Matrix4f getTransformation() {
-        return transformation;
+        return this.transformation;
     }
 
     public void setTransformation(Matrix4f transformation) {
         this.transformation = transformation;
+    }
+
+    public void use() {
+        this.material.use();
     }
 
     public void draw(Matrix4f viewProjection) {
