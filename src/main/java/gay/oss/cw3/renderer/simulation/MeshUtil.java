@@ -1,20 +1,31 @@
 package gay.oss.cw3.renderer.simulation;
 
 import gay.oss.cw3.renderer.objects.Mesh;
-import gay.oss.cw3.simulation.Grid;
+import gay.oss.cw3.simulation.world.Map;
 
 public class MeshUtil {
-    public static Mesh generateMeshFromHeightmap(Grid<Float> heightMap) {
-        int width = heightMap.getWidth();
-        int depth = heightMap.getDepth();
+    public static Mesh generateMeshFromMap(Map map) {
+        int width = map.getWidth();
+        int depth = map.getDepth();
 
         float[] vertices = new float[(width) * (depth) * 36];
+        float[] colour = new float[(width) * (depth) * 36];
         for (int x=0;x<width-1;x++) {
             for (int z=0;z<depth-1;z++) {
-                float x0z0 = heightMap.get(x, z) * 10.0f;
-                float x1z0 = heightMap.get(x + 1, z) * 10.0f;
-                float x0z1 = heightMap.get(x, z + 1) * 10.0f;
-                float x1z1 = heightMap.get(x + 1, z + 1) * 10.0f;
+                float x0z0 = map.getHeight(x, z) * 10.0f;
+                float x1z0 = map.getHeight(x + 1, z) * 10.0f;
+                float x0z1 = map.getHeight(x, z + 1) * 10.0f;
+                float x1z1 = map.getHeight(x + 1, z + 1) * 10.0f;
+
+                float[] c_x0z0 = map.getAverageBiomeColour(x, z);
+                float[] c_x1z0 = map.getAverageBiomeColour(x + 1, z);
+                float[] c_x0z1 = map.getAverageBiomeColour(x, z + 1);
+                float[] c_x1z1 = map.getAverageBiomeColour(x + 1, z + 1);
+                float[] c_blend = new float[] {
+                    (c_x0z0[0] + c_x1z0[0] + c_x0z1[0] + c_x1z1[0]) / 4,
+                    (c_x0z0[1] + c_x1z0[1] + c_x0z1[1] + c_x1z1[1]) / 4,
+                    (c_x0z0[2] + c_x1z0[2] + c_x0z1[2] + c_x1z1[2]) / 4
+                };
 
                 int offset = 36 * ((z * width) + x);
 
@@ -33,6 +44,16 @@ public class MeshUtil {
                 vertices[offset + 7 ] = cy;
                 vertices[offset + 8 ] = cz;
 
+                colour[offset + 0 ] = c_x0z0[0];
+                colour[offset + 1 ] = c_x0z0[1];
+                colour[offset + 2 ] = c_x0z0[2];
+                colour[offset + 3 ] = c_x0z1[0];
+                colour[offset + 4 ] = c_x0z1[1];
+                colour[offset + 5 ] = c_x0z1[2];
+                colour[offset + 6 ] = c_blend[0];
+                colour[offset + 7 ] = c_blend[1];
+                colour[offset + 8 ] = c_blend[2];
+
                 // Left Triangle
                 vertices[offset + 9 ] = x;
                 vertices[offset + 10] = x0z0;
@@ -43,6 +64,16 @@ public class MeshUtil {
                 vertices[offset + 15] = x + 1;
                 vertices[offset + 16] = x1z0;
                 vertices[offset + 17] = z;
+
+                colour[offset + 9 ] = c_x0z0[0];
+                colour[offset + 10] = c_x0z0[1];
+                colour[offset + 11] = c_x0z0[2];
+                colour[offset + 12] = c_blend[0];
+                colour[offset + 13] = c_blend[1];
+                colour[offset + 14] = c_blend[2];
+                colour[offset + 15] = c_x1z0[0];
+                colour[offset + 16] = c_x1z0[1];
+                colour[offset + 17] = c_x1z0[2];
 
                 // Right Triangle
                 vertices[offset + 18] = x;
@@ -55,6 +86,16 @@ public class MeshUtil {
                 vertices[offset + 25] = x1z1;
                 vertices[offset + 26] = z + 1;
 
+                colour[offset + 18] = c_x0z1[0];
+                colour[offset + 19] = c_x0z1[1];
+                colour[offset + 20] = c_x0z1[2];
+                colour[offset + 21] = c_blend[0];
+                colour[offset + 22] = c_blend[1];
+                colour[offset + 23] = c_blend[2];
+                colour[offset + 24] = c_x1z1[0];
+                colour[offset + 25] = c_x1z1[1];
+                colour[offset + 26] = c_x1z1[2];
+
                 // Top Triangle
                 vertices[offset + 27] = cx;
                 vertices[offset + 28] = cy;
@@ -65,11 +106,22 @@ public class MeshUtil {
                 vertices[offset + 33] = x + 1;
                 vertices[offset + 34] = x1z0;
                 vertices[offset + 35] = z;
+
+                colour[offset + 27] = c_blend[0];
+                colour[offset + 28] = c_blend[1];
+                colour[offset + 29] = c_blend[2];
+                colour[offset + 30] = c_x1z1[0];
+                colour[offset + 31] = c_x1z1[1];
+                colour[offset + 32] = c_x1z1[2];
+                colour[offset + 33] = c_x1z0[0];
+                colour[offset + 34] = c_x1z0[1];
+                colour[offset + 35] = c_x1z0[2];
             }
         }
 
         return Mesh.builder()
             .vertex(vertices)
+            .render(colour, 3)
             .build();
     }
 }
