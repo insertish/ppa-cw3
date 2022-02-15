@@ -13,6 +13,8 @@ import static org.lwjgl.opengl.GL11.*;
  * A representation of a texture used for OpenGL.
  */
 public class Texture {
+    private static Texture CURRENT_TEXTURE0;
+
     private final int id;
     private final int width;
     private final int height;
@@ -55,7 +57,9 @@ public class Texture {
      * Bind the texture.
      */
     void bind() {
+        if (CURRENT_TEXTURE0 == this) return;
         glBindTexture(GL_TEXTURE_2D, this.id);
+        CURRENT_TEXTURE0 = this;
     }
 
     /**

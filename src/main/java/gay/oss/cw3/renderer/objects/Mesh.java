@@ -10,6 +10,8 @@ import java.util.List;
  * which includes Vertex Buffer Objects and other related information.
  */
 public class Mesh {
+    private static int CURRENT_VAO = 0;
+
     private final int vao;
     private final int vertices;
     
@@ -31,7 +33,9 @@ public class Mesh {
      * Bind Vertex Array Object for this mesh.
      */
     public void bind() {
+        if (CURRENT_VAO == this.vao) return;
         glBindVertexArray(this.vao);
+        CURRENT_VAO = this.vao;
     }
 
     public void destroy() {
@@ -47,6 +51,7 @@ public class Mesh {
      */
     public static void unbind() {
         glBindVertexArray(0);
+        CURRENT_VAO = 0;
     }
 
     /**

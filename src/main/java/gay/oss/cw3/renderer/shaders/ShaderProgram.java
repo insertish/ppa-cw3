@@ -32,6 +32,7 @@ public class ShaderProgram {
      * Enable this shader program for use
      */
     public void use() {
+        if (CURRENT_SHADER == this) return;
         glUseProgram(this.id);
         CURRENT_SHADER = this;
     }
