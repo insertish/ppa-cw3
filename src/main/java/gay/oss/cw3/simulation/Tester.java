@@ -101,13 +101,17 @@ public class Tester {
         }
     }
 
-    static class Hunter extends Entity {
+    static class Hunter extends AbstractBreedableEntity {
         public Hunter(World world, Coordinate location) {
             super(world, location, 0, true);
             this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
+            this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
 
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
+            this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
+            this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+            this.getAttributes().set(EntityAttribute.FULLNESS_TO_BREED, this.getMaxFullness()/2.0);
             this.setFullness(this.getMaxFullness());
         }
 
@@ -115,11 +119,23 @@ public class Tester {
         public void tick() {
             if (this.isAlive()) {
                 this.getBrain().tick();
-                this.removeFullness(0.01);
+                this.removeFullness(0.05);
                 if (this.getFullness() <= 0) {
                     this.addHealth(-1);
                 }
             }
+        }
+
+        @Override
+        public @Nullable Entity createChild(Entity otherParent, Coordinate coordinate) {
+            var result = new Hunter(this.getWorld(), coordinate);
+            result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
+            return result;
+        }
+
+        @Override
+        public boolean isCompatible(Entity entity) {
+            return true;
         }
     }
 }
