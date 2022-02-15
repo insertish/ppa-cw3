@@ -112,6 +112,10 @@ public class Window {
         });
     }
 
+    public void setTitle(String title) {
+        glfwSetWindowTitle(this.pointer, title);
+    }
+
     /**
      * Tell GLFW what properties the Window should have
      */

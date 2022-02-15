@@ -1,5 +1,6 @@
 package gay.oss.cw3.renderer.simulation;
 
+import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.simulation.world.Map;
 
@@ -186,6 +187,73 @@ public class MeshUtil {
     }
 
     public static final float HEIGHT_SCALE = 40.0f;
+
+    public static Mesh generateIndexedMeshFromMap(Map map) {
+        int width = map.getWidth();
+        int depth = map.getDepth();
+
+        // 1st pass. generate position and colour vertex information
+        float[] vertices = new float[(width) * (depth) * 3];
+        float[] colour = new float[(width) * (depth) * 3];
+        for (int x=0;x<width;x++) {
+            for (int z=0;z<depth;z++) {
+                int offset = 3 * (z * width + x);
+                vertices[offset    ] = x;
+                vertices[offset + 1] = map.getHeight(x, z) * HEIGHT_SCALE;
+                vertices[offset + 2] = z;
+
+                float[] c = map.getAverageBiomeColour(x, z);
+                colour[offset    ] = c[0];
+                colour[offset + 1] = c[1];
+                colour[offset + 2] = c[2];
+            }
+        }
+
+        // 2nd pass. generate normal vertex information
+        float[] normal = new float[(width) * (depth) * 3];
+        for (int x=0;x<width;x++) {
+            for (int z=0;z<depth;z++) {
+                int offset = 3 * (z * width + x);
+
+                try {
+                    int x0 = 3 * (z * width + x - 1);
+                    int x1 = 3 * (z * width + x);
+                    int z1 = 3 * ((z + 1) * width + x);
+
+                    float[] n = Util.calculateNormal(
+                        vertices[x1], vertices[x1 + 1], vertices[x1 + 2],
+                        vertices[x0], vertices[x0 + 1], vertices[x0 + 2],
+                        vertices[z1], vertices[z1 + 1], vertices[z1 + 2]
+                    );
+
+                    normal[offset    ] = n[0];
+                    normal[offset + 1] = n[1];
+                    normal[offset + 2] = n[2];
+                } catch (Exception e) {}
+            }
+        }
+
+        // 3rd pass. generate element buffer object
+        int[] indices = new int[(width) * (depth) * 6];
+        for (int x=0;x<width-1;x++) {
+            for (int z=0;z<depth-1;z++) {
+                int offset = 6 * (z * width + x);
+                indices[offset    ] = z * width + x;
+                indices[offset + 1] = z * width + x + 1;
+                indices[offset + 2] = (z + 1) * width + x + 1;
+                indices[offset + 3] = z * width + x;
+                indices[offset + 4] = (z + 1) * width + x + 1;
+                indices[offset + 5] = (z + 1) * width + x;
+            }
+        }
+
+        return Mesh.builder()
+            .vertex(vertices)
+            .render(colour, 3)
+            .normal(normal)
+            .indices(indices)
+            .build();
+    }
 
     public static Mesh generateMeshFromMap(Map map) {
         int width = map.getWidth();

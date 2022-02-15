@@ -36,7 +36,7 @@ import gay.oss.cw3.simulation.world.Map;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
-    public static int WORLD_SIZE = 128;
+    public static int WORLD_SIZE = 256;
 
     private Window window;
 
@@ -84,22 +84,8 @@ public class Main {
             0.0f, 0.0f,
         };
 
-        // Flat plane
-        float flatPlaneVertex[] = {
-            0.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 1.0f,
-
-            0.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-        };
-
+        // Water
         var waterMesh = MeshUtil.makePlane(1, 1, false, 5);
-        /*var waterMesh = Mesh.builder()
-            .vertex(flatPlaneVertex)
-            .render(uv, 2)
-            .build();*/
         
         var waterMaterial = new Material(
             ShaderProgram.fromName("water"),
@@ -171,7 +157,7 @@ public class Main {
         this.map = new Map(WORLD_SIZE, WORLD_SIZE);
         map.generate();
         if (model != null) model.destroyMesh();
-        var mesh = MeshUtil.generateMeshFromMap(map);
+        var mesh = MeshUtil.generateIndexedMeshFromMap(map);
         model = new Model(mesh, terrainMaterial);
     }
 
@@ -190,6 +176,8 @@ public class Main {
     private static float i = 0;
 
     private void renderLoop() {
+        long start = System.currentTimeMillis();
+
         // Clear the framebuffer.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -203,7 +191,8 @@ public class Main {
             .lookAt(
                     //2, 2, 2,
                     //0, 0, 0,
-                    0, 80.0f, 0,
+                    //0, 80.0f, 0,
+                    WORLD_SIZE / 2.8f, 120.0f, WORLD_SIZE / 2.8f,
                     WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
                     0.0f, 1.0f, 0.0f);
 
@@ -259,6 +248,9 @@ public class Main {
                 }
             }
         }*/
+
+        // Update title with render time.
+        window.setTitle("Genshin Impact - Frame took " + (System.currentTimeMillis() - start) + "ms");
 
         // Swap framebuffers.
         window.swap();
