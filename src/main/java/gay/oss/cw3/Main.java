@@ -184,7 +184,7 @@ public class Main {
         // Setup camera projection
         Matrix4f viewProjection = new Matrix4f()
             .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 1000.0f)
-            .lookAt(0.0f, 80.0f, 0.0f,
+            .lookAt(0.0f, /*80.0f*/120.0f, 0.0f,
                     32.0f, 0.0f, 32.0f,
                     // 32.0f, 2.0f, 32.0f,
                     // 0.0f, 0.0f, 0.0f,
@@ -219,7 +219,7 @@ public class Main {
                     }
 
                     model.getTransformation()
-                        .translation(x, this.map.getHeight(x, z) * 10.0f + 0.2f, z);
+                        .translation(x, this.map.getHeight(x, z) * 40.0f + 0.2f, z);
                     
                     model.draw(viewProjection);
                 }
