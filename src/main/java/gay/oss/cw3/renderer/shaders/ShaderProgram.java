@@ -1,10 +1,11 @@
 package gay.oss.cw3.renderer.shaders;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL40.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -146,12 +147,18 @@ public class ShaderProgram {
      * Also prefixes /shaders/ and suffixes .glsl to the path given.
      * @param vertex Vertex shader path
      * @param fragment Fragment shader path
+     * @param geometry Geometry shader path
      * @return Newly constructed {@link ShaderProgram}
      * @throws Exception if the shaders fail to compile or the shader program fails to link
      */
-    public static ShaderProgram fromResources(String vertex, String fragment) throws Exception {
+    public static ShaderProgram fromResources(String vertex, String fragment, @Nullable String geometry) throws Exception {
         Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + vertex + ".glsl").readAllBytes()));
         Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + fragment + ".glsl").readAllBytes()));
+
+        if (geometry != null) {
+            Shader geoShader = Shader.create(GL_GEOMETRY_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + geometry + ".glsl").readAllBytes()));
+            return ShaderProgram.create(new Shader[] { vertexShader, fragShader, geoShader });
+        }
 
         return ShaderProgram.create(new Shader[] { vertexShader, fragShader });
     }
@@ -163,7 +170,7 @@ public class ShaderProgram {
      * @throws Exception if the shaders fail to compile or the shader program fails to link
      */
     public static ShaderProgram fromName(String name) throws Exception {
-        return ShaderProgram.fromResources(name + ".vert", name + ".frag");
+        return ShaderProgram.fromResources(name + ".vert", name + ".frag", null);
     }
 
     public static ShaderProgram getCurrent() {

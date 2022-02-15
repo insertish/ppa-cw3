@@ -31,7 +31,11 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.world.Map;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class Main {
+    public static int WORLD_SIZE = 128;
+
     private Window window;
 
     private World world;
@@ -53,7 +57,7 @@ public class Main {
         Util.initialiseLWJGL();
 
         // Configure Window
-        window = Window.create(1280, 720, "League of Legends");
+        window = Window.create(1280, 720, "Genshin Impact");
         window.configureGL();
         window.makeVisible();
 
@@ -93,14 +97,14 @@ public class Main {
             .build();
         
         var waterMaterial = new Material(
-            textureProgram,
-            Texture.fromResource("water-real.jpg")
+            ShaderProgram.fromName("water"),
+            Texture.fromResource("water.jpg")
         );
 
         waterModel = new Model(waterMesh, waterMaterial);
         waterModel.getTransformation()
-            .translation(0.0f, -5.0f, 0.0f)
-            .scale(64.0f, 1, 64.0f);
+            .translation(0.0f, -8.0f, 0.0f)
+            .scale((float) WORLD_SIZE, 1, (float) WORLD_SIZE);
 
         // Create a spinning among us square
         float vertex[] = {
@@ -125,7 +129,7 @@ public class Main {
 
         amongUsModel = new Model(mesh, material);
         amongUsModel.getTransformation()
-            .translate(32.0f, 20.0f, 32.0f)
+            .translate(WORLD_SIZE / 2, 20.0f, WORLD_SIZE / 2)
             .scale(5.0f, 5.0f, 5.0f);
 
         entityModel = new Model(mesh, material);
@@ -139,10 +143,10 @@ public class Main {
     }
 
     private void generateWorld() {
-        world = new World(64, 64);
+        world = new World(WORLD_SIZE, WORLD_SIZE);
 
-        for (int x=0;x<64;x++) {
-            for (int z=0;z<64;z++) {
+        for (int x=0;x<WORLD_SIZE;x++) {
+            for (int z=0;z<WORLD_SIZE;z++) {
                 if (new Random().nextFloat() < 0.05) {
                     new EntityCell(world, new Coordinate(x, z));
                 } else if (new Random().nextFloat() < 0.005) {
@@ -155,11 +159,18 @@ public class Main {
     }
     
     private void generateMap() {
-        this.map = new Map(64, 64);
+        this.map = new Map(WORLD_SIZE, WORLD_SIZE);
         map.generate();
         if (model != null) model.destroyMesh();
         var mesh = MeshUtil.generateMeshFromMap(map);
         model = new Model(mesh, terrainMaterial);
+
+        amongUsModel.getTransformation()
+            .translation(
+                WORLD_SIZE / 2,
+                map.getHeight(WORLD_SIZE / 2, WORLD_SIZE / 2) + 2,
+                WORLD_SIZE / 2
+            );
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -184,8 +195,9 @@ public class Main {
         // Setup camera projection
         Matrix4f viewProjection = new Matrix4f()
             .perspective((float) Math.toRadians(45.0f), 1.0f, 0.01f, 1000.0f)
-            .lookAt(0.0f, /*80.0f*/120.0f, 0.0f,
-                    32.0f, 0.0f, 32.0f,
+            .lookAt(//0.0f, /*80.0f*/ /*120.0f*/ 70.0f, 0.0f,
+                    WORLD_SIZE / 4, 200.0f, WORLD_SIZE / 4,
+                    WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
                     // 32.0f, 2.0f, 32.0f,
                     // 0.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f);
