@@ -4,6 +4,187 @@ import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.simulation.world.Map;
 
 public class MeshUtil {
+    public static Mesh makePlane(float width, float depth, boolean center, int subdivide) {
+        float x0 = center ? - width / 2 : 0;
+        float z0 = center ? - depth / 2 : 0;
+
+        int length = (int) Math.pow(2, subdivide);
+        float w = width / length;
+        float d = depth / length;
+        float u = 1.0f / length;
+
+        int squares = (int) Math.pow(4, subdivide);
+        int triangles = squares * 2;
+
+        float[] vertices = new float[triangles * 3 * 3];
+        float[] uv = new float[triangles * 3 * 2];
+        for (int x=0;x<length;x++) {
+            for (int z=0;z<length;z++) {
+                int offset = (x * length + z) * 18;
+                int offsetUV = (x * length + z) * 12;
+
+                float minUVx = u * x;
+                float maxUVx = u * (x + 1);
+                float minUVy = u * z;
+                float maxUVy = u * (z + 1);
+
+                vertices[offset + 0 ] = x0 + w * x;
+                vertices[offset + 1 ] = 0;
+                vertices[offset + 2 ] = z0 + d * z;
+                vertices[offset + 3 ] = x0 + w * (x + 1);
+                vertices[offset + 4 ] = 0;
+                vertices[offset + 5 ] = z0 + d * z;
+                vertices[offset + 6 ] = x0 + w * (x + 1);
+                vertices[offset + 7 ] = 0;
+                vertices[offset + 8 ] = z0 + d * (z + 1);
+
+                uv[offsetUV + 0 ] = minUVx;
+                uv[offsetUV + 1 ] = minUVy;
+                uv[offsetUV + 2 ] = maxUVx;
+                uv[offsetUV + 3 ] = minUVy;
+                uv[offsetUV + 4 ] = maxUVx;
+                uv[offsetUV + 5 ] = maxUVy;
+
+                vertices[offset + 9 ] = x0 + w * x;
+                vertices[offset + 10] = 0;
+                vertices[offset + 11] = z0 + d * z;
+                vertices[offset + 12] = x0 + w * (x + 1);
+                vertices[offset + 13] = 0;
+                vertices[offset + 14] = z0 + d * (z + 1);
+                vertices[offset + 15] = x0 + w * x;
+                vertices[offset + 16] = 0;
+                vertices[offset + 17] = z0 + d * (z + 1);
+
+                uv[offsetUV + 6 ] = minUVx;
+                uv[offsetUV + 7 ] = minUVy;
+                uv[offsetUV + 8 ] = maxUVx;
+                uv[offsetUV + 9 ] = maxUVy;
+                uv[offsetUV + 10] = minUVx;
+                uv[offsetUV + 11] = maxUVy;
+            }
+        }
+
+        return Mesh.builder()
+            .vertex(vertices)
+            .render(uv, 2)
+            .build();
+    }
+
+    public static Mesh makeCube(float width, float height, float depth, boolean center) {
+        float x0 = center ? - width / 2 : 0;
+        float y0 = center ? - height / 2 : 0;
+        float z0 = center ? - depth / 2 : 0;
+        float x1 = center ? width / 2 : width;
+        float y1 = center ? height / 2 : height;
+        float z1 = center ? depth / 2 : depth;
+
+        float[] vertices = new float[] {
+            // Z positive
+            x1, y0, z1,
+            x0, y1, z1,
+            x0, y0, z1,
+            x1, y0, z1,
+            x1, y1, z1,
+            x0, y1, z1,
+
+            // Z negative
+            x1, y0, z0,
+            x0, y0, z0,
+            x0, y1, z0,
+            x1, y0, z0,
+            x0, y1, z0,
+            x1, y1, z0,
+
+            // X positive
+            x1, y0, z1,
+            x1, y0, z0,
+            x1, y1, z0,
+            x1, y0, z1,
+            x1, y1, z0,
+            x1, y1, z1,
+
+            // X negative
+            x0, y0, z1,
+            x0, y1, z0,
+            x0, y0, z0,
+            x0, y0, z1,
+            x0, y1, z1,
+            x0, y1, z0,
+
+            // Y positive
+            x1, y1, z0,
+            x0, y1, z0,
+            x0, y1, z1,
+            x1, y1, z0,
+            x0, y1, z1,
+            x1, y1, z1,
+
+            // Y negative
+            x1, y0, z0,
+            x0, y0, z1,
+            x0, y0, z0,
+            x1, y0, z0,
+            x1, y0, z1,
+            x0, y0, z1,
+        };
+
+        float[] uv = new float[] {
+            // Z positive
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+
+            // Z negative
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+
+            // X positive
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+
+            // X negative
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+
+            // Y positive
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+
+            // Y negative
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f
+        };
+
+        return Mesh.builder()
+            .vertex(vertices)
+            .render(uv, 2)
+            .generateNormalsForTriangles()
+            .build();
+    }
+
     public static final float HEIGHT_SCALE = 40.0f;
 
     public static Mesh generateMeshFromMap(Map map) {

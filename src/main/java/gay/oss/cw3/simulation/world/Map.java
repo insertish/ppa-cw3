@@ -59,9 +59,10 @@ public class Map {
 
     public float[] getAverageBiomeColour(int x, int z) {
         float r = 0, g = 0, b = 0, count = 0;
+        final int RADIUS = 5;
 
-        for (int X=x-1;X<x+2;X++) {
-            for (int Z=z-1;Z<z+2;Z++) {
+        for (int X=x-RADIUS;X<x+RADIUS+1;X++) {
+            for (int Z=z-RADIUS;Z<z+RADIUS+1;Z++) {
                 BiomeType entry = this.biomeMap.get(X, Z);
                 if (entry != null) {
                     count++;
