@@ -97,6 +97,9 @@ public class Window {
 
         // Set the clear color
         glClearColor(0.6f, 0.5f, 0.8f, 0.0f);
+
+        // Enable depth testing
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void setKeyCallback(IKeyCallback cbfun) {
