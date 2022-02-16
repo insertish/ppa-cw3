@@ -33,7 +33,7 @@ public class WorldRenderer {
 
         this.terrainModel = new Model(
             MeshUtil.generateIndexedMeshFromMap(map),
-            new Material(Resources.getShader("terrain"))
+            new Material(Resources.getShader("terrain"), Texture.fromResource("grass/diffuse.jpg"))
         );
 
         if (this.waterModel != null) {
