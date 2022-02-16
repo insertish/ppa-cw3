@@ -1,6 +1,5 @@
 package gay.oss.cw3.simulation.world;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +13,8 @@ import gay.oss.cw3.simulation.entity.Entity;
 public class Map {
     private final int width;
     private final int depth;
+    
+    private float waterLevel = -8.0f;
 
     private final Grid<Entity> entities;
     private final Grid<Float> heightMap;
@@ -38,6 +39,10 @@ public class Map {
 
     public int getDepth() {
         return this.depth;
+    }
+
+    public float getWaterLevel() {
+        return this.waterLevel;
     }
 
     public Grid<Entity> getEntities() {
@@ -65,7 +70,6 @@ public class Map {
     public float[] getAverageBiomeColour(int xCentre, int zCentre) {
         final int radius = 5;
         final List<float[]> colours = new ArrayList<>();
-        final int RADIUS = 5;
 
         for (int x=xCentre-radius;x<=xCentre+radius;x++) {
             for (int dZ=zCentre-radius;dZ<=zCentre+radius;dZ++) {
@@ -122,7 +126,7 @@ public class Map {
 
         for (int x=0;x<this.width;x++) {
             for (int z=0;z<this.depth;z++) {
-                this.heightMap.set(x, z, heightNoise.GetNoise(x, z));
+                this.heightMap.set(x, z, heightNoise.GetNoise(x, z) * 40.0f);
             }
         }
     }

@@ -23,6 +23,7 @@ public class Mesh {
 
     // ! FIXME: FIXME
     public boolean indexed;
+    public int triangles;
     
     private final List<Integer> vbo;
 
@@ -72,7 +73,7 @@ public class Mesh {
         this.bind();
 
         if (this.indexed) {
-            glDrawElements(GL_TRIANGLES, this.vertices * 6, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, this.triangles, GL_UNSIGNED_INT, 0);
         } else {
             glDrawArrays(GL_TRIANGLES, 0, this.vertices);
         }
@@ -85,7 +86,9 @@ public class Mesh {
      * @param data Float data array.
      * @return Vertex Buffer Object ID
      */
-    private int bindArray(int attribute, int components, float[] data) {
+    public int bindArray(int attribute, int components, float[] data) {
+        this.bind();
+
         int vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
@@ -127,6 +130,7 @@ public class Mesh {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, builder.indices, GL_STATIC_DRAW);
             mesh.indexed = true;
+            mesh.triangles = builder.indices.length;
             // add vbo
         }
 

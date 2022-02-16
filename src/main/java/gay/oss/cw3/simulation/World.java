@@ -21,11 +21,16 @@ public class World {
 
     public World(int width, int depth) {
         this.map = new Map(width, depth);
+        this.map.generate();
+
         this.entities = Collections.synchronizedList(new ArrayList<>());
         this.entitiesToSpawn = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void tick() {
+        time++;
+        if (true) return;
+
         synchronized (entities) {
             time++;
             Iterator<Entity> iter = entities.iterator();
@@ -63,6 +68,10 @@ public class World {
 
     public int getEntityCount() {
         return this.entities.size();
+    }
+
+    public Map getMap() {
+        return this.map;
     }
 
     public List<Entity> getEntities() {
