@@ -11,6 +11,7 @@ import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.simulation.World;
+import gay.oss.cw3.simulation.entity.Entity;
 
 public class WorldRenderer {
     private final World world;
@@ -64,6 +65,10 @@ public class WorldRenderer {
         this.models.put(clazz, model);
     }
 
+    public void autoLoadModel(Class<?> clazz, String name) throws Exception {
+        this.setModel(clazz, new ModelEntity(Texture.fromResource("entities/" + name)));
+    }
+
     private static class SmoothedRandom {
         private float value;
         private final float variation;
@@ -85,12 +90,14 @@ public class WorldRenderer {
     public void draw(Matrix4f viewProjection) {
         var map = this.world.getMap();
 
+        // 1. render terrain
         this.terrainModel.use();
         var program = ShaderProgram.getCurrent();
         var offset = (this.world.getTime() * 0.1f) % 64.0f;
         program.setUniform("lightPos", new Vector3f(offset, 64.0f, offset));
         this.terrainModel.draw(viewProjection);
         
+        // 2. render water
         this.waterModel
             .getTransformation()
             .translation(0.0f, map.getWaterLevel(), 0.0f)
@@ -108,5 +115,20 @@ public class WorldRenderer {
         program.setUniform("waterDisplacementModifier", 1.4f);
         program.setUniform("waterRandomDisplacement", this.random.next());
         this.waterModel.draw(viewProjection);
+
+        // 3. render entities
+        for (int x=0;x<map.getWidth();x++) {
+            for (int z=0;z<map.getDepth();z++) {
+                Entity entity = this.world.getEntity(x, z);
+                if (entity != null) {
+                    Model model = this.models.get(entity.getClass());
+
+                    model.getTransformation()
+                        .translation(x + 0.25f, Math.max(map.getWaterLevel(), map.getHeight(x, z)) + 1, z + 0.25f);
+                    
+                    model.draw(viewProjection);
+                }
+            }
+        }
     }
 }

@@ -29,10 +29,8 @@ public class World {
 
     public void tick() {
         time++;
-        if (true) return;
 
         synchronized (entities) {
-            time++;
             Iterator<Entity> iter = entities.iterator();
             while (iter.hasNext()) {
                 Entity entity = iter.next();

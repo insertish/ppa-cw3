@@ -46,9 +46,6 @@ public class Main {
 
     private Model amongUsModel;
 
-    private Model entityModel;
-    private Model entity2Model;
-
     private void init() throws Exception {
         Util.initialiseLWJGL();
 
@@ -106,10 +103,6 @@ public class Main {
         amongUsModel.getTransformation()
             .translate(WORLD_SIZE / 2, WORLD_SIZE/2 + this.world.getMap().getHeight(WORLD_SIZE / 2, WORLD_SIZE / 2) * 2, WORLD_SIZE / 2)
             .scale(WORLD_SIZE / 10, WORLD_SIZE / 5, WORLD_SIZE / 10);
-
-        // Cube
-        entityModel = new ModelEntity(Texture.fromResource("entities/hunter.jpg"));
-        entity2Model = new ModelEntity(Texture.fromResource("entities/cell.jpg"));
     }
 
     private void generateWorld() throws Exception {
@@ -130,6 +123,9 @@ public class Main {
         // Setup World renderer
         this.worldRenderer = new WorldRenderer(this.world);
         this.worldRenderer.init();
+
+        this.worldRenderer.autoLoadModel(Hunter.class, "hunter.jpg");
+        this.worldRenderer.autoLoadModel(EntityCell.class, "cell.jpg");
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -179,48 +175,14 @@ public class Main {
         /*amongUsModel.getTransformation()
             .rotate(0.2f, 0, 1, 0);*/
 
-        /*// Draw model
-        this.model.use();
-        var program = ShaderProgram.getCurrent();
-        program.setUniform("lightPos", new Vector3f(Z_POS, 64.0f, Z_POS));
-
-        Z_POS += 0.3f;
-        if (Z_POS > WORLD_SIZE) Z_POS = -WORLD_SIZE;
-
-        this.model.draw(viewProjection);
-
-        // Draw water level
-        this.waterModel.use();
-        ShaderProgram.getCurrent().setUniform("time", i);
-        this.waterModel.draw(viewProjection);
-
-        i += 0.01f;
-
         // Draw Among Us
         // this.amongUsModel.draw(viewProjection);
 
-        // Tick
+        /*// Tick
         world.tick();
 
         // Draw all entities
-        for (int x=0;x<this.map.getWidth();x++) {
-            for (int z=0;z<this.map.getDepth();z++) {
-                Entity entity = this.world.getEntity(x, z);
-                if (entity != null) {
-                    Model model;
-                    if (entity instanceof EntityCell) {
-                        model = this.entity2Model;
-                    } else {
-                        model = this.entityModel;
-                    }
-
-                    model.getTransformation()
-                        .translation(x + 0.25f, Math.max(-8.0f, this.map.getHeight(x, z)) + 1, z + 0.25f);
-                    
-                    model.draw(viewProjection);
-                }
-            }
-        }*/
+        */
 
         // World rendering
         this.world.tick();
