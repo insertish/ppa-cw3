@@ -7,11 +7,17 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
+import java.util.List;
+
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
+import gay.oss.cw3.renderer.objects.Material;
+import gay.oss.cw3.renderer.objects.Mesh;
+import gay.oss.cw3.renderer.objects.Model;
+import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.renderer.simulation.WorldRenderer;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.World;
@@ -32,6 +38,8 @@ public class Main {
     private World world;
     private WorldRenderer worldRenderer;
 
+    private Model pieChartModel;
+
     private void init() throws Exception {
         Util.initialiseLWJGL();
 
@@ -47,6 +55,75 @@ public class Main {
 
         // Configure World
         this.generateWorld();
+    }
+
+    private void genPieChart() throws Exception {
+        if (pieChartModel != null) {
+            pieChartModel.destroyMesh();
+        }
+
+        int splits = 360;
+        float angleDiff = (1.0f / 360.0f) * 2 * (float) Math.PI;
+
+        float[] vertex = new float[splits * 3 * 3];
+        float[] color = new float[splits * 3 * 3];
+
+
+        // count
+        List<Entity> entities = world.getEntities();
+        int hunt = 0;
+        int cell = 0;
+        for (Entity entity : entities) {
+            if (entity instanceof EntityCell) cell++;
+            else hunt ++;
+        }
+
+        int total = hunt + cell;
+        int v = Math.round(((float) hunt / (float) total) * (float) splits);
+
+
+
+
+        for (int sect=0;sect<splits;sect++) {
+            int offset = sect * 3 * 3;
+
+            float angle = sect * angleDiff;
+            float nextAngle = (sect + 1) * angleDiff;
+
+            vertex[offset    ] = 0;
+            vertex[offset + 1] = 0;
+            vertex[offset + 2] = 0;
+
+            vertex[offset + 3] = (float) Math.cos(angle);
+            vertex[offset + 4] = (float) Math.sin(angle);
+            vertex[offset + 5] = 0;
+
+            vertex[offset + 6] = (float) Math.cos(nextAngle);
+            vertex[offset + 7] = (float) Math.sin(nextAngle);
+            vertex[offset + 8] = 0;
+
+            int r = 0, g = 0, b = 0;
+            if (sect > v) {
+                r = 1;
+            } else {
+                g = 1;
+            }
+
+            color[offset    ] = r;
+            color[offset + 1] = g;
+            color[offset + 2] = b;
+            color[offset + 3] = r;
+            color[offset + 4] = g;
+            color[offset + 5] = b;
+            color[offset + 6] = r;
+            color[offset + 7] = g;
+            color[offset + 8] = b;
+        }
+
+        pieChartModel = new Model(
+            Mesh.builder().vertex(vertex).render(color, 3).build(),
+            new Material(ShaderProgram.fromName("PIECHARTOMEGALUL"))
+        );
     }
 
     private void generateWorld() throws Exception {
@@ -74,6 +151,10 @@ public class Main {
                     synchronized (world) {
                         world.tick();
                     }
+
+                    try {
+                        Thread.sleep(10);
+                    } catch (Exception e) {}
                 }
             }
         };
@@ -114,6 +195,11 @@ public class Main {
 
         // World rendering
         this.worldRenderer.draw(viewProjection);
+
+        // draw pie chart
+        glClear(GL_DEPTH_BUFFER_BIT);
+        try { this.genPieChart(); } catch (Exception e) { }
+        this.pieChartModel.draw(viewProjection);
 
         // Update title with render time.
         window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + world.getTime());
