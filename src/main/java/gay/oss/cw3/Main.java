@@ -25,12 +25,14 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.world.WorldGenerator;
 
 public class Main {
-    public static int WORLD_SIZE = 128;
+    public static int WORLD_SIZE = 256;//128;
 
     private Window window;
 
     private World world;
     private WorldRenderer worldRenderer;
+
+    private Thread tickThread;
 
     private void init() throws Exception {
         Util.initialiseLWJGL();
@@ -49,7 +51,14 @@ public class Main {
         this.generateWorld();
     }
 
+    public void destroy() {
+        this.tickThread.interrupt();
+    }
+
     private void generateWorld() throws Exception {
+        // Kill existing thread if running
+        if (this.tickThread != null) this.tickThread.interrupt();
+
         // Create World
         world = new World(WORLD_SIZE, WORLD_SIZE);
 
@@ -68,9 +77,9 @@ public class Main {
         this.worldRenderer.autoLoadModel(EntityCell.class, "cell.jpg");
 
         // Off-load World tick to another thread
-        Thread thread = new Thread(){
+        tickThread = new Thread(){
             public void run() {
-                for (;;) {
+                while (!Thread.currentThread().isInterrupted()) {
                     synchronized (world) {
                         world.tick();
                     }
@@ -78,7 +87,7 @@ public class Main {
             }
         };
         
-        thread.start();
+        tickThread.start();
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -108,7 +117,8 @@ public class Main {
             .lookAt(
                     //-20, 20, -20,
                     //0, 0, 0,
-                    WORLD_SIZE / 5, 100.0f, WORLD_SIZE / 5,
+                    //WORLD_SIZE / 5, 100.0f, WORLD_SIZE / 5,
+                    WORLD_SIZE / 3, 120.0f, WORLD_SIZE / 3,
                     WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
                     0.0f, 1.0f, 0.0f);
 
@@ -135,6 +145,8 @@ public class Main {
 
         while (!instance.window.shouldClose())
             instance.renderLoop();
+        
+        instance.destroy();
     }
 
     public static class EntityCell extends AbstractBreedableEntity {

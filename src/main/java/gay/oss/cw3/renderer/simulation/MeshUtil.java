@@ -242,6 +242,7 @@ public class MeshUtil {
         // 1st pass. generate position and colour vertex information
         float[] vertices = new float[(width) * (depth) * 3];
         float[] colour = new float[(width) * (depth) * 3];
+        float[] uv = new float[(width) * (depth) * 2];
         for (int x=0;x<width;x++) {
             for (int z=0;z<depth;z++) {
                 int offset = 3 * (z * width + x);
@@ -253,6 +254,10 @@ public class MeshUtil {
                 colour[offset    ] = c[0];
                 colour[offset + 1] = c[1];
                 colour[offset + 2] = c[2];
+
+                int offsetUV = 2 * (z * width + x);
+                uv[offsetUV    ] = (float) x / (float) width;
+                uv[offsetUV + 1] = (float) z / (float) depth;
             }
         }
 
@@ -294,12 +299,15 @@ public class MeshUtil {
             }
         }
 
-        return Mesh.builder()
+        var mesh = Mesh.builder()
             .vertex(vertices)
             .render(colour, 3)
             .normal(normal)
             .indices(indices)
             .build();
+
+        mesh.bindArray(3, 2, uv);
+        return mesh;
     }
 
     public static Mesh generateMeshFromMap(Map map) {
