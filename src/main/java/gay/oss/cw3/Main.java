@@ -22,6 +22,7 @@ import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.renderer.simulation.MeshUtil;
 import gay.oss.cw3.renderer.simulation.ModelEntity;
+import gay.oss.cw3.renderer.simulation.WorldRenderer;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
@@ -36,28 +37,19 @@ import gay.oss.cw3.simulation.world.Map;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
-    public static int WORLD_SIZE = 256;
+    public static int WORLD_SIZE = 128;
 
     private Window window;
 
     private World world;
-    
-    private Material terrainMaterial;
-    private Model model;
-    private Map map;
+    private WorldRenderer worldRenderer;
 
-    private Model waterModel;
     private Model amongUsModel;
+
     private Model entityModel;
     private Model entity2Model;
-    
-    private Model cubeModel;
 
     private void init() throws Exception {
-        // BRAINS TEST
-        this.generateWorld();
-        // BRAINS END
-
         Util.initialiseLWJGL();
 
         // Configure Window
@@ -70,32 +62,12 @@ public class Main {
             if (action == GLFW_PRESS) onKeyPress(key, modifiers);
         });
 
+        // BRAINS TEST
+        this.generateWorld();
+        // BRAINS END
+
         // Init texture program
         var textureProgram = ShaderProgram.fromName("texturedObject");
-
-        // Generic UV coordinates
-        float[] uv = {
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-        };
-
-        // Water
-        var waterMesh = MeshUtil.makePlane(1, 1, false, 5);
-        
-        var waterMaterial = new Material(
-            ShaderProgram.fromName("water"),
-            Texture.fromResource("water.jpg")
-        );
-
-        waterModel = new Model(waterMesh, waterMaterial);
-        waterModel.getTransformation()
-            .translation(0.0f, -8.0f, 0.0f)
-            .scale((float) WORLD_SIZE, 1, (float) WORLD_SIZE);
 
         // Create a spinning among us square
         float vertex[] = {
@@ -108,6 +80,17 @@ public class Main {
             -0.8f, 0.8f, 0.0f, // TL
         };
 
+        // Generic UV coordinates
+        float[] uv = {
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+        };
+
         var mesh = Mesh.builder()
             .vertex(vertex)
             .render(uv, 2)
@@ -117,27 +100,19 @@ public class Main {
             textureProgram,
             Texture.fromResource("amogus.png")
         );
-        
-        // Generate the terrain
-        var terrainProgram = ShaderProgram.fromName("terrain");
-        this.terrainMaterial = new Material(terrainProgram);
-        this.generateMap();
 
         // Make Among Us
         amongUsModel = new Model(mesh, material);
         amongUsModel.getTransformation()
-            .translate(WORLD_SIZE / 2, WORLD_SIZE/2 + map.getHeight(WORLD_SIZE / 2, WORLD_SIZE / 2) * 2, WORLD_SIZE / 2)
+            .translate(WORLD_SIZE / 2, WORLD_SIZE/2 + this.world.getMap().getHeight(WORLD_SIZE / 2, WORLD_SIZE / 2) * 2, WORLD_SIZE / 2)
             .scale(WORLD_SIZE / 10, WORLD_SIZE / 5, WORLD_SIZE / 10);
 
-        entityModel = new Model(mesh, material);
-
-        entity2Model = new Model(waterMesh, waterMaterial);
-
         // Cube
-        cubeModel = new ModelEntity(Texture.fromResource("amogus.png"));
+        entityModel = new ModelEntity(Texture.fromResource("entities/hunter.jpg"));
+        entity2Model = new ModelEntity(Texture.fromResource("entities/cell.jpg"));
     }
 
-    private void generateWorld() {
+    private void generateWorld() throws Exception {
         world = new World(WORLD_SIZE, WORLD_SIZE);
 
         for (int x=0;x<WORLD_SIZE;x++) {
@@ -151,14 +126,10 @@ public class Main {
         }
 
         world.tick();
-    }
-    
-    private void generateMap() {
-        this.map = new Map(WORLD_SIZE, WORLD_SIZE);
-        map.generate();
-        if (model != null) model.destroyMesh();
-        var mesh = MeshUtil.generateIndexedMeshFromMap(map);
-        model = new Model(mesh, terrainMaterial);
+        
+        // Setup World renderer
+        this.worldRenderer = new WorldRenderer(this.world);
+        this.worldRenderer.init();
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -166,9 +137,9 @@ public class Main {
             // should quit render loop and clean up
             System.exit(0);
         } else if (key == GLFW.GLFW_KEY_N) {
-            this.generateMap();
-        } else if (key == GLFW.GLFW_KEY_R) {
-            this.generateWorld();
+            try {
+                this.generateWorld();
+            } catch (Exception e) {}
         }
     }
 
@@ -190,10 +161,12 @@ public class Main {
             .perspective((float) Math.toRadians(45.0f), window.getWidth() / window.getHeight(), 0.01f, 1000.0f)
             .lookAt(
                     //2, 2, 2,
+                    //-20, 20, -20,
                     //0, 0, 0,
-                    //0, 80.0f, 0,
-                    WORLD_SIZE / 2.8f, 120.0f, WORLD_SIZE / 2.8f,
+                    WORLD_SIZE / 5, 100.0f, WORLD_SIZE / 5,
                     WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
+                    //WORLD_SIZE / 2.8f, 120.0f, WORLD_SIZE / 2.8f,
+                    //WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
                     0.0f, 1.0f, 0.0f);
 
         // testing
@@ -203,10 +176,10 @@ public class Main {
         //cubeModel.draw(viewProjection);
         
         // Rotate Among Us
-        amongUsModel.getTransformation()
-            .rotate(0.2f, 0, 1, 0);
+        /*amongUsModel.getTransformation()
+            .rotate(0.2f, 0, 1, 0);*/
 
-        // Draw model
+        /*// Draw model
         this.model.use();
         var program = ShaderProgram.getCurrent();
         program.setUniform("lightPos", new Vector3f(Z_POS, 64.0f, Z_POS));
@@ -227,7 +200,7 @@ public class Main {
         // this.amongUsModel.draw(viewProjection);
 
         // Tick
-        /*world.tick();
+        world.tick();
 
         // Draw all entities
         for (int x=0;x<this.map.getWidth();x++) {
@@ -242,12 +215,16 @@ public class Main {
                     }
 
                     model.getTransformation()
-                        .translation(x, this.map.getHeight(x, z) * 40.0f + 0.2f, z);
+                        .translation(x + 0.25f, Math.max(-8.0f, this.map.getHeight(x, z)) + 1, z + 0.25f);
                     
                     model.draw(viewProjection);
                 }
             }
         }*/
+
+        // World rendering
+        this.world.tick();
+        this.worldRenderer.draw(viewProjection);
 
         // Update title with render time.
         window.setTitle("Genshin Impact - Frame took " + (System.currentTimeMillis() - start) + "ms");

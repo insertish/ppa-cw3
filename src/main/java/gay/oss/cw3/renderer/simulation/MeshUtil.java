@@ -5,6 +5,55 @@ import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.simulation.world.Map;
 
 public class MeshUtil {
+    public static Mesh makeIndexedPlane(float width, float depth, boolean center, int subdivide) {
+        float x0 = center ? - width / 2 : 0;
+        float z0 = center ? - depth / 2 : 0;
+
+        int length = (int) Math.pow(2, subdivide);
+        float w = width / length;
+        float d = depth / length;
+        float u = 1.0f / length;
+
+        int verticesCount = length * length;
+
+        // 1st pass. generate vertex data
+        float[] vertex = new float[verticesCount * 3];
+        float[] uv = new float[verticesCount * 2];
+
+        for (int x=0;x<length;x++) {
+            for (int z=0;z<length;z++) {
+                int offset = (z * length + x) * 3;
+                vertex[offset    ] = x0 + w * x;
+                vertex[offset + 1] = 0;
+                vertex[offset + 2] = z0 + d * z;
+
+                int offsetUV = (z * length + x) * 2;
+                uv[offsetUV    ] = u * x;
+                uv[offsetUV + 1] = u * z;
+            }
+        }
+
+        // 2nd pass. generate element array buffer
+        int[] indices = new int[verticesCount * 6];
+        for (int x=0;x<length-1;x++) {
+            for (int z=0;z<length-1;z++) {
+                int offset = (z * length + x) * 6;                
+                indices[offset    ] = z * length + x;
+                indices[offset + 1] = z * length + x + 1;
+                indices[offset + 2] = (z + 1) * length + x + 1;
+                indices[offset + 3] = z * length + x;
+                indices[offset + 4] = (z + 1) * length + x + 1;
+                indices[offset + 5] = (z + 1) * length + x;
+            }
+        }
+
+        return Mesh.builder()
+            .vertex(vertex)
+            .render(uv, 2)
+            .indices(indices)
+            .build();
+    }
+
     public static Mesh makePlane(float width, float depth, boolean center, int subdivide) {
         float x0 = center ? - width / 2 : 0;
         float z0 = center ? - depth / 2 : 0;
@@ -186,8 +235,6 @@ public class MeshUtil {
             .build();
     }
 
-    public static final float HEIGHT_SCALE = 40.0f;
-
     public static Mesh generateIndexedMeshFromMap(Map map) {
         int width = map.getWidth();
         int depth = map.getDepth();
@@ -199,7 +246,7 @@ public class MeshUtil {
             for (int z=0;z<depth;z++) {
                 int offset = 3 * (z * width + x);
                 vertices[offset    ] = x;
-                vertices[offset + 1] = map.getHeight(x, z) * HEIGHT_SCALE;
+                vertices[offset + 1] = map.getHeight(x, z);
                 vertices[offset + 2] = z;
 
                 float[] c = map.getAverageBiomeColour(x, z);
@@ -263,10 +310,10 @@ public class MeshUtil {
         float[] colour = new float[(width) * (depth) * 36];
         for (int x=0;x<width-1;x++) {
             for (int z=0;z<depth-1;z++) {
-                float x0z0 = map.getHeight(x, z) * HEIGHT_SCALE;
-                float x1z0 = map.getHeight(x + 1, z) * HEIGHT_SCALE;
-                float x0z1 = map.getHeight(x, z + 1) * HEIGHT_SCALE;
-                float x1z1 = map.getHeight(x + 1, z + 1) * HEIGHT_SCALE;
+                float x0z0 = map.getHeight(x, z);
+                float x1z0 = map.getHeight(x + 1, z);
+                float x0z1 = map.getHeight(x, z + 1);
+                float x1z1 = map.getHeight(x + 1, z + 1);
 
                 float[] c_x0z0 = map.getAverageBiomeColour(x, z);
                 float[] c_x1z0 = map.getAverageBiomeColour(x + 1, z);
