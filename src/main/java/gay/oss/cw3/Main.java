@@ -7,21 +7,11 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
-import java.util.Random;
-
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
-import gay.oss.cw3.renderer.objects.Material;
-import gay.oss.cw3.renderer.objects.Mesh;
-import gay.oss.cw3.renderer.objects.Model;
-import gay.oss.cw3.renderer.objects.Texture;
-import gay.oss.cw3.renderer.shaders.ShaderProgram;
-import gay.oss.cw3.renderer.simulation.MeshUtil;
-import gay.oss.cw3.renderer.simulation.ModelEntity;
 import gay.oss.cw3.renderer.simulation.WorldRenderer;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.World;
@@ -32,9 +22,7 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
-import gay.oss.cw3.simulation.world.Map;
-
-import static org.lwjgl.opengl.GL11.*;
+import gay.oss.cw3.simulation.world.WorldGenerator;
 
 public class Main {
     public static int WORLD_SIZE = 128;
@@ -44,13 +32,11 @@ public class Main {
     private World world;
     private WorldRenderer worldRenderer;
 
-    private Model amongUsModel;
-
     private void init() throws Exception {
         Util.initialiseLWJGL();
 
         // Configure Window
-        window = Window.create(1280, 720, "Genshin Impact");
+        window = Window.create(1280, 720, "Deez");
         window.configureGL();
         window.makeVisible();
 
@@ -59,73 +45,40 @@ public class Main {
             if (action == GLFW_PRESS) onKeyPress(key, modifiers);
         });
 
-        // BRAINS TEST
+        // Configure World
         this.generateWorld();
-        // BRAINS END
-
-        // Init texture program
-        var textureProgram = ShaderProgram.fromName("texturedObject");
-
-        // Create a spinning among us square
-        float vertex[] = {
-            -0.8f, -0.8f, 0.0f, // BL
-            0.8f, -0.8f, 0.0f, // BR
-            0.8f, 0.8f, 0.0f, // TR
-
-            -0.8f, -0.8f, 0.0f, // BL
-            0.8f, 0.8f, 0.0f, // TR
-            -0.8f, 0.8f, 0.0f, // TL
-        };
-
-        // Generic UV coordinates
-        float[] uv = {
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-        };
-
-        var mesh = Mesh.builder()
-            .vertex(vertex)
-            .render(uv, 2)
-            .build();
-        
-        var material = new Material(
-            textureProgram,
-            Texture.fromResource("amogus.png")
-        );
-
-        // Make Among Us
-        amongUsModel = new Model(mesh, material);
-        amongUsModel.getTransformation()
-            .translate(WORLD_SIZE / 2, WORLD_SIZE/2 + this.world.getMap().getHeight(WORLD_SIZE / 2, WORLD_SIZE / 2) * 2, WORLD_SIZE / 2)
-            .scale(WORLD_SIZE / 10, WORLD_SIZE / 5, WORLD_SIZE / 10);
     }
 
     private void generateWorld() throws Exception {
+        // Create World
         world = new World(WORLD_SIZE, WORLD_SIZE);
 
-        for (int x=0;x<WORLD_SIZE;x++) {
-            for (int z=0;z<WORLD_SIZE;z++) {
-                if (new Random().nextFloat() < 0.05) {
-                    new EntityCell(world, new Coordinate(x, z));
-                } else if (new Random().nextFloat() < 0.005) {
-                    new Hunter(world, new Coordinate(x, z));
-                }
-            }
-        }
-
-        world.tick();
+        // Generate World
+        var generator = new WorldGenerator(world);
+        generator.registerEntity(EntityCell.class, 0.05f);
+        generator.registerEntity(Hunter.class, 0.005f);
+        generator.generate();
         
         // Setup World renderer
         this.worldRenderer = new WorldRenderer(this.world);
         this.worldRenderer.init();
 
+        // Configure Models
         this.worldRenderer.autoLoadModel(Hunter.class, "hunter.jpg");
         this.worldRenderer.autoLoadModel(EntityCell.class, "cell.jpg");
+
+        // Off-load World tick to another thread
+        Thread thread = new Thread(){
+            public void run() {
+                for (;;) {
+                    synchronized (world) {
+                        world.tick();
+                    }
+                }
+            }
+        };
+        
+        thread.start();
     }
 
     private void onKeyPress(int key, int modifiers) {
@@ -138,9 +91,6 @@ public class Main {
             } catch (Exception e) {}
         }
     }
-
-    private static float Z_POS = -WORLD_SIZE;
-    private static float i = 0;
 
     private void renderLoop() {
         long start = System.currentTimeMillis();
@@ -156,40 +106,17 @@ public class Main {
         Matrix4f viewProjection = new Matrix4f()
             .perspective((float) Math.toRadians(45.0f), window.getWidth() / window.getHeight(), 0.01f, 1000.0f)
             .lookAt(
-                    //2, 2, 2,
                     //-20, 20, -20,
                     //0, 0, 0,
                     WORLD_SIZE / 5, 100.0f, WORLD_SIZE / 5,
                     WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
-                    //WORLD_SIZE / 2.8f, 120.0f, WORLD_SIZE / 2.8f,
-                    //WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
                     0.0f, 1.0f, 0.0f);
 
-        // testing
-        //cubeModel.getTransformation()
-            //.rotate(0.05f, 1, 1, 0);
-
-        //cubeModel.draw(viewProjection);
-        
-        // Rotate Among Us
-        /*amongUsModel.getTransformation()
-            .rotate(0.2f, 0, 1, 0);*/
-
-        // Draw Among Us
-        // this.amongUsModel.draw(viewProjection);
-
-        /*// Tick
-        world.tick();
-
-        // Draw all entities
-        */
-
         // World rendering
-        this.world.tick();
         this.worldRenderer.draw(viewProjection);
 
         // Update title with render time.
-        window.setTitle("Genshin Impact - Frame took " + (System.currentTimeMillis() - start) + "ms");
+        window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + world.getTime());
 
         // Swap framebuffers.
         window.swap();
@@ -210,7 +137,7 @@ public class Main {
             instance.renderLoop();
     }
 
-    static class EntityCell extends AbstractBreedableEntity {
+    public static class EntityCell extends AbstractBreedableEntity {
         public EntityCell(World world, Coordinate location) {
             super(world, location, 0, true);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
@@ -242,13 +169,16 @@ public class Main {
         }
     }
 
-    static class Hunter extends Entity {
+    public static class Hunter extends AbstractBreedableEntity {
         public Hunter(World world, Coordinate location) {
             super(world, location, 0, true);
             this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
+            this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
 
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
+            this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 500);
+            this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 80);
         }
 
         @Override
@@ -256,6 +186,16 @@ public class Main {
             if (this.isAlive()) {
                 this.getBrain().tick();
             }
+        }
+
+        @Override
+        public Entity createChild(Entity otherParent, Coordinate location) {
+            return new Hunter(this.getWorld(), location);
+        }
+
+        @Override
+        public boolean isCompatible(Entity entity) {
+            return entity.isAlive();
         }
     }
 }
