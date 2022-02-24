@@ -1,7 +1,7 @@
 package gay.oss.cw3.renderer.interfaces;
 
 /**
- * Key press callback
+ * Scroll callback
  */
 public interface IScrollCallback {
     /**

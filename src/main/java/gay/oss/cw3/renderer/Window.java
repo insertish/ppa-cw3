@@ -2,18 +2,26 @@ package gay.oss.cw3.renderer;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_DEBUG_CONTEXT;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_RAW_MOUSE_MOTION;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwRawMouseMotionSupported;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
@@ -34,7 +42,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL;
 
+import gay.oss.cw3.renderer.interfaces.ICursorPosCallback;
 import gay.oss.cw3.renderer.interfaces.IKeyCallback;
+import gay.oss.cw3.renderer.interfaces.IMouseButtonCallback;
 import gay.oss.cw3.renderer.interfaces.IScrollCallback;
 
 /**
@@ -148,6 +158,29 @@ public class Window {
         glfwSetScrollCallback(this.pointer, (win, x, y) -> {
             cbfun.invoke(x, y);
         });
+    }
+
+    public void setMouseButtonCallback(IMouseButtonCallback cbfun) {
+        glfwSetMouseButtonCallback(this.pointer, (win, button, action, modifiers) -> {
+            cbfun.invoke(button, action, modifiers);
+        });
+    }
+
+    public void setCursorPosCallback(ICursorPosCallback cbfun) {
+        glfwSetCursorPosCallback(this.pointer, (win, xPos, yPos) -> {
+            cbfun.invoke(xPos, yPos);
+        });
+    }
+
+    public void grabMouse() {
+        glfwSetInputMode(this.pointer, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(this.pointer, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    }
+
+    public void freeMouse() {
+        glfwSetInputMode(this.pointer, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
     public void setTitle(String title) {

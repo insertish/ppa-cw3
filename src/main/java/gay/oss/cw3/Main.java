@@ -1,6 +1,7 @@
 package gay.oss.cw3;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -16,7 +17,7 @@ import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
 
 public class Main {
-    public static int WORLD_SIZE = 64;//256;//128;
+    public static int WORLD_SIZE = 256;//64;//256;//128;
 
     private Window window;
     private Scenario scenario;
@@ -25,6 +26,8 @@ public class Main {
     private double zoom = 40.0;
     private double viewAngle = 0.0;
     private double groundAngle = Math.PI / 3;
+
+    private boolean lmbHeld = false;
 
     private void init() throws Exception {
         Util.initialiseLWJGL();
@@ -43,6 +46,26 @@ public class Main {
         window.setScrollCallback((x, y) -> {
             zoom = (float) Math.max(zoom - y, 1.0);
         });
+
+        // Handle mouse click events
+        window.setMouseButtonCallback((button, action, modifiers) -> {
+            if (button == GLFW_MOUSE_BUTTON_LEFT) {
+                if (action == GLFW_PRESS) {
+                    lmbHeld = true;
+                } else {
+                    lmbHeld = false;
+                }
+            }
+
+            if (lmbHeld) {
+                window.grabMouse();
+            } else {
+                window.freeMouse();
+            }
+        });
+
+        // Handle mouse move events
+        window.setCursorPosCallback((xPos, yPos) -> this.onCursorPos(xPos, yPos));
 
         // Configure Scenario
         this.scenario = new DefaultScenario(WORLD_SIZE, WORLD_SIZE, true);
@@ -87,9 +110,18 @@ public class Main {
         }
     }
 
-    private void logic() {
-        // Rotate around a single point for now
-        viewAngle += 0.005;
+    private double lastX = 0;
+    private double lastY = 0;
+
+    private void onCursorPos(double x, double y) {
+        double dx = lastX - x, dy = lastY - y;
+        if (lmbHeld) {
+            this.viewAngle -= dx * 0.01;
+            this.groundAngle = Math.max(Math.min(this.groundAngle - dy * 0.01, Math.PI / 2 - 0.01), 0);
+        }
+
+        lastX = x;
+        lastY = y;
     }
 
     private void renderLoop() {
@@ -149,10 +181,8 @@ public class Main {
             System.exit(1);
         }
 
-        while (!instance.window.shouldClose()) {
-            instance.logic();
+        while (!instance.window.shouldClose())
             instance.renderLoop();
-        }
         
         instance.destroy();
     }
