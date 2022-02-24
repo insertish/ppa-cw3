@@ -53,16 +53,6 @@ public class Map {
         return this.entities.get(layer);
     }
 
-    public Grid<Float> getHeightMap() {
-        // ! FIXME: deprecate this
-        return this.heightMap;
-    }
-
-    public Grid<BiomeType> getBiomeMap() {
-        // ! FIXME: deprecate this
-        return this.biomeMap;
-    }
-
     public float getHeight(int x, int z) {
         return this.heightMap.get(x, z);
     }
