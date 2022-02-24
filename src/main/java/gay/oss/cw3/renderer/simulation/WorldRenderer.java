@@ -125,7 +125,7 @@ public class WorldRenderer {
                     Model model = this.models.get(entity.getClass());
 
                     model.getTransformation()
-                        .translation(x + 0.25f, Math.max(map.getWaterLevel(), map.getHeight(x, z)) + 1, z + 0.25f);
+                        .translation(x + 0.25f, Math.max(map.getWaterLevel(), map.getHeight(x, z)) + 0.5f, z + 0.25f);
                     
                     model.draw(viewProjection);
                 }

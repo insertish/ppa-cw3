@@ -33,7 +33,7 @@ import gay.oss.cw3.simulation.world.EntityLayer;
 import gay.oss.cw3.simulation.world.WorldGenerator;
 
 public class Main {
-    public static int WORLD_SIZE = 256;//128;
+    public static int WORLD_SIZE = 64;//256;//128;
 
     private Window window;
 
