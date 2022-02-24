@@ -1,4 +1,5 @@
 #version 330 core
+#include "lighting.frag"
 
 in vec2 fragUV;
 in float fragDepth;
@@ -11,7 +12,7 @@ uniform float waterTransparency;
 uniform sampler2D texSampler;
 
 void main() {
-    color = texture(texSampler, fragUV);
+    color = lighting(texture(texSampler, fragUV));
     color.a = min(waterTransparency,
         (waterHeight - fragDepth) / waterFadeUnits);
 }

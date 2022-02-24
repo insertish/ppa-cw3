@@ -32,6 +32,7 @@ import org.lwjgl.system.MemoryStack;
  */
 public class ShaderProgram {
     private static ShaderProgram CURRENT_SHADER;
+    // private static final Map<String, Object> uniformValues = new HashMap<>();
 
     private final int id;
     private final Map<String, Integer> uniformLocations;
@@ -168,11 +169,11 @@ public class ShaderProgram {
      * @throws Exception if the shaders fail to compile or the shader program fails to link
      */
     public static ShaderProgram fromResources(String vertex, String fragment, @Nullable String geometry) throws Exception {
-        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + vertex + ".glsl").readAllBytes()));
-        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + fragment + ".glsl").readAllBytes()));
+        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, Shader.load(vertex));
+        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, Shader.load(fragment));
 
         if (geometry != null) {
-            Shader geoShader = Shader.create(GL_GEOMETRY_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + geometry + ".glsl").readAllBytes()));
+            Shader geoShader = Shader.create(GL_GEOMETRY_SHADER, Shader.load(geometry));
             return ShaderProgram.create(new Shader[] { vertexShader, fragShader, geoShader });
         }
 

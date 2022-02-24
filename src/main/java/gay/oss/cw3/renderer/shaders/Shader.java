@@ -1,6 +1,16 @@
 package gay.oss.cw3.renderer.shaders;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glDeleteShader;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderiv;
+import static org.lwjgl.opengl.GL20.glShaderSource;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.regex.Pattern;
 
 /**
  * Wrapper class around an OpenGL shader
@@ -57,5 +67,25 @@ public class Shader {
         }
 
         return new Shader(id);
+    }
+
+    private static final Pattern pattern = Pattern.compile("^\\s*#include \"([\\w\\.]+)\"$", Pattern.MULTILINE);
+
+    private static String loadResource(String path) throws IOException {
+        return new String(ShaderProgram.class.getResourceAsStream("/shaders/" + path + ".glsl").readAllBytes());
+    }
+
+    public static String load(String path) throws IOException {
+        String source = Shader.loadResource(path);
+
+        return pattern
+            .matcher(source)
+            .replaceAll(mr -> {
+                try {
+                    return Shader.loadResource("lib/" + mr.group(1));
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            });
     }
 }

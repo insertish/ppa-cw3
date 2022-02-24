@@ -10,12 +10,12 @@ public class ModelEntity extends Model {
 
     public ModelEntity(Texture texture) throws Exception {
         super(MeshUtil.makeCube(0.5f, 1f, 0.5f, false),
-            new Material(Resources.getShader("texturedObject"), texture));
+            new Material(Resources.getShader("textured"), texture));
     }
 
     public ModelEntity(Texture texture, String modelName, float scale) throws Exception {
         super(Mesh.loadObjFromResource(modelName).build(),
-            new Material(Resources.getShader("texturedObject"), texture));
+            new Material(Resources.getShader("textured"), texture));
         
         this.scale = scale;
     }

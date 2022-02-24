@@ -118,7 +118,7 @@ public class WorldRenderer {
         program.setUniform("waterHeight", map.getWaterLevel());
         program.setUniform("waterFadeUnits", 10.0f);
         program.setUniform("waterTransparency", 0.4f);
-        program.setUniform("waterWaveHeight", 1.0f);
+        program.setUniform("waterWaveHeight", -1.0f);
         program.setUniform("waterWaveFrequency", 8.0f);
         program.setUniform("waterWaveSpeed", 0.1f);
         program.setUniform("waterDisplacementModifier", 1.4f);

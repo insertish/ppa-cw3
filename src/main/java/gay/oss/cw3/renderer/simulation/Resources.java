@@ -9,8 +9,13 @@ public class Resources {
 
     public static ShaderProgram getShader(String shader) throws Exception {
         if (shaders.containsKey(shader)) return shaders.get(shader);
-        var program = ShaderProgram.fromName(shader);
-        shaders.put(shader, program);
-        return program;
+        try {
+            var program = ShaderProgram.fromName(shader);
+            shaders.put(shader, program);
+            return program;
+        } catch (Exception e) {
+            System.err.println("Failed to load shader: " + shader);
+            throw e;
+        }
     }
 }
