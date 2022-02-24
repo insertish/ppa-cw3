@@ -3,7 +3,7 @@ package gay.oss.cw3.renderer.objects;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import gay.oss.cw3.renderer.shaders.ShaderProgram;
+import gay.oss.cw3.renderer.shaders.Camera;
 
 public class Model {
     private final Mesh mesh;
@@ -39,11 +39,13 @@ public class Model {
 
     public void draw(Matrix4f viewProjection) {
         this.material.use();
+        Camera.upload(viewProjection, this.transformation);
+        this.mesh.draw();
+    }
 
-        var program = ShaderProgram.getCurrent();
-        program.setUniform("model", this.transformation);
-        program.setUniform("modelViewProjection", new Matrix4f(viewProjection).mul(this.transformation));
-
+    public void draw(Camera camera) {
+        this.material.use();
+        camera.upload(this.transformation);
         this.mesh.draw();
     }
 

@@ -3,12 +3,12 @@ package gay.oss.cw3.renderer.simulation;
 import java.util.HashMap;
 import java.util.Random;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import gay.oss.cw3.renderer.objects.Material;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
+import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.World;
@@ -92,7 +92,7 @@ public class WorldRenderer {
 
     private SmoothedRandom random = new SmoothedRandom(1, 0.002f);
 
-    public void draw(Matrix4f viewProjection) {
+    public void draw(Camera camera) {
         if (this.terrainModel == null || this.waterModel == null) {
             return;
         }
@@ -104,7 +104,7 @@ public class WorldRenderer {
         var program = ShaderProgram.getCurrent();
         var offset = (this.world.getTime() * 0.1f) % 64.0f;
         program.setUniform("lightPos", new Vector3f(offset, 64.0f, offset));
-        this.terrainModel.draw(viewProjection);
+        this.terrainModel.draw(camera);
         
         // 2. render water
         this.waterModel
@@ -123,7 +123,7 @@ public class WorldRenderer {
         program.setUniform("waterWaveSpeed", 0.1f);
         program.setUniform("waterDisplacementModifier", 1.4f);
         program.setUniform("waterRandomDisplacement", this.random.next());
-        this.waterModel.draw(viewProjection);
+        this.waterModel.draw(camera);
 
         // 3. render entities
         for (EntityLayer layer : EntityLayer.values()) {
@@ -150,7 +150,7 @@ public class WorldRenderer {
                             translation.scale(s, s*2, s);
                         }
                         
-                        model.draw(viewProjection);
+                        model.draw(camera);
                     }
                 }
             }
