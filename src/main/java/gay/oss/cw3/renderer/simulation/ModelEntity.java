@@ -6,7 +6,7 @@ import gay.oss.cw3.renderer.objects.Texture;
 
 public class ModelEntity extends Model {
     public ModelEntity(Texture texture) throws Exception {
-        super(MeshUtil.makeCube(0.5f, 0.5f, 0.5f, false),
+        super(MeshUtil.makeCube(0.5f, 1f, 0.5f, false),
             new Material(Resources.getShader("texturedObject"), texture));
     }
 }

@@ -89,6 +89,10 @@ public class WorldRenderer {
     private SmoothedRandom random = new SmoothedRandom(1, 0.002f);
 
     public void draw(Matrix4f viewProjection) {
+        if (this.terrainModel == null || this.waterModel == null) {
+            return;
+        }
+
         var map = this.world.getMap();
 
         // 1. render terrain
@@ -118,16 +122,18 @@ public class WorldRenderer {
         this.waterModel.draw(viewProjection);
 
         // 3. render entities
-        for (int x=0;x<map.getWidth();x++) {
-            for (int z=0;z<map.getDepth();z++) {
-                Entity entity = this.world.getEntity(EntityLayer.ANIMALS, x, z);
-                if (entity != null) {
-                    Model model = this.models.get(entity.getClass());
+        for (EntityLayer layer : EntityLayer.values()) {
+            for (int x=0;x<map.getWidth();x++) {
+                for (int z=0;z<map.getDepth();z++) {
+                    Entity entity = this.world.getEntity(layer, x, z);
+                    if (entity != null) {
+                        Model model = this.models.get(entity.getClass());
 
-                    model.getTransformation()
-                        .translation(x + 0.25f, Math.max(map.getWaterLevel(), map.getHeight(x, z)) + 0.5f, z + 0.25f);
-                    
-                    model.draw(viewProjection);
+                        model.getTransformation()
+                            .translation(x + 0.25f, Math.max(map.getWaterLevel(), map.getHeight(x, z)) + 0.5f, z + 0.25f);
+                        
+                        model.draw(viewProjection);
+                    }
                 }
             }
         }

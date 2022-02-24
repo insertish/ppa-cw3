@@ -121,12 +121,12 @@ public class MeshUtil {
     }
 
     public static Mesh makeCube(float width, float height, float depth, boolean center) {
-        float x0 = center ? - width / 2 : 0;
-        float y0 = center ? - height / 2 : 0;
-        float z0 = center ? - depth / 2 : 0;
-        float x1 = center ? width / 2 : width;
-        float y1 = center ? height / 2 : height;
-        float z1 = center ? depth / 2 : depth;
+        float x0 = center ? (- width / 2) : 0;
+        float y0 = center ? (- height / 2) : 0;
+        float z0 = center ? (- depth / 2) : 0;
+        float x1 = center ? (width / 2) : width;
+        float y1 = center ? (height / 2) : height;
+        float z1 = center ? (depth / 2) : depth;
 
         float[] vertices = new float[] {
             // Z positive
