@@ -70,6 +70,10 @@ public class WorldRenderer {
         this.setModel(clazz, new ModelEntity(Texture.fromResource("entities/" + name)));
     }
 
+    public void autoLoadModel(Class<?> clazz, String name, String modelName, float scale) throws Exception {
+        this.setModel(clazz, new ModelEntity(Texture.fromResource("entities/" + name), modelName, scale));
+    }
+
     private static class SmoothedRandom {
         private float value;
         private final float variation;
@@ -123,14 +127,28 @@ public class WorldRenderer {
 
         // 3. render entities
         for (EntityLayer layer : EntityLayer.values()) {
+            int yOffset = 0;
+            if (layer == EntityLayer.ANIMALS) {
+                yOffset += 1;
+            }
+
             for (int x=0;x<map.getWidth();x++) {
                 for (int z=0;z<map.getDepth();z++) {
                     Entity entity = this.world.getEntity(layer, x, z);
                     if (entity != null) {
                         Model model = this.models.get(entity.getClass());
 
-                        model.getTransformation()
-                            .translation(x + 0.25f, Math.max(map.getWaterLevel() + 1, map.getHeight(x, z)) + 0.5f, z + 0.25f);
+                        var translation = model.getTransformation()
+                            .translation(
+                                x + 0.25f,
+                                Math.max(map.getWaterLevel() + yOffset, map.getHeight(x, z)) + 0.5f,
+                                z + 0.25f
+                            );
+
+                        if (model instanceof ModelEntity) {
+                            float s = ((ModelEntity) model).getScale();
+                            translation.scale(s, s*2, s);
+                        }
                         
                         model.draw(viewProjection);
                     }
