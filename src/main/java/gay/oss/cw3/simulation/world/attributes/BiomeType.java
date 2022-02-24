@@ -1,4 +1,4 @@
-package gay.oss.cw3.simulation.world;
+package gay.oss.cw3.simulation.world.attributes;
 
 public enum BiomeType {
     Plains(new float[] { 0.32f, 0.42f, 0.19f }),

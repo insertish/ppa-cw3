@@ -10,6 +10,8 @@ import gay.oss.cw3.renderer.ColorAverageCollector;
 import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.simulation.Grid;
 import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.attributes.BiomeType;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class Map {
     private final int width;

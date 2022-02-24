@@ -19,7 +19,6 @@ import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
 import gay.oss.cw3.renderer.simulation.WorldRenderer;
 import gay.oss.cw3.simulation.Coordinate;
-import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
@@ -28,9 +27,10 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.EatFoliageBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
-import gay.oss.cw3.simulation.world.DayCycle;
-import gay.oss.cw3.simulation.world.EntityLayer;
+import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.WorldGenerator;
+import gay.oss.cw3.simulation.world.attributes.DayCycle;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class Main {
     public static int WORLD_SIZE = 64;//256;//128;

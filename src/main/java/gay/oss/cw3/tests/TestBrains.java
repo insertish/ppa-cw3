@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
 import gay.oss.cw3.simulation.Coordinate;
-import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
@@ -19,8 +18,9 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.EatFoliageBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
-import gay.oss.cw3.simulation.world.DayCycle;
-import gay.oss.cw3.simulation.world.EntityLayer;
+import gay.oss.cw3.simulation.world.World;
+import gay.oss.cw3.simulation.world.attributes.DayCycle;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class TestBrains {
     public static void main(String[] args) {

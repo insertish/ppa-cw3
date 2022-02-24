@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gay.oss.cw3.simulation.Coordinate;
-import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.brain.EntityBrain;
-import gay.oss.cw3.simulation.world.EntityLayer;
+import gay.oss.cw3.simulation.world.World;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
  * An Entity is a basic actor in the world. It has a position in the world, an age, and a health value. It can die,

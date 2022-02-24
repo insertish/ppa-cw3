@@ -10,9 +10,9 @@ import gay.oss.cw3.renderer.objects.Material;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
-import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.Entity;
-import gay.oss.cw3.simulation.world.EntityLayer;
+import gay.oss.cw3.simulation.world.World;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class WorldRenderer {
     private final World world;

@@ -3,7 +3,7 @@ package gay.oss.cw3.simulation.entity.brain.behaviours;
 import java.util.Random;
 
 import gay.oss.cw3.simulation.entity.Entity;
-import gay.oss.cw3.simulation.world.DayCycle;
+import gay.oss.cw3.simulation.world.attributes.DayCycle;
 
 public class FleeBehaviour extends MovementBehaviour {
     private final Random random = new Random();

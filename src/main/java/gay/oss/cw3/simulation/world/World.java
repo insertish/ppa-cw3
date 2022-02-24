@@ -1,18 +1,17 @@
-package gay.oss.cw3.simulation;
+package gay.oss.cw3.simulation.world;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import gay.oss.cw3.simulation.entity.Entity;
-import gay.oss.cw3.simulation.world.DayCycle;
-import gay.oss.cw3.simulation.world.Season;
-
-import gay.oss.cw3.simulation.world.EntityLayer;
 import org.jetbrains.annotations.Nullable;
 
-import gay.oss.cw3.simulation.world.Map;
+import gay.oss.cw3.simulation.Coordinate;
+import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.attributes.DayCycle;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
+import gay.oss.cw3.simulation.world.attributes.Season;
 
 public class World {
     private final Map map;

@@ -1,4 +1,4 @@
-package gay.oss.cw3.simulation.world;
+package gay.oss.cw3.simulation.world.attributes;
 
 public enum DayCycle {
     MORNING,

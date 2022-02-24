@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import gay.oss.cw3.simulation.Coordinate;
-import gay.oss.cw3.simulation.World;
 
 public class WorldGenerator {
     private final World world;

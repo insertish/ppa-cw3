@@ -1,8 +1,8 @@
 package gay.oss.cw3.simulation.entity;
 
 import gay.oss.cw3.simulation.Coordinate;
-import gay.oss.cw3.simulation.World;
-import gay.oss.cw3.simulation.world.EntityLayer;
+import gay.oss.cw3.simulation.world.World;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public abstract class AbstractBreedableEntity extends Entity implements Breedable {
     private int lastBreedAttempt;
