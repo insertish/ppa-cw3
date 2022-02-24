@@ -39,6 +39,7 @@ public class World {
 
                 if (!entity.isAlive()) {
                     iter.remove();
+                    this.despawn(entity);
                 }
             }
         }
@@ -58,6 +59,11 @@ public class World {
 
         Entity old_entity = this.map.getEntities(entity.getLayer()).set(entity.getLocation(), entity);
         if (old_entity != null) old_entity.setAlive(false);
+    }
+
+    private void despawn(Entity entity) {
+        this.map.getEntities(entity.getLayer()).set(entity.getLocation(), null);
+        entity.setAlive(false);
     }
 
     public @Nullable Entity getEntity(EntityLayer layer, int x, int z) {
