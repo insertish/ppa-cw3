@@ -65,6 +65,9 @@ public abstract class Entity {
         return this.world;
     }
 
+    /**
+     * @return the entity's layer
+     */
     public EntityLayer getLayer() {
         return layer;
     }
