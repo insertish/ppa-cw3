@@ -1,13 +1,41 @@
 package gay.oss.cw3.renderer;
 
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_DEBUG_CONTEXT;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL;
 
 import gay.oss.cw3.renderer.interfaces.IKeyCallback;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import gay.oss.cw3.renderer.interfaces.IScrollCallback;
 
 /**
  * Wrapper class around a GLFW Window
@@ -101,6 +129,10 @@ public class Window {
         // Enable depth testing
         glEnable(GL_DEPTH_TEST);
 
+        // Enable backface culling
+        // ! FIXME: the terrain model has the wrong windings
+        // glEnable(GL_CULL_FACE);
+
         // Enable transparency
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -109,6 +141,12 @@ public class Window {
     public void setKeyCallback(IKeyCallback cbfun) {
         glfwSetKeyCallback(this.pointer, (win, key, scancode, action, modifiers) -> {
             cbfun.invoke(key, action, modifiers);
+        });
+    }
+
+    public void setScrollCallback(IScrollCallback cbfun) {
+        glfwSetScrollCallback(this.pointer, (win, x, y) -> {
+            cbfun.invoke(x, y);
         });
     }
 

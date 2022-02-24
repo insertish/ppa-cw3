@@ -22,6 +22,10 @@ public class Main {
     private Scenario scenario;
     private Thread tickThread;
 
+    private double zoom = 40.0;
+    private double viewAngle = 0.0;
+    private double groundAngle = Math.PI / 3;
+
     private void init() throws Exception {
         Util.initialiseLWJGL();
 
@@ -33,6 +37,11 @@ public class Main {
         // Handle key events
         window.setKeyCallback((key, action, modifiers) -> {
             if (action == GLFW_PRESS) onKeyPress(key, modifiers);
+        });
+
+        // Handle scroll events
+        window.setScrollCallback((x, y) -> {
+            zoom = (float) Math.max(zoom - y, 1.0);
         });
 
         // Configure Scenario
@@ -78,6 +87,11 @@ public class Main {
         }
     }
 
+    private void logic() {
+        // Rotate around a single point for now
+        viewAngle += 0.005;
+    }
+
     private void renderLoop() {
         long start = System.currentTimeMillis();
 
@@ -88,22 +102,37 @@ public class Main {
         // invoked during this call.
         glfwPollEvents();
 
+        // * Camera Code (can move into class)
         // Setup camera projection
+        // 1. Find our current center position.
+        float lookAtX = WORLD_SIZE / 2;
+        float lookAtZ = WORLD_SIZE / 2;
+        float centerHeight = this.scenario.getWorld().getMap().getHeight((int) lookAtX, (int) lookAtZ);
+
+        // 2. Calculate the zoom modifier and find the distance and height from this point.
+        double zoomModifier = 5 + Math.pow(1.1, this.zoom);
+        double distance = zoomModifier * Math.cos(this.groundAngle);
+        double height = zoomModifier * Math.sin(this.groundAngle);
+
+        // 3. Find the camera position by taking an offset from the center and
+        //    finding the distance in each X and Z axis according to the view angle.
+        float cameraX = lookAtX + (float) (distance * Math.cos(this.viewAngle));
+        float cameraY = centerHeight + (float) height;
+        float cameraZ = lookAtZ + (float) (distance * Math.sin(this.viewAngle));
+
+        // 4. Create view projection.
         Matrix4f viewProjection = new Matrix4f()
             .perspective((float) Math.toRadians(45.0f), window.getWidth() / window.getHeight(), 0.01f, 1000.0f)
             .lookAt(
-                    //-20, 20, -20,
-                    //0, 0, 0,
-                    //WORLD_SIZE / 5, 100.0f, WORLD_SIZE / 5,
-                    WORLD_SIZE / 5, 40.0f, WORLD_SIZE / 5,
-                    WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
+                    cameraX, cameraY, cameraZ,
+                    lookAtX, centerHeight, lookAtZ,
                     0.0f, 1.0f, 0.0f);
 
         // World rendering
         this.scenario.getRenderer().draw(viewProjection);
 
         // Update title with render time.
-        window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime());
+        window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime() + " - Zoom: " + this.zoom);
 
         // Swap framebuffers.
         window.swap();
@@ -120,8 +149,10 @@ public class Main {
             System.exit(1);
         }
 
-        while (!instance.window.shouldClose())
+        while (!instance.window.shouldClose()) {
+            instance.logic();
             instance.renderLoop();
+        }
         
         instance.destroy();
     }
