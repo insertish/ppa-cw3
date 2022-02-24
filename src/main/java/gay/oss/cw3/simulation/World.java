@@ -9,6 +9,7 @@ import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.DayCycle;
 import gay.oss.cw3.simulation.world.Season;
 
+import gay.oss.cw3.simulation.world.EntityLayer;
 import org.jetbrains.annotations.Nullable;
 
 import gay.oss.cw3.simulation.world.Map;
@@ -56,12 +57,12 @@ public class World {
     private void spawnInternal(Entity entity) {
         this.entities.add(entity);
 
-        Entity old_entity = this.map.getEntities().set(entity.getLocation(), entity);
+        Entity old_entity = this.map.getEntities(entity.getLayer()).set(entity.getLocation(), entity);
         if (old_entity != null) old_entity.setAlive(false);
     }
 
-    public @Nullable Entity getEntity(int x, int z) {
-        return this.map.getEntities().get(x, z);
+    public @Nullable Entity getEntity(EntityLayer layer, int x, int z) {
+        return this.map.getEntities(layer).get(x, z);
     }
 
     public int getEntityCount() {
@@ -94,10 +95,10 @@ public class World {
 
     public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
         final @Nullable Entity previous;
-        if ((previous = this.map.getEntities().set(from, null)) != entity) {
+        if ((previous = this.map.getEntities(entity.getLayer()).set(from, null)) != entity) {
             throw new IllegalStateException(String.format("Attempted to move %1$s from %2$s to %3$s but it is not at %2$s, instead found %4$s!", entity, from, to, previous));
         }
 
-        this.map.getEntities().set(to, entity);
+        this.map.getEntities(entity.getLayer()).set(to, entity);
     }
 }

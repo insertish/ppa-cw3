@@ -74,7 +74,7 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(dir));
 
         if (this.entity.getWorld().isInBounds(newLoc)) {
-            var entityAtLoc = this.entity.getWorld().getEntity(newLoc.x, newLoc.z);
+            var entityAtLoc = this.entity.getWorld().getEntity(entity.getLayer(), newLoc.x, newLoc.z);
 
             if (entityAtLoc == null) {
                 this.ticksCouldntMove = 0;
@@ -110,13 +110,13 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         for (int i=-radius;i<radius+1;i++) {
             for (int j=-radius;j<radius+1;j++) {
                 Coordinate coordinate = a.getLocation().add(i, j);
-                Entity e = a.getWorld().getEntity(coordinate.x, coordinate.z);
+                Entity e = a.getWorld().getEntity(entity.getLayer(), coordinate.x, coordinate.z);
                 if (a.getWorld().isInBounds(coordinate) && e == null) {
                     positions.add(coordinate);
                 }
 
                 coordinate = b.getLocation().add(i, j);
-                e = b.getWorld().getEntity(coordinate.x, coordinate.z);
+                e = b.getWorld().getEntity(entity.getLayer(), coordinate.x, coordinate.z);
                 if (b.getWorld().isInBounds(coordinate) && e == null) {
                     positions.add(coordinate);
                 }

@@ -12,6 +12,7 @@ import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.simulation.World;
 import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.EntityLayer;
 
 public class WorldRenderer {
     private final World world;
@@ -119,7 +120,7 @@ public class WorldRenderer {
         // 3. render entities
         for (int x=0;x<map.getWidth();x++) {
             for (int z=0;z<map.getDepth();z++) {
-                Entity entity = this.world.getEntity(x, z);
+                Entity entity = this.world.getEntity(EntityLayer.ANIMALS, x, z);
                 if (entity != null) {
                     Model model = this.models.get(entity.getClass());
 

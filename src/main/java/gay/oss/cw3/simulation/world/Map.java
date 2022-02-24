@@ -1,6 +1,7 @@
 package gay.oss.cw3.simulation.world;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
@@ -16,7 +17,7 @@ public class Map {
     
     private float waterLevel = -8.0f;
 
-    private final Grid<Entity> entities;
+    private final java.util.Map<EntityLayer, Grid<Entity>> entities;
     private final Grid<Float> heightMap;
     private final Grid<BiomeType> biomeMap;
 
@@ -24,7 +25,10 @@ public class Map {
         this.width = width;
         this.depth = depth;
 
-        this.entities = new Grid<>(width, depth);
+        this.entities = new EnumMap<>(EntityLayer.class);
+        for (EntityLayer layer : EntityLayer.values()) {
+            this.entities.put(layer, new Grid<>(width, depth));
+        }
         this.heightMap = new Grid<>(width, depth);
         this.biomeMap = new Grid<>(width, depth);
     }
@@ -45,8 +49,8 @@ public class Map {
         return this.waterLevel;
     }
 
-    public Grid<Entity> getEntities() {
-        return this.entities;
+    public Grid<Entity> getEntities(EntityLayer layer) {
+        return this.entities.get(layer);
     }
 
     public Grid<Float> getHeightMap() {

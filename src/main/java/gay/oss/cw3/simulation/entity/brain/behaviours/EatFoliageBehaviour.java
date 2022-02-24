@@ -1,10 +1,11 @@
 package gay.oss.cw3.simulation.entity.brain.behaviours;
 
 import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.EntityLayer;
 
 import java.util.Random;
 
-public class HuntBehaviour extends MovementBehaviour {
+public class EatFoliageBehaviour extends MovementBehaviour {
     private final Random random = new Random();
     private final double targetFullnessFraction;
     private final Class<? extends Entity>[] targetClasses;
@@ -13,7 +14,7 @@ public class HuntBehaviour extends MovementBehaviour {
     private int ticksCouldntMove = 0;
 
     @SafeVarargs
-    public HuntBehaviour(Entity entity, double speed, double targetFullnessFraction, Class<? extends Entity>... targetClasses) {
+    public EatFoliageBehaviour(Entity entity, double speed, double targetFullnessFraction, Class<? extends Entity>... targetClasses) {
         super(speed, entity);
         this.targetFullnessFraction = targetFullnessFraction;
         this.targetClasses = targetClasses;
@@ -55,10 +56,9 @@ public class HuntBehaviour extends MovementBehaviour {
 
     @Override
     public void tick() {
-        if (this.entity.getLocation().distanceTo(this.target.getLocation()) < 2) {
+        if (this.entity.getLocation().equals(this.target.getLocation())) {
             this.ticksCouldntMove = 0;
             this.target.setAlive(false);
-            this.entity.setLocation(this.target.getLocation());
             this.entity.addFullness(this.target.getFullness()*0.7);
             return;
         }
@@ -67,16 +67,11 @@ public class HuntBehaviour extends MovementBehaviour {
         var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(dir));
 
         if (this.entity.getWorld().isInBounds(newLoc)) {
-            var entityAtLoc = this.entity.getWorld().getEntity(this.entity.getLayer(), newLoc.x, newLoc.z);
+            var entityAtLocInTheWay = this.entity.getWorld().getEntity(this.entity.getLayer(), newLoc.x, newLoc.z);
 
-            if (entityAtLoc == null) {
+            if (entityAtLocInTheWay == null) {
                 this.ticksCouldntMove = 0;
                 this.entity.setLocation(newLoc);
-            } else if (entityAtLoc == this.target) {
-                this.ticksCouldntMove = 0;
-                this.target.setAlive(false);
-                this.entity.setLocation(newLoc);
-                this.entity.addFullness(this.target.getFullness()*0.7);
             } else {
                 this.ticksCouldntMove++;
             }
@@ -84,5 +79,4 @@ public class HuntBehaviour extends MovementBehaviour {
             this.ticksCouldntMove++;
         }
     }
-
 }

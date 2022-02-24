@@ -7,6 +7,11 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
@@ -19,9 +24,12 @@ import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.EatFoliageBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
+import gay.oss.cw3.simulation.world.DayCycle;
+import gay.oss.cw3.simulation.world.EntityLayer;
 import gay.oss.cw3.simulation.world.WorldGenerator;
 
 public class Main {
@@ -64,7 +72,7 @@ public class Main {
 
         // Generate World
         var generator = new WorldGenerator(world);
-        generator.registerEntity(EntityCell.class, 0.05f);
+        generator.registerEntity(Rabbit.class, 0.05f);
         generator.registerEntity(Hunter.class, 0.005f);
         generator.generate();
         
@@ -74,7 +82,7 @@ public class Main {
 
         // Configure Models
         this.worldRenderer.autoLoadModel(Hunter.class, "hunter.jpg");
-        this.worldRenderer.autoLoadModel(EntityCell.class, "cell.jpg");
+        this.worldRenderer.autoLoadModel(Rabbit.class, "cell.jpg");
 
         // Off-load World tick to another thread
         tickThread = new Thread(){
@@ -149,28 +157,35 @@ public class Main {
         instance.destroy();
     }
 
-    public static class EntityCell extends AbstractBreedableEntity {
-        public EntityCell(World world, Coordinate location) {
-            super(world, location, 0, true);
+
+    public static class Rabbit extends AbstractBreedableEntity {
+        public Rabbit(World world, Coordinate location) {
+            super(world, location, 0, true, EntityLayer.ANIMALS);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
+            this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.0, 0.7, Grass.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
 
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
             this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
             this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+            this.setFullness(this.getMaxFullness());
         }
 
         @Override
         public void tick() {
             if (this.isAlive()) {
                 this.getBrain().tick();
+                this.removeFullness(0.01);
+                if (this.getFullness() <= 0) {
+                    this.addHealth(-1);
+                }
             }
         }
 
         @Override
         public Entity createChild(Entity otherParent, Coordinate location) {
-            var result = new EntityCell(this.getWorld(), location);
+            var result = new Rabbit(this.getWorld(), location);
             result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
             return result;
         }
@@ -183,31 +198,82 @@ public class Main {
 
     public static class Hunter extends AbstractBreedableEntity {
         public Hunter(World world, Coordinate location) {
-            super(world, location, 0, true);
-            this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityCell.class));
-            this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
+            super(world, location, 0, true, EntityLayer.ANIMALS);
+            this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, Rabbit.class));
+            this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
 
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
-            this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 500);
-            this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 80);
+            this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
+            this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+            this.getAttributes().set(EntityAttribute.FULLNESS_TO_BREED, this.getMaxFullness()/2.0);
+            this.setFullness(this.getMaxFullness());
         }
 
         @Override
         public void tick() {
             if (this.isAlive()) {
                 this.getBrain().tick();
+                this.removeFullness(0.05);
+                if (this.getFullness() <= 0) {
+                    this.addHealth(-1);
+                }
             }
         }
 
         @Override
-        public Entity createChild(Entity otherParent, Coordinate location) {
-            return new Hunter(this.getWorld(), location);
+        public @Nullable Entity createChild(Entity otherParent, Coordinate coordinate) {
+            var result = new Hunter(this.getWorld(), coordinate);
+            result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
+            return result;
         }
 
         @Override
         public boolean isCompatible(Entity entity) {
-            return entity.isAlive();
+            return true;
+        }
+    }
+
+    public static class Grass extends Entity {
+        private final Random random = new Random();
+
+        public Grass(World world, Coordinate location) {
+            super(world, EntityLayer.FOLIAGE, location, 0, true);
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
+            this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 3.0);
+            this.setFullness(1.0);
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                // photosynthesis
+                if (this.getWorld().getDayCycle() != DayCycle.NIGHT) {
+                    this.addFullness(0.2);
+                }
+
+                // spreading
+                if (this.getFullness() >= 2.0) {
+                    List<Coordinate> locations = new ArrayList<>();
+
+                    for (int dX = -1; dX <= 1; dX++) {
+                        for (int dZ = -1; dZ <= 1; dZ++) {
+                            var coord = this.getLocation().add(dX, dZ);
+
+                            if (this.getWorld().isInBounds(coord) && this.getWorld().getEntity(EntityLayer.FOLIAGE, coord.x, coord.z) != null) {
+                                locations.add(coord);
+                            }
+                        }
+                    }
+
+                    if (!locations.isEmpty()) {
+                        var coord = locations.get(random.nextInt(locations.size()));
+                        new Grass(this.getWorld(), coord);
+                        this.removeFullness(1.0);
+                    }
+                }
+
+            }
         }
     }
 }
