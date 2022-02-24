@@ -97,13 +97,12 @@ public class WorldRenderer {
             return;
         }
 
+        // 0. setup global shader variables
         var map = this.world.getMap();
+        var offset = (this.world.getTime() * 0.1f) % 64.0f;
+        ShaderProgram.setUniform("lightPos", (Object) new Vector3f(offset, 64.0f, offset));
 
         // 1. render terrain
-        this.terrainModel.use();
-        var program = ShaderProgram.getCurrent();
-        var offset = (this.world.getTime() * 0.1f) % 64.0f;
-        program.setUniform("lightPos", new Vector3f(offset, 64.0f, offset));
         this.terrainModel.draw(camera);
         
         // 2. render water
@@ -113,7 +112,7 @@ public class WorldRenderer {
             .scale(map.getWidth(), 1, map.getDepth());
         
         this.waterModel.use();
-        program = ShaderProgram.getCurrent();
+        var program = ShaderProgram.getCurrent();
         program.setUniform("time", (float) this.world.getTime() / 100.0f);
         program.setUniform("waterHeight", map.getWaterLevel());
         program.setUniform("waterFadeUnits", 10.0f);
@@ -127,9 +126,9 @@ public class WorldRenderer {
 
         // 3. render entities
         for (EntityLayer layer : EntityLayer.values()) {
-            int yOffset = 0;
+            float yOffset = 0;
             if (layer == EntityLayer.ANIMALS) {
-                yOffset += 1;
+                yOffset += 0.5f;
             }
 
             for (int x=0;x<map.getWidth();x++) {
@@ -141,7 +140,7 @@ public class WorldRenderer {
                         var translation = model.getTransformation()
                             .translation(
                                 x + 0.25f,
-                                Math.max(map.getWaterLevel() + yOffset, map.getHeight(x, z)) + 0.5f,
+                                Math.max(map.getWaterLevel(), map.getHeight(x, z)) + yOffset,
                                 z + 0.25f
                             );
 

@@ -8,7 +8,6 @@ vec4 lighting(vec4 objectColour) {
 
     float diffuseStrength = 0.7;
     vec3 diffuseColour = vec3(1.0, 1.0, 1.0);
-    vec3 lightPos = vec3(32.0, 64.0, 32.0);
 
     // Ambient
     vec3 ambient = ambientStrength * ambientColour;
