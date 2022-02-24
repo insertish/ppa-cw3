@@ -22,13 +22,18 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 public class DefaultScenario extends Scenario {
     public DefaultScenario(int width, int depth, boolean isOpenGL) throws Exception {
         super(width, depth, isOpenGL);
+    }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
 
         var generator = this.getGenerator();
         generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f);
         generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f);
         generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.3f);
 
-        if (isOpenGL) {
+        if (this.isOpenGL) {
             // Configure models.
             var renderer = this.getRenderer();
             renderer.autoLoadModel(Hunter.class, "hunter.jpg");

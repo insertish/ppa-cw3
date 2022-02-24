@@ -49,6 +49,7 @@ public class Main {
         if (this.tickThread != null) this.tickThread.interrupt();
 
         // Generate world
+        this.scenario.init();
         this.scenario.generate();
 
         // Off-load World tick to another thread
@@ -94,7 +95,7 @@ public class Main {
                     //-20, 20, -20,
                     //0, 0, 0,
                     //WORLD_SIZE / 5, 100.0f, WORLD_SIZE / 5,
-                    WORLD_SIZE / 3, 120.0f, WORLD_SIZE / 3,
+                    WORLD_SIZE / 5, 40.0f, WORLD_SIZE / 5,
                     WORLD_SIZE / 2, 0.0f, WORLD_SIZE / 2,
                     0.0f, 1.0f, 0.0f);
 
