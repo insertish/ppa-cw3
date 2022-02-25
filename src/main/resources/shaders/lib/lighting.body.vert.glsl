@@ -1,1 +1,1 @@
-fragNormal = vertexNormal;
+fragNormal = mat3(transpose(inverse(model))) * vertexNormal;

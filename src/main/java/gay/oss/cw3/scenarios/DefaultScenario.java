@@ -36,7 +36,8 @@ public class DefaultScenario extends Scenario {
         if (this.isOpenGL) {
             // Configure models.
             var renderer = this.getRenderer();
-            renderer.autoLoadModel(Hunter.class, "hunter.jpg");
+            //renderer.autoLoadModel(Hunter.class, "hunter.jpg");
+            renderer.autoLoadModel(Hunter.class, "amogus.png", "entities/amogus", 1);
             renderer.autoLoadModel(Rabbit.class, "bunny.png", "entities/bunny", 0.02f);
             renderer.autoLoadModel(Grass.class, "grass.png", "entities/grass", 0.5f);
             //renderer.autoLoadModel(Grass.class, "pine.png", "entities/pine", 10);

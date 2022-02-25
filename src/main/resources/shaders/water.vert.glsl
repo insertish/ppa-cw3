@@ -13,6 +13,7 @@ uniform float waterWaveSpeed;
 uniform float waterDisplacementModifier;
 uniform float waterRandomDisplacement;
 
+uniform mat4 model;
 uniform mat4 modelViewProjection;
 
 out vec2 fragUV;

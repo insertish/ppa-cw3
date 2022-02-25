@@ -30,6 +30,8 @@ public class TestBrains {
             field.clear();
 
             for (Entity entity : world.getEntities()) {
+                if (entity instanceof DefaultScenario.Grass) continue;
+
                 Coordinate loc = entity.getLocation();
                 field.place(entity, loc.x, loc.z);
             }

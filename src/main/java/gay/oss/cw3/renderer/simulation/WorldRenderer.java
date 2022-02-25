@@ -96,6 +96,8 @@ public class WorldRenderer {
 
     private void drawLayer(EntityLayer layer, Camera camera) {
         var map = this.world.getMap();
+        var rotations = map.getRotations(layer);
+        var offsets = map.getOffsets(layer);
 
         float yOffset = 0;
         if (layer == EntityLayer.ANIMALS) {
@@ -108,12 +110,14 @@ public class WorldRenderer {
                 if (entity != null) {
                     Model model = this.models.get(entity.getClass());
 
+                    var offset = offsets.get(x, z);
                     var translation = model.getTransformation()
                         .translation(
-                            x + 0.25f,
+                            x + 0.25f + offset[0],
                             Math.max(map.getWaterLevel(), map.getHeight(x, z)) + yOffset,
-                            z + 0.25f
-                        );
+                            z + 0.25f + offset[1]
+                        )
+                        .rotate(rotations.get(x, z), 0, 1, 0);
 
                     if (model instanceof ModelEntity) {
                         float s = ((ModelEntity) model).getScale();
