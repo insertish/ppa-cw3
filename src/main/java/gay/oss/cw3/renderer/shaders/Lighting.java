@@ -24,6 +24,10 @@ public class Lighting {
         this.lightDirection = direction;
     }
 
+    public void setLightAmbient(Vector3f ambient) {
+        this.lightAmbient = ambient;
+    }
+
     public void setLightDiffuse(Vector3f diffuse) {
         this.lightDiffuse = diffuse;
     }

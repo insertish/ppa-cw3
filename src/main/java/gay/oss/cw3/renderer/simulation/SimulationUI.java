@@ -1,5 +1,7 @@
 package gay.oss.cw3.renderer.simulation;
 
+import org.joml.Vector4f;
+
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.UI;
 import gay.oss.cw3.simulation.world.World;
@@ -7,18 +9,18 @@ import gay.oss.cw3.simulation.world.World;
 public class SimulationUI extends UI {
     private World world;
 
-    private Texture textureCycle1;
-    private Texture textureCycle2;
-    private Texture textureCycle3;
-    private Texture textureCycle4;
+    private Texture[] dayCycleTextures;
 
     public SimulationUI(World world) throws Exception {
         super();
         this.world = world;
-        this.textureCycle1 = Texture.fromResource("ui/daycycle/morning.png");
-        this.textureCycle2 = Texture.fromResource("ui/daycycle/afternoon.png");
-        this.textureCycle3 = Texture.fromResource("ui/daycycle/evening.png");
-        this.textureCycle4 = Texture.fromResource("ui/daycycle/night.png");
+
+        dayCycleTextures = new Texture[] {
+            Texture.fromResource("ui/daycycle/morning.png"),
+            Texture.fromResource("ui/daycycle/afternoon.png"),
+            Texture.fromResource("ui/daycycle/evening.png"),
+            Texture.fromResource("ui/daycycle/night.png")
+        };
     }
 
     public void setWorld(World world) {
@@ -26,15 +28,7 @@ public class SimulationUI extends UI {
     }
 
     protected void drawUI() {
-        Texture tex;
-        switch (this.world.getDayCycle()) {
-            default:
-            case MORNING: tex = this.textureCycle1; break;
-            case AFTERNOON: tex = this.textureCycle2; break;
-            case EVENING: tex = this.textureCycle3; break;
-            case NIGHT: tex = this.textureCycle4;
-        }
-
-        this.drawImage(32, 32, 64, 64, tex);
+        this.drawRect(24, 24, 80, 80, new Vector4f(0, 0, 0, 0.5f));
+        this.drawRect(32, 32, 64, 64, this.dayCycleTextures[this.world.getDayCycle().getIndex()]);
     }
 }

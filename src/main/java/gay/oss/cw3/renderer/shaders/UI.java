@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.objects.Texture;
@@ -12,6 +13,7 @@ import gay.oss.cw3.renderer.objects.Texture;
 public abstract class UI {
     private Matrix4f viewProjection;
 
+    private ShaderProgram colourShader;
     private ShaderProgram textureShader;
     private Mesh squareMesh;
 
@@ -19,6 +21,7 @@ public abstract class UI {
     protected int height;
 
     public UI() throws Exception {
+        this.colourShader = ShaderProgram.fromName("ui/colour");
         this.textureShader = ShaderProgram.fromName("ui/textured");
         this.squareMesh = Mesh.builder()
             .vertex(new float[] {
@@ -51,14 +54,30 @@ public abstract class UI {
             .ortho2D(0, width, 0, height);
     }
 
-    public void upload(Matrix4f transformation) {
+    private void upload(Matrix4f transformation) {
         Camera.upload(viewProjection, transformation);
     }
 
-    protected void drawImage(int x, int y, int w, int h, Texture texture) {
+    private void upload(int x, int y, int w, int h) {
+        this.upload(
+            new Matrix4f()
+                .identity()
+                .translate(x, this.height - y - h, 0)
+                .scale(w, h, 0)
+        );
+    }
+
+    protected void drawRect(int x, int y, int w, int h, Texture texture) {
         texture.bind();
         this.textureShader.use();
-        this.upload(new Matrix4f().identity().translate(x, this.height - y - h, 0).scale(w, h, 0));
+        this.upload(x, y, w, h);
+        this.squareMesh.draw();
+    }
+
+    protected void drawRect(int x, int y, int w, int h, Vector4f colour) {
+        this.colourShader.use();
+        this.colourShader.setUniform("colour", colour);
+        this.upload(x, y, w, h);
         this.squareMesh.draw();
     }
 

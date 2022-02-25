@@ -1,15 +1,21 @@
 package gay.oss.cw3.simulation.world.attributes;
 
 public enum DayCycle {
-    MORNING(new float[] { 1.0f, 1.0f, 1.0f }),
-    AFTERNOON(new float[] { 1.0f, 0.99f, 0.75f }),
-    EVENING(new float[] { 0.9f, 0.72f, 0.57f }),
-    NIGHT(new float[] { 0.29f, 0.34f, 0.34f });
+    MORNING(new float[] { 1.0f, 1.0f, 1.0f }, 0),
+    AFTERNOON(new float[] { 1.0f, 0.99f, 0.75f }, 1),
+    EVENING(new float[] { 0.9f, 0.72f, 0.57f }, 2),
+    NIGHT(new float[] { 0.29f, 0.34f, 0.34f }, 3);
 
-    private float[] colour;
+    private float[] sunColour;
+    private int index;
     
-    private DayCycle(float[] colour) {
-        this.colour = colour;
+    private DayCycle(float[] sunColour, int index) {
+        this.sunColour = sunColour;
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return this.index;
     }
 
     public DayCycle next() {
@@ -23,8 +29,8 @@ public enum DayCycle {
     }
 
     public float[] averageToNext(float progression) {
-        float[] current = this.colour;
-        float[] next = this.next().colour;
+        float[] current = this.sunColour;
+        float[] next = this.next().sunColour;
 
         return new float[] {
             current[0] * (1 - progression) + next[0] * progression,
