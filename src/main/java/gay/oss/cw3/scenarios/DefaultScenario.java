@@ -35,11 +35,20 @@ public class DefaultScenario extends Scenario {
         if (this.isOpenGL) {
             // Configure models.
             var renderer = this.getRenderer();
+
+            // amogus.png 1.0f
+            // bird.png 0.3f
+            // ferret.png 0.3f
+            // grass.png 0.5f
+            // pine.png 10.0f
+            // raccoon.png 0.01f
+            // snake.png 0.01f
+
             //renderer.autoLoadModel(Hunter.class, "hunter.jpg");
-            renderer.autoLoadModel(Hunter.class, "amogus.png", "entities/amogus", 1);
-            renderer.autoLoadModel(Rabbit.class, "bunny.png", "entities/bunny", 0.02f);
-            renderer.autoLoadModel(Grass.class, "grass.png", "entities/grass", 0.5f);
-            //renderer.autoLoadModel(Grass.class, "pine.png", "entities/pine", 10);
+            renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.01f);
+            renderer.autoLoadModel(Rabbit.class, "bird.png", "bird", 0.3f);
+            renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f);
+            //renderer.autoLoadModel(Grass.class, "pine.png", "pine", 10);
         }
     }
 

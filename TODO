@@ -1,10 +1,16 @@
 - shadows
 - FONT RENDERING
+
 - basic ui
 - show ticks
 - show time
 
+- create Lighting class
 - lighting colour
 - lighting pos
 
-- random per cell variation values
+- calculate delta time in loop
+
+- add rate limit
+- add ability to switch off entity render
+- toggle render indicator above entities

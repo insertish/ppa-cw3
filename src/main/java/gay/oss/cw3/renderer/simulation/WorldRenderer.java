@@ -69,11 +69,11 @@ public class WorldRenderer {
     }
 
     public void autoLoadModel(Class<?> clazz, String name) throws Exception {
-        this.setModel(clazz, new ModelEntity(Texture.fromResource("entities/" + name)));
+        this.setModel(clazz, new ModelEntity("entities/" + name));
     }
 
     public void autoLoadModel(Class<?> clazz, String name, String modelName, float scale) throws Exception {
-        this.setModel(clazz, new ModelEntity(Texture.fromResource("entities/" + name), modelName, scale));
+        this.setModel(clazz, new ModelEntity("entities/" + name, "entities/" + modelName, scale));
     }
 
     private static class SmoothedRandom {

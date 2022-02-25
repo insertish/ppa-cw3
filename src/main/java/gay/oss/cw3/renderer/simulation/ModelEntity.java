@@ -8,14 +8,14 @@ import gay.oss.cw3.renderer.objects.Texture;
 public class ModelEntity extends Model {
     private float scale = 1;
 
-    public ModelEntity(Texture texture) throws Exception {
+    public ModelEntity(String textureName) throws Exception {
         super(MeshUtil.makeCube(0.5f, 1f, 0.5f, false),
-            new Material(Resources.getShader("textured"), texture));
+            new Material(Resources.getShader("textured"), Texture.fromResource(textureName)));
     }
 
-    public ModelEntity(Texture texture, String modelName, float scale) throws Exception {
+    public ModelEntity(String textureName, String modelName, float scale) throws Exception {
         super(Mesh.loadObjFromResource(modelName).build(),
-            new Material(Resources.getShader("textured"), texture));
+            new Material(Resources.getShader("textured"), Texture.fromResource(textureName)));
         
         this.scale = scale;
     }
