@@ -29,7 +29,6 @@ public abstract class Entity {
     /**
      * Creates <em>and automatically spawns</em> an entity.
      *
-     * @param maxHealth         the entity's max health
      * @param world             the world the entity will reside in
      * @param layer
      * @param location          the entity's initial location
@@ -48,7 +47,6 @@ public abstract class Entity {
     /**
      * Creates <em>and automatically spawns</em> an entity at the origin of the world.
      *
-     * @param maxHealth         the entity's max health
      * @param world             the world the entity will reside in
      * @param initialAgeTicks   the entity's initial age
      * @param alive             whether the entity is alive
@@ -201,7 +199,7 @@ public abstract class Entity {
         for (int i=-radius;i<radius+1;i++) {
             for (int j=-radius;j<radius+1;j++) {
                 Entity e = this.world.getEntity(this.getLayer(), x + i, z + j);
-                if (e != null) entities.add(e);
+                if (e != null && e != this) entities.add(e);
             }
         }
 
