@@ -35,7 +35,6 @@ public class WanderAroundBehaviour extends MovementBehaviour {
             this.setDirection();
         }
 
-
         var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(direction));
 
         if (this.entity.canMoveTo(newLoc)) {

@@ -22,9 +22,6 @@ public class FleeBehaviour extends MovementBehaviour {
 
     @Override
     public boolean canStart() {
-        // ! FIXME: this is an example of how the day cycle could be used
-        if (this.entity.getWorld().getDayCycle() == DayCycle.NIGHT) return false;
-
         this.ticksCouldntMove = 0;
 
         var potentialThreats = this.entity.getAdjacentEntities(fearDistance);

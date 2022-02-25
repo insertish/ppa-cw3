@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-//TODO: sexes
 public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehaviour {
     private final Random random = new Random();
     private final T entity;

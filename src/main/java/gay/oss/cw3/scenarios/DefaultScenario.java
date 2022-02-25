@@ -3,17 +3,13 @@ package gay.oss.cw3.scenarios;
 import java.util.Random;
 
 import gay.oss.cw3.simulation.entity.Sex;
+import gay.oss.cw3.simulation.entity.brain.behaviours.*;
 import org.jetbrains.annotations.Nullable;
 
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
-import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
-import gay.oss.cw3.simulation.entity.brain.behaviours.EatFoliageBehaviour;
-import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
-import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
-import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
@@ -57,6 +53,7 @@ public class DefaultScenario extends Scenario {
         public Rabbit(World world, Coordinate location) {
             super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
+            this.getBrain().addBehaviour(new SleepBehaviour(this, false));
             this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.0, 0.7, Grass.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
@@ -90,6 +87,7 @@ public class DefaultScenario extends Scenario {
     public static class Hunter extends AbstractBreedableEntity {
         public Hunter(World world, Coordinate location) {
             super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
+            this.getBrain().addBehaviour(new SleepBehaviour(this, true));
             this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, Rabbit.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
