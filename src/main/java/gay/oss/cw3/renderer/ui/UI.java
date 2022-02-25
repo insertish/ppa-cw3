@@ -19,7 +19,6 @@ public abstract class UI {
     private ShaderProgram textureShader;
 
     private Mesh squareMesh;
-    private Font font;
 
     protected int width;
     protected int height;
@@ -50,8 +49,6 @@ public abstract class UI {
                 0.0f, 0.0f,
             }, 2)
             .build();
-        
-        this.font = new FontRetro();
     }
 
     public void upload(Matrix4f transformation) {
@@ -78,22 +75,18 @@ public abstract class UI {
             .ortho2D(0, width, 0, height);
     }
 
-    protected void drawRect(int x, int y, int w, int h, Texture texture) {
+    public void drawRect(int x, int y, int w, int h, Texture texture) {
         texture.bind();
         this.textureShader.use();
         this.upload(x, y, w, h);
         this.squareMesh.draw();
     }
 
-    protected void drawRect(int x, int y, int w, int h, Vector4f colour) {
+    public void drawRect(int x, int y, int w, int h, Vector4f colour) {
         this.colourShader.use();
         this.colourShader.setUniform("colour", colour);
         this.upload(x, y, w, h);
         this.squareMesh.draw();
-    }
-
-    protected void drawText(int x, int y, int size, String text) {
-        this.font.drawText(this, x, y, size, text);
     }
 
     protected abstract void drawUI();

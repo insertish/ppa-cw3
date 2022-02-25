@@ -1,18 +1,29 @@
 package gay.oss.cw3.renderer.simulation;
 
-import gay.oss.cw3.simulation.world.attributes.DayCycle;
+import java.util.EnumMap;
+import java.util.Map;
+
 import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.objects.Texture;
+import gay.oss.cw3.renderer.ui.Font;
+import gay.oss.cw3.renderer.ui.FontRetro;
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.framework.Box;
+import gay.oss.cw3.renderer.ui.framework.Node;
+import gay.oss.cw3.renderer.ui.framework.components.Image;
+import gay.oss.cw3.renderer.ui.framework.components.Text;
+import gay.oss.cw3.renderer.ui.framework.layouts.FlowH;
 import gay.oss.cw3.simulation.world.World;
-
-import java.util.EnumMap;
-import java.util.Map;
+import gay.oss.cw3.simulation.world.attributes.DayCycle;
 
 public class SimulationUI extends UI {
     private World world;
 
+    private Node uiRoot;
+    private Text tickText;
+    private Image dayCycleIndicator;
+    
     private final Map<DayCycle, Texture> dayCycleTextures;
 
     public SimulationUI(World world) throws Exception {
@@ -24,6 +35,27 @@ public class SimulationUI extends UI {
         dayCycleTextures.put(DayCycle.AFTERNOON, Texture.fromResource("ui/daycycle/afternoon.png"));
         dayCycleTextures.put(DayCycle.EVENING, Texture.fromResource("ui/daycycle/evening.png"));
         dayCycleTextures.put(DayCycle.NIGHT, Texture.fromResource("ui/daycycle/night.png"));
+
+        Font font = new FontRetro();
+        this.tickText = new Text(font, "0 ticks", 24);
+        this.dayCycleIndicator = new Image(null);
+        this.uiRoot = new Box(
+            new FlowH(new Node[] {
+                new Box(this.dayCycleIndicator)
+                    .setPadding(8)
+                    .setColour(new Vector4f(0, 0, 0, 0.5f))
+                    .setMinWidth(64)
+                    .setMinHeight(64),
+                new Box(this.tickText)
+                    .setPadding(8)
+                    .setColour(new Vector4f(0, 0, 0, 0.5f)),
+                new Box(this.tickText)
+                    .setPadding(8)
+                    .setColour(new Vector4f(0, 0, 0, 0.5f))
+            })
+            .setGap(8)
+        )
+        .setPadding(24);
     }
 
     public void setWorld(World world) {
@@ -33,11 +65,9 @@ public class SimulationUI extends UI {
     protected void drawUI() {
         String text = this.world.getTime() + " ticks";
 
-        this.drawRect(24, 24, 80, 80, new Vector4f(0, 0, 0, 0.5f));
-        this.drawRect(128, 24, 16 + 24 * text.length(), 40, new Vector4f(0, 0, 0, 0.5f));
+        this.tickText.setValue(text);
+        this.dayCycleIndicator.setTexture(this.dayCycleTextures.get(this.world.getDayCycle()));
 
-        this.drawRect(32, 32, 64, 64, this.dayCycleTextures.get(this.world.getDayCycle()));
-
-        this.drawText(136, 32, 24, text);
+        this.uiRoot.draw(this, 0, 0, this.uiRoot.getWidth(), this.uiRoot.getHeight());
     }
 }
