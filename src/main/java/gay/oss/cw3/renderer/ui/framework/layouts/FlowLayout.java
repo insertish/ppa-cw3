@@ -3,11 +3,11 @@ package gay.oss.cw3.renderer.ui.framework.layouts;
 import gay.oss.cw3.renderer.ui.UI;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
-public class FlowH extends Node {
+public class FlowLayout extends Node {
     private Node[] children;
     private int gap;
 
-    public FlowH(Node[] children) {
+    public FlowLayout(Node[] children) {
         this.children = children;
     }
 
@@ -15,7 +15,7 @@ public class FlowH extends Node {
         return gap;
     }
 
-    public FlowH setGap(int gap) {
+    public FlowLayout setGap(int gap) {
         this.gap = gap;
         return this;
     }

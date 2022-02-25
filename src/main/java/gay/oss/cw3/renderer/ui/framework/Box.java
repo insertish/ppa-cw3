@@ -64,20 +64,12 @@ public class Box extends Node {
     @Override
     public int getWidth() {
         int width = this.child.getWidth() + this.padding * 2;
-        if (this.minWidth > width) {
-            return this.minWidth;
-        }
-
-        return width;
+        return Math.max(this.minWidth, width);
     }
 
     @Override
     public int getHeight() {
         int height = this.child.getHeight() + this.padding * 2;
-        if (this.minHeight > height) {
-            return this.minHeight;
-        }
-
-        return height;
+        return Math.max(this.minHeight, height);
     }
 }

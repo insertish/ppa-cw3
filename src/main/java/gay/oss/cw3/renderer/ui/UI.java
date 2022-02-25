@@ -89,12 +89,12 @@ public abstract class UI {
         this.squareMesh.draw();
     }
 
-    protected abstract void drawUI();
+    protected abstract void drawUI(int width, int height);
 
     public void draw(int width, int height) {
         this.calculate(width, height);
         glDisable(GL_DEPTH_TEST);
-        this.drawUI();
+        this.drawUI(width, height);
         glEnable(GL_DEPTH_TEST);
     }
 }
