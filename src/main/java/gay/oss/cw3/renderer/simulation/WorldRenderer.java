@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Random;
 
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.objects.Material;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Camera;
+import gay.oss.cw3.renderer.shaders.Lighting;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.World;
@@ -23,9 +25,12 @@ public class WorldRenderer {
     private Model terrainModel;
     private Model waterModel;
 
+    private Lighting lighting;
+
     public WorldRenderer(World world) {
         this.world = world;
         this.models = new HashMap<>();
+        this.lighting = new Lighting();
     }
 
     public void init() throws Exception {
@@ -136,14 +141,26 @@ public class WorldRenderer {
         }
 
         // 0. setup global shader variables
-        var map = this.world.getMap();
-        var offset = (this.world.getTime() * 0.1f) % 64.0f;
-        ShaderProgram.setUniform("lightPos", (Object) new Vector3f(offset, 64.0f, offset));
+        int mod = (world.getTime() % 100);
+        float[] colour = this.world.getDayCycle().averageToNext(mod > 80 ? (mod - 80) / 20.0f : 0);
+        this.lighting.setLightDiffuse(new Vector3f(colour));
 
+        float offset = (world.getTime() % 400) / 100.0f;
+        float pos = 0;
+        if (offset > 3) {
+            pos = (2 - (offset - 3) * 3);
+        } else {
+            pos = offset - 1;
+        }
+
+        this.lighting.setLightDirection(new Vector4f(pos * 128.0f, 42.0f, pos * 128.0f, 0.0f));
+        this.lighting.upload();
+        
         // 1. render terrain
         this.terrainModel.draw(camera);
         
         // 2. render water
+        var map = this.world.getMap();
         this.waterModel
             .getTransformation()
             .translation(0.0f, map.getWaterLevel(), 0.0f)

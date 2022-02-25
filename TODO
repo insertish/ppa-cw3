@@ -5,9 +5,9 @@
 - show ticks
 - show time
 
-- create Lighting class
-- lighting colour
-- lighting pos
+- ortho UI renderer
+- add icon for current day cycle
+- add tick counter to screen
 
 - calculate delta time in loop
 

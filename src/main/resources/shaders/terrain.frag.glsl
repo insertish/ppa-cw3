@@ -1,7 +1,6 @@
 #version 330 core
 #include "lighting.frag"
 
-in vec3 fragPosition;
 in vec3 fragColour;
 in vec2 fragUV;
 

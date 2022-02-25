@@ -1,22 +1,31 @@
+in vec3 fragPosition;
 in vec3 fragNormal;
 
-uniform vec3 lightPos;
+struct Light {
+    vec4 direction;
+  
+    vec3 ambient;
+    vec3 diffuse;
+};
+
+uniform Light light;
 
 vec4 lighting(vec4 objectColour) {
-    float ambientStrength = 0.3;
-    vec3 ambientColour = vec3(1.0, 1.0, 1.0);
-
-    float diffuseStrength = 0.7;
-    vec3 diffuseColour = vec3(1.0, 1.0, 1.0);
-
     // Ambient
-    vec3 ambient = ambientStrength * ambientColour;
+    vec3 ambient = light.ambient;
 
     // Diffuse
     vec3 norm = normalize(fragNormal);
-    vec3 lightDir = normalize(lightPos);
+
+    vec3 lightDir;
+    if (light.direction.w == 0.0) {
+        lightDir = normalize(light.direction.xyz - fragPosition);
+    } else {
+        lightDir = normalize(-light.direction.xyz);
+    }
+
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * diffuseColour;
+    vec3 diffuse = diff * light.diffuse;
 
     return vec4(ambient + diffuse, 1.0) * objectColour;
 }
