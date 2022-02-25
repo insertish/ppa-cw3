@@ -3,7 +3,7 @@ package gay.oss.cw3.simulation.world.attributes;
 public enum DayCycle {
     MORNING(new float[] { 1.0f, 1.0f, 1.0f }),
     AFTERNOON(new float[] { 1.0f, 0.99f, 0.75f }),
-    EVENING(new float[] { 1.0f, 0.82f, 0.67f }),
+    EVENING(new float[] { 0.9f, 0.72f, 0.57f }),
     NIGHT(new float[] { 0.29f, 0.34f, 0.34f });
 
     private float[] colour;

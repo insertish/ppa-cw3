@@ -1,13 +1,24 @@
 package gay.oss.cw3.renderer.objects;
 
-import org.lwjgl.stb.STBImage;
-import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glPixelStorei;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.stb.STBImage;
+import org.lwjgl.system.MemoryUtil;
 
 /**
  * A representation of a texture used for OpenGL.
@@ -56,7 +67,7 @@ public class Texture {
     /**
      * Bind the texture.
      */
-    void bind() {
+    public void bind() {
         if (CURRENT_TEXTURE0 == this) return;
         glBindTexture(GL_TEXTURE_2D, this.id);
         CURRENT_TEXTURE0 = this;

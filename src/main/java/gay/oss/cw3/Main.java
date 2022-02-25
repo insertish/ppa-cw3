@@ -12,6 +12,7 @@ import org.lwjgl.glfw.GLFW;
 import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
 import gay.oss.cw3.renderer.shaders.Camera;
+import gay.oss.cw3.renderer.simulation.SimulationUI;
 import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
 
@@ -20,6 +21,7 @@ public class Main {
 
     private Window window;
     private Camera camera;
+    private SimulationUI ui;
     private Scenario scenario;
     private Thread tickThread;
 
@@ -42,6 +44,7 @@ public class Main {
 
         // Configure Scenario
         this.scenario = new DefaultScenario(WORLD_SIZE, WORLD_SIZE, true);
+        this.ui = new SimulationUI(null);
         this.generateWorld();
     }
 
@@ -56,6 +59,7 @@ public class Main {
         // Generate world
         this.scenario.init();
         this.scenario.generate();
+        this.ui.setWorld(this.scenario.getWorld());
 
         // Move the camera accordingly
         var map = this.scenario.getWorld().getMap();
@@ -116,6 +120,9 @@ public class Main {
 
         // World rendering.
         this.scenario.getRenderer().draw(this.camera);
+
+        // Draw the UI.
+        this.ui.draw(window.getWidth(), window.getHeight());
 
         // Update title with render time.
         this.window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime() + " - Zoom: " + this.camera.getZoom());
