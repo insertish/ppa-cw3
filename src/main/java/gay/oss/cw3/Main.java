@@ -16,7 +16,7 @@ import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
 
 public class Main {
-    public static int WORLD_SIZE = 64;//64;//256;//128;
+    public static int WORLD_SIZE = 80;//64;//256;//128;
 
     private Window window;
     private Camera camera;

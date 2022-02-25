@@ -76,6 +76,10 @@ public class Map {
         return this.offsets.get(layer);
     }
 
+    public BiomeType getBiome(int x, int z) {
+        return this.biomeMap.get(x, z);
+    }
+
     public float[] getBiomeColour(int x, int z) {
         return this.biomeMap.get(x, z).getColour();
     }
@@ -115,7 +119,7 @@ public class Map {
 
                 BiomeType type = null;
                 if (value > 0.6) {
-                    type = BiomeType.Jungle;
+                    type = BiomeType.AridPlains;
                 } else if (value > -0.4) {
                     type = BiomeType.Plains;
                 } else {

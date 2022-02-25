@@ -16,6 +16,7 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.world.World;
+import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
@@ -29,9 +30,9 @@ public class DefaultScenario extends Scenario {
         super.init();
 
         var generator = this.getGenerator();
-        generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f);
-        generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f);
-        generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.3f);
+        generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f, null);
+        generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f, null);
+        generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.3f, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
 
         if (this.isOpenGL) {
             // Configure models.
