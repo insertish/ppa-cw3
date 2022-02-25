@@ -1,9 +1,6 @@
 package gay.oss.cw3.simulation.world;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +15,7 @@ public class World {
     private final Map map;
     private final List<Entity> entities;
     private final List<Entity> entitiesToSpawn;
+    private final Random random = new Random();
     private int time = 0;
 
     public World(int width, int depth) {
@@ -149,5 +147,9 @@ public class World {
                         && this.getEntity(layer, coord.x, coord.z) == null
                         && this.map.getHeight(coord.x, coord.z) > this.map.getWaterLevel()
         );
+    }
+
+    public Random getRandom() {
+        return random;
     }
 }

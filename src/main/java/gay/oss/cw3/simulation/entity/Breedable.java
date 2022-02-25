@@ -6,9 +6,13 @@ import org.jetbrains.annotations.Nullable;
 public interface Breedable {
     @Nullable Entity createChild(Entity otherParent, Coordinate coordinate);
 
+    @Nullable Sex getSex();
+
     boolean isCompatible(Entity entity);
 
     boolean canBreed();
+
+    boolean canGiveBirth();
 
     void startBreedingAttempt();
 }

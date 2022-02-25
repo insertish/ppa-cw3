@@ -2,6 +2,7 @@ package gay.oss.cw3.scenarios;
 
 import java.util.Random;
 
+import gay.oss.cw3.simulation.entity.Sex;
 import org.jetbrains.annotations.Nullable;
 
 import gay.oss.cw3.simulation.Coordinate;
@@ -54,7 +55,7 @@ public class DefaultScenario extends Scenario {
 
     public static class Rabbit extends AbstractBreedableEntity {
         public Rabbit(World world, Coordinate location) {
-            super(world, location, 0, true, EntityLayer.ANIMALS);
+            super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
             this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
             this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.0, 0.7, Grass.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
@@ -84,16 +85,11 @@ public class DefaultScenario extends Scenario {
             result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
             return result;
         }
-
-        @Override
-        public boolean isCompatible(Entity entity) {
-            return entity.isAlive();
-        }
     }
 
     public static class Hunter extends AbstractBreedableEntity {
         public Hunter(World world, Coordinate location) {
-            super(world, location, 0, true, EntityLayer.ANIMALS);
+            super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
             this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, Rabbit.class));
             this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6));
             this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
@@ -122,11 +118,6 @@ public class DefaultScenario extends Scenario {
             var result = new Hunter(this.getWorld(), coordinate);
             result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
             return result;
-        }
-
-        @Override
-        public boolean isCompatible(Entity entity) {
-            return true;
         }
     }
 

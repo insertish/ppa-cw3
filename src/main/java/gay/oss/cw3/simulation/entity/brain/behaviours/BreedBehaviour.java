@@ -23,7 +23,7 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
     @SuppressWarnings("unchecked") // `isInstance` check means that (T) cast is safe
     @Override
     public boolean canStart() {
-        if (!this.entity.canBreed()) {
+        if (!this.entity.canBreed() || !this.entity.canGiveBirth()) {
             return false;
         }
 
