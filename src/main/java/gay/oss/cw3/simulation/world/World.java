@@ -121,4 +121,24 @@ public class World {
 
         this.map.getEntities(entity.getLayer()).setWithoutOverwrite(to, entity);
     }
+
+    public List<Coordinate> findFreeLocations(final EntityLayer layer, final Coordinate around, final int radius) {
+        final List<Coordinate> locations = new ArrayList<>();
+
+        for (int dX = -radius; dX <= radius; dX++) {
+            for (int dZ = -radius; dZ <= radius; dZ++) {
+                var coord = around.add(dX, dZ);
+
+                if (
+                        this.isInBounds(coord)
+                                && this.getEntity(layer, coord.x, coord.z) == null
+                                && this.map.getHeight(coord.x, coord.z) > this.map.getWaterLevel()
+                ) {
+                    locations.add(coord);
+                }
+            }
+        }
+
+        return locations;
+    }
 }

@@ -106,22 +106,9 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
     }
 
     private @Nullable Coordinate findAvailablePositionAround(int radius, Entity a, Entity b) {
-        Set<Coordinate> positions = new HashSet<>();
-        for (int i=-radius;i<radius+1;i++) {
-            for (int j=-radius;j<radius+1;j++) {
-                Coordinate coordinate = a.getLocation().add(i, j);
-                Entity e = a.getWorld().getEntity(entity.getLayer(), coordinate.x, coordinate.z);
-                if (a.getWorld().isInBounds(coordinate) && e == null) {
-                    positions.add(coordinate);
-                }
-
-                coordinate = b.getLocation().add(i, j);
-                e = b.getWorld().getEntity(entity.getLayer(), coordinate.x, coordinate.z);
-                if (b.getWorld().isInBounds(coordinate) && e == null) {
-                    positions.add(coordinate);
-                }
-            }
-        }
+        final Set<Coordinate> positions = new HashSet<>();
+        positions.addAll(a.getWorld().findFreeLocations(a.getLayer(), a.getLocation(), radius));
+        positions.addAll(b.getWorld().findFreeLocations(b.getLayer(), b.getLocation(), radius));
 
         if (positions.isEmpty()) {
             return null;

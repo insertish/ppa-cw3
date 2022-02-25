@@ -32,7 +32,7 @@ public class DefaultScenario extends Scenario {
         var generator = this.getGenerator();
         generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f, null);
         generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f, null);
-        generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.3f, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
+        generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.15f, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
 
         if (this.isOpenGL) {
             // Configure models.
@@ -103,7 +103,7 @@ public class DefaultScenario extends Scenario {
         public void tick() {
             if (this.isAlive()) {
                 this.getBrain().tick();
-                this.removeFullness(0.05);
+                this.removeFullness(0.01);
                 if (this.getFullness() <= 0) {
                     this.addHealth(-1);
                 }
@@ -129,8 +129,8 @@ public class DefaultScenario extends Scenario {
         public Grass(World world, Coordinate location) {
             super(world, EntityLayer.FOLIAGE, location, 0, true);
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
-            this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 3.0);
-            this.setFullness(1.0);
+            this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 0.6);
+            this.setFullness(0.5);
         }
 
         @Override
@@ -138,27 +138,17 @@ public class DefaultScenario extends Scenario {
             if (this.isAlive()) {
                 // photosynthesis
                 if (this.getWorld().getDayCycle() != DayCycle.NIGHT) {
-                    this.addFullness(0.2);
+                    this.addFullness(0.01);
                 }
 
                 // spreading
-                if (this.getFullness() >= 2.0) {
-                    List<Coordinate> locations = new ArrayList<>();
-
-                    for (int dX = -1; dX <= 1; dX++) {
-                        for (int dZ = -1; dZ <= 1; dZ++) {
-                            var coord = this.getLocation().add(dX, dZ);
-
-                            if (this.getWorld().isInBounds(coord) && this.getWorld().getEntity(EntityLayer.FOLIAGE, coord.x, coord.z) != null) {
-                                locations.add(coord);
-                            }
-                        }
-                    }
+                if (this.getFullness() >= 0.5) {
+                    var locations = this.getWorld().findFreeLocations(this.getLayer(), this.getLocation(), 1);
 
                     if (!locations.isEmpty()) {
                         var coord = locations.get(random.nextInt(locations.size()));
                         new Grass(this.getWorld(), coord);
-                        this.removeFullness(1.0);
+                        this.removeFullness(0.25);
                     }
                 }
 
