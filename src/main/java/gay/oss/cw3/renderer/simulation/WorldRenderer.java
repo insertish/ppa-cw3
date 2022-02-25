@@ -142,7 +142,7 @@ public class WorldRenderer {
 
         // 0. setup global shader variables
         int mod = (world.getTime() % 100);
-        float[] colour = this.world.getDayCycle().averageToNext(mod > 80 ? (mod - 80) / 20.0f : 0);
+        float[] colour = this.world.getDayCycle().getSunColour(mod > 80 ? (mod - 80) / 20.0f : 0);
         this.lighting.setLightDiffuse(new Vector3f(colour));
 
         float offset = (world.getTime() % 400) / 100.0f;

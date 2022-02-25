@@ -1,5 +1,7 @@
 package gay.oss.cw3.simulation.world.attributes;
 
+import gay.oss.cw3.renderer.Util;
+
 import static gay.oss.cw3.renderer.Util.intColourToFloats;
 
 public enum DayCycle {
@@ -24,15 +26,15 @@ public enum DayCycle {
         }
     }
 
-    public float[] averageToNext(float progression) {
-        float[] current = this.sunColour;
-        float[] next = this.next().sunColour;
+    public float[] getSunColour(float progressionToNext) {
+        float[] current = Util.rgbToOklab(this.sunColour);
+        float[] next = Util.rgbToOklab(this.next().sunColour);
 
-        return new float[] {
-            current[0] * (1 - progression) + next[0] * progression,
-            current[1] * (1 - progression) + next[1] * progression,
-            current[2] * (1 - progression) + next[2] * progression,
-        };
+        return Util.oklabToRgb(new float[] {
+            current[0] * (1 - progressionToNext) + next[0] * progressionToNext,
+            current[1] * (1 - progressionToNext) + next[1] * progressionToNext,
+            current[2] * (1 - progressionToNext) + next[2] * progressionToNext,
+        });
     }
 
     public static final int DAY_TICKS = 100;
