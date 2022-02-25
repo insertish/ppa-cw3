@@ -1,5 +1,7 @@
 package gay.oss.cw3.renderer.simulation;
 
+import static org.lwjgl.opengl.GL11.glDepthMask;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -92,6 +94,38 @@ public class WorldRenderer {
 
     private SmoothedRandom random = new SmoothedRandom(1, 0.002f);
 
+    private void drawLayer(EntityLayer layer, Camera camera) {
+        var map = this.world.getMap();
+
+        float yOffset = 0;
+        if (layer == EntityLayer.ANIMALS) {
+            yOffset += 0.5f;
+        }
+
+        for (int x=0;x<map.getWidth();x++) {
+            for (int z=0;z<map.getDepth();z++) {
+                Entity entity = this.world.getEntity(layer, x, z);
+                if (entity != null) {
+                    Model model = this.models.get(entity.getClass());
+
+                    var translation = model.getTransformation()
+                        .translation(
+                            x + 0.25f,
+                            Math.max(map.getWaterLevel(), map.getHeight(x, z)) + yOffset,
+                            z + 0.25f
+                        );
+
+                    if (model instanceof ModelEntity) {
+                        float s = ((ModelEntity) model).getScale();
+                        translation.scale(s, s*2, s);
+                    }
+                    
+                    model.draw(camera);
+                }
+            }
+        }
+    }
+
     public void draw(Camera camera) {
         if (this.terrainModel == null || this.waterModel == null) {
             return;
@@ -124,35 +158,12 @@ public class WorldRenderer {
         program.setUniform("waterRandomDisplacement", this.random.next());
         this.waterModel.draw(camera);
 
-        // 3. render entities
-        for (EntityLayer layer : EntityLayer.values()) {
-            float yOffset = 0;
-            if (layer == EntityLayer.ANIMALS) {
-                yOffset += 0.5f;
-            }
-
-            for (int x=0;x<map.getWidth();x++) {
-                for (int z=0;z<map.getDepth();z++) {
-                    Entity entity = this.world.getEntity(layer, x, z);
-                    if (entity != null) {
-                        Model model = this.models.get(entity.getClass());
-
-                        var translation = model.getTransformation()
-                            .translation(
-                                x + 0.25f,
-                                Math.max(map.getWaterLevel(), map.getHeight(x, z)) + yOffset,
-                                z + 0.25f
-                            );
-
-                        if (model instanceof ModelEntity) {
-                            float s = ((ModelEntity) model).getScale();
-                            translation.scale(s, s*2, s);
-                        }
-                        
-                        model.draw(camera);
-                    }
-                }
-            }
-        }
+        // 3. render entities        
+        this.drawLayer(EntityLayer.ANIMALS, camera);
+        
+        // we enable the depth mask so that we can support transparency here
+        glDepthMask(false);
+        this.drawLayer(EntityLayer.FOLIAGE, camera);
+        glDepthMask(true);
     }
 }
