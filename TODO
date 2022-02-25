@@ -8,8 +8,9 @@
 
 - right click pan
 - colour code shit
-- labels bottom right
 - help menu
 
 calculate the actual height at location
 get the X / Y random offsets, then take the average and plop it down
+
+INSTANCED RENDERING - IMPORTANT

@@ -1,13 +1,18 @@
 package gay.oss.cw3.scenarios;
 
-import gay.oss.cw3.simulation.entity.Sex;
-import gay.oss.cw3.simulation.entity.brain.behaviours.*;
 import org.jetbrains.annotations.Nullable;
 
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
+import gay.oss.cw3.simulation.entity.Sex;
+import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.EatFoliageBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.FleeBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.HuntBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.SleepBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
@@ -22,12 +27,11 @@ public class DefaultScenario extends Scenario {
     public void init() throws Exception {
         super.init();
 
-        var generator = this.getGenerator();
-        generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f, false, true, null);
-        generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f, false, true, null);
-        generator.registerEntity(EntityLayer.ANIMALS, HerbivoreFish.class, 0.005f, true, false, null);
-        generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.15f, false, true, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
-        generator.registerEntity(EntityLayer.FOLIAGE, Kelp.class, 0.15f, true, false, null);
+        this.registerEntity(EntityLayer.ANIMALS, "Rabbit", Rabbit.class, 0.05f, false, true, null);
+        this.registerEntity(EntityLayer.ANIMALS, "Hunter", Hunter.class, 0.005f, false, true, null);
+        this.registerEntity(EntityLayer.ANIMALS, "Herbivore Fish", HerbivoreFish.class, 0.005f, true, false, null);
+        this.registerEntity(EntityLayer.FOLIAGE, "Grass", Grass.class, 0.15f, false, true, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
+        this.registerEntity(EntityLayer.FOLIAGE, "Kelp", Kelp.class, 0.15f, true, false, null);
 
         if (this.isOpenGL) {
             // Configure models.

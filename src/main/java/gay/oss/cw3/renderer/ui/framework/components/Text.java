@@ -41,16 +41,16 @@ public class Text extends Node {
 
     @Override
     public void draw(UI ui, int x, int y, int w, int h) {
-        this.font.drawText(ui, x, y, this.size, this.value);
+        this.font.drawText(ui, x, y, this.getSize(), this.getValue());
     }
 
     @Override
     public int getWidth() {
-        return this.size * this.value.length();
+        return this.getSize() * this.getValue().length();
     }
 
     @Override
     public int getHeight() {
-        return this.size;
+        return this.getSize();
     }
 }

@@ -7,7 +7,7 @@ public class FontRetro extends Font {
 
     @Override
     protected int[] selectChar(char c) {
-        switch (c) {
+        switch ((""+c).toLowerCase().charAt(0)) {
             case 'a': return new int[] { 0, 0 };
             case 'b': return new int[] { 1, 0 };
             case 'c': return new int[] { 2, 0 };

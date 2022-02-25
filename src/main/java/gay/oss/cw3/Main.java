@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
 import gay.oss.cw3.renderer.shaders.Camera;
-import gay.oss.cw3.renderer.simulation.SimulationUI;
+import gay.oss.cw3.renderer.simulation.ui.SimulationUI;
 import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
 
@@ -44,7 +44,7 @@ public class Main {
 
         // Configure Scenario
         this.scenario = new DefaultScenario(WORLD_SIZE, WORLD_SIZE, true);
-        this.ui = new SimulationUI(null);
+        this.ui = new SimulationUI(this.scenario);
         this.generateWorld();
     }
 
@@ -59,7 +59,7 @@ public class Main {
         // Generate world
         this.scenario.init();
         this.scenario.generate();
-        this.ui.setWorld(this.scenario.getWorld());
+        this.ui.setScenario(this.scenario);
 
         // Move the camera accordingly
         var map = this.scenario.getWorld().getMap();

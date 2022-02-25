@@ -1,14 +1,16 @@
 package gay.oss.cw3.renderer.ui.framework.layouts;
 
+import java.util.List;
+
 import gay.oss.cw3.renderer.ui.UI;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
 public class FlowLayout extends Node {
-    private Node[] children;
+    private List<Node> children;
     private int gap;
     private FlowDirection direction;
 
-    public FlowLayout(Node[] children) {
+    public FlowLayout(List<Node> children) {
         this.children = children;
         this.setDirection(FlowDirection.Row);
     }
@@ -56,7 +58,7 @@ public class FlowLayout extends Node {
                 width += child.getWidth();
             }
 
-            return width + (children.length - 1) * gap;
+            return width + (children.size() - 1) * gap;
         } else {
             for (Node child : children) {
                 width = Math.max(width, child.getWidth());
@@ -80,7 +82,7 @@ public class FlowLayout extends Node {
                 height += child.getHeight();
             }
 
-            return height + (children.length - 1) * gap;
+            return height + (children.size() - 1) * gap;
         }
     }
 }

@@ -5,7 +5,7 @@ import org.joml.Vector4f;
 import gay.oss.cw3.renderer.ui.UI;
 
 public class Box extends Node {
-    private Node child;
+    protected Node child;
 
     private Vector4f colour;
     private int padding;
