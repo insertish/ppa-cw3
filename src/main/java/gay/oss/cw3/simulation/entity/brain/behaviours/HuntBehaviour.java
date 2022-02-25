@@ -65,7 +65,7 @@ public class HuntBehaviour extends MovementBehaviour {
         var dir = this.target.getLocation().subtract(this.entity.getLocation());
         var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(dir));
 
-        if (this.entity.getWorld().isInBounds(newLoc)) {
+        if (this.entity.canMoveToDisregardingOccupancy(newLoc)) {
             var entityAtLoc = this.entity.getWorld().getEntity(this.entity.getLayer(), newLoc.x, newLoc.z);
 
             if (entityAtLoc == null) {

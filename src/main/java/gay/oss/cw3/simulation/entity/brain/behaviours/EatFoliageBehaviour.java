@@ -65,15 +65,9 @@ public class EatFoliageBehaviour extends MovementBehaviour {
         var dir = this.target.getLocation().subtract(this.entity.getLocation());
         var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(dir));
 
-        if (this.entity.getWorld().isInBounds(newLoc)) {
-            var entityAtLocInTheWay = this.entity.getWorld().getEntity(this.entity.getLayer(), newLoc.x, newLoc.z);
-
-            if (entityAtLocInTheWay == null) {
-                this.ticksCouldntMove = 0;
-                this.entity.moveTo(newLoc);
-            } else {
-                this.ticksCouldntMove++;
-            }
+        if (this.entity.canMoveTo(newLoc)) {
+            this.ticksCouldntMove = 0;
+            this.entity.moveTo(newLoc);
         } else {
             this.ticksCouldntMove++;
         }

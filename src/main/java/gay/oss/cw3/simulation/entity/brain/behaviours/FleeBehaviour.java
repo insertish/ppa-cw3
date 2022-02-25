@@ -65,15 +65,9 @@ public class FleeBehaviour extends MovementBehaviour {
         var dir = this.entity.getLocation().subtract(this.threat.getLocation());
         var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(dir));
 
-        if (this.entity.getWorld().isInBounds(newLoc)) {
-            var entityAtLoc = this.entity.getWorld().getEntity(entity.getLayer(), newLoc.x, newLoc.z);
-
-            if (entityAtLoc == null) {
-                this.ticksCouldntMove = 0;
-                this.entity.moveTo(newLoc);
-            } else {
-                this.ticksCouldntMove++;
-            }
+        if (this.entity.canMoveTo(newLoc)) {
+            this.ticksCouldntMove = 0;
+            this.entity.moveTo(newLoc);
         } else {
             this.ticksCouldntMove++;
         }

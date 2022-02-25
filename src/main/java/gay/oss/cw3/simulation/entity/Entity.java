@@ -216,6 +216,24 @@ public abstract class Entity {
         return entities;
     }
 
+    public boolean canMoveToDisregardingOccupancy(final Coordinate location) {
+        return this.getWorld().isInBounds(location)
+                && (this.getWorld().isAboveWater(location) ? this.canGoOnLand() : this.canGoInWater());
+    }
+
+    public boolean canMoveTo(final Coordinate location) {
+        return this.canMoveToDisregardingOccupancy(location)
+                && this.getWorld().getEntity(this.getLayer(), location.x, location.z) == null;
+    }
+
+    private boolean canGoOnLand() {
+        return true;
+    }
+
+    private boolean canGoInWater() {
+        return false;
+    }
+
     /**
      * Ticks this entity.
      */

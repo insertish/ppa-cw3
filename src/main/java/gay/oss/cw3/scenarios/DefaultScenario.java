@@ -1,7 +1,5 @@
 package gay.oss.cw3.scenarios;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import org.jetbrains.annotations.Nullable;
@@ -143,7 +141,7 @@ public class DefaultScenario extends Scenario {
 
                 // spreading
                 if (this.getFullness() >= 0.5) {
-                    var locations = this.getWorld().findFreeLocations(this.getLayer(), this.getLocation(), 1);
+                    var locations = this.getWorld().findFreeLocationsAboveWater(this.getLayer(), this.getLocation(), 1);
 
                     if (!locations.isEmpty()) {
                         var coord = locations.get(random.nextInt(locations.size()));

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -93,6 +94,10 @@ public class World {
         return this.map.isInBounds(location.x, location.z);
     }
 
+    public boolean isAboveWater(Coordinate location) {
+        return this.map.getHeight(location.x, location.z) > this.map.getWaterLevel();
+    }
+
     public void moveEntityDisplacing(final Entity entity, final Coordinate from, final Coordinate to) {
         if (from.equals(to)) {
             return;
@@ -122,23 +127,27 @@ public class World {
         this.map.getEntities(entity.getLayer()).setWithoutOverwrite(to, entity);
     }
 
-    public List<Coordinate> findFreeLocations(final EntityLayer layer, final Coordinate around, final int radius) {
+    public List<Coordinate> findMatchingLocations(final Coordinate around, final int radius, final Predicate<Coordinate> predicate) {
         final List<Coordinate> locations = new ArrayList<>();
 
         for (int dX = -radius; dX <= radius; dX++) {
             for (int dZ = -radius; dZ <= radius; dZ++) {
                 var coord = around.add(dX, dZ);
 
-                if (
-                        this.isInBounds(coord)
-                                && this.getEntity(layer, coord.x, coord.z) == null
-                                && this.map.getHeight(coord.x, coord.z) > this.map.getWaterLevel()
-                ) {
+                if (predicate.test(coord)) {
                     locations.add(coord);
                 }
             }
         }
 
         return locations;
+    }
+
+    public List<Coordinate> findFreeLocationsAboveWater(final EntityLayer layer, final Coordinate around, final int radius) {
+        return this.findMatchingLocations(around, radius, coord ->
+                this.isInBounds(coord)
+                        && this.getEntity(layer, coord.x, coord.z) == null
+                        && this.map.getHeight(coord.x, coord.z) > this.map.getWaterLevel()
+        );
     }
 }
