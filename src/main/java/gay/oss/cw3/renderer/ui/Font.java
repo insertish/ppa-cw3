@@ -16,7 +16,7 @@ public abstract class Font {
     
     protected abstract int[] selectChar(char c);
 
-    protected void drawText(UI ui, int x, int y, int size, String text) {
+    public void drawText(UI ui, int x, int y, int size, String text) {
         this.shader.use();
         this.shader.setUniform("atlas", this.atlas);
         
