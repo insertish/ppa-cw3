@@ -1,4 +1,6 @@
 #version 330 core
+#include "lighting.header.vert"
+
 layout (location = 0) in vec3 vertexPos;
 layout (location = 1) in vec2 vertexUV;
 layout (location = 3) in float vertexDepth;
@@ -11,6 +13,7 @@ uniform float waterWaveSpeed;
 uniform float waterDisplacementModifier;
 uniform float waterRandomDisplacement;
 
+uniform mat4 model;
 uniform mat4 modelViewProjection;
 
 out vec2 fragUV;
@@ -33,4 +36,6 @@ void main() {
 
     fragUV = vec2(vertexUV.x + 0.01 * sin(time), vertexUV.y + 0.01 * sin(time));
     fragDepth = vertexDepth;
+
+    #include "lighting.body.vert"
 }

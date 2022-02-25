@@ -2,8 +2,8 @@ package gay.oss.cw3.simulation.world.attributes;
 
 public enum BiomeType {
     Plains(new float[] { 0.32f, 0.42f, 0.19f }),
-    Forest(new float[] { 0.60f, 0.50f, 0.29f }),
-    Jungle(new float[] { 0.04f, 0.23f, 0.01f });
+    Forest(new float[] { 0.04f, 0.23f, 0.01f }),
+    AridPlains(new float[] { 0.60f, 0.50f, 0.29f });
 
     private float[] colour;
 
@@ -14,8 +14,4 @@ public enum BiomeType {
     public float[] getColour() {
         return this.colour;
     }
-
-    public static BiomeType[] BIOME_TYPES = {
-        Plains, Forest, Jungle
-    };
 }

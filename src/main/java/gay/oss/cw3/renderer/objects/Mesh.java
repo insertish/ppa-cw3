@@ -18,9 +18,15 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.javagl.obj.Obj;
+import de.javagl.obj.ObjData;
+import de.javagl.obj.ObjReader;
+import de.javagl.obj.ObjUtils;
 import gay.oss.cw3.renderer.Util;
 
 /**
@@ -148,6 +154,30 @@ public class Mesh {
 
         Mesh.unbind();
         return mesh;
+    }
+
+    /**
+     * Load a mesh from an .obj InputStream into a builder
+     * @return Mesh Builder
+     */
+    public static Builder loadObj(InputStream inputStream) throws IOException {
+        Obj obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
+        Builder builder = Mesh.builder();
+
+        builder.indices(ObjData.getFaceVertexIndicesArray(obj));
+        builder.vertex(ObjData.getVerticesArray(obj));
+        builder.render(ObjData.getTexCoordsArray(obj, 2), 2);
+        builder.normal(ObjData.getNormalsArray(obj));
+
+        return builder;
+    }
+
+    /**
+     * Load a pre-defined .obj mesh into a builder
+     * @return Mesh Builder
+     */
+    public static Builder loadObjFromResource(String resource) throws IOException {
+        return Mesh.loadObj(Mesh.class.getResourceAsStream("/models/" + resource + ".obj"));
     }
 
     /**

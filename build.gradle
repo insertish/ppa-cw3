@@ -62,6 +62,7 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 
     implementation 'org.joml:joml:1.10.4'
+    implementation 'de.javagl:obj:0.3.0'
 }
 
 test {

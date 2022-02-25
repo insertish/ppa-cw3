@@ -1,33 +1,27 @@
 package gay.oss.cw3;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
+import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
 
 public class Main {
-    public static int WORLD_SIZE = 256;//64;//256;//128;
+    public static int WORLD_SIZE = 80;//64;//256;//128;
 
     private Window window;
+    private Camera camera;
     private Scenario scenario;
     private Thread tickThread;
-
-    private double zoom = 40.0;
-    private double viewAngle = 0.0;
-    private double groundAngle = Math.PI / 3;
-
-    private boolean lmbHeld = false;
 
     private void init() throws Exception {
         Util.initialiseLWJGL();
@@ -37,35 +31,14 @@ public class Main {
         window.configureGL();
         window.makeVisible();
 
+        // Setup Camera
+        camera = new Camera();
+        camera.registerEvents(window);
+
         // Handle key events
         window.setKeyCallback((key, action, modifiers) -> {
             if (action == GLFW_PRESS) onKeyPress(key, modifiers);
         });
-
-        // Handle scroll events
-        window.setScrollCallback((x, y) -> {
-            zoom = (float) Math.max(zoom - y, 1.0);
-        });
-
-        // Handle mouse click events
-        window.setMouseButtonCallback((button, action, modifiers) -> {
-            if (button == GLFW_MOUSE_BUTTON_LEFT) {
-                if (action == GLFW_PRESS) {
-                    lmbHeld = true;
-                } else {
-                    lmbHeld = false;
-                }
-            }
-
-            if (lmbHeld) {
-                window.grabMouse();
-            } else {
-                window.freeMouse();
-            }
-        });
-
-        // Handle mouse move events
-        window.setCursorPosCallback((xPos, yPos) -> this.onCursorPos(xPos, yPos));
 
         // Configure Scenario
         this.scenario = new DefaultScenario(WORLD_SIZE, WORLD_SIZE, true);
@@ -83,6 +56,18 @@ public class Main {
         // Generate world
         this.scenario.init();
         this.scenario.generate();
+
+        // Move the camera accordingly
+        var map = this.scenario.getWorld().getMap();
+        float center = WORLD_SIZE / 2;
+        camera.setX(center);
+        camera.setZ(center);
+        camera.setY(
+            Math.max(
+                map.getHeight((int) center, (int) center),
+                map.getWaterLevel()
+            )
+        );
 
         // Off-load World tick to another thread
         tickThread = new Thread() {
@@ -110,20 +95,6 @@ public class Main {
         }
     }
 
-    private double lastX = 0;
-    private double lastY = 0;
-
-    private void onCursorPos(double x, double y) {
-        double dx = lastX - x, dy = lastY - y;
-        if (lmbHeld) {
-            this.viewAngle -= dx * 0.01;
-            this.groundAngle = Math.max(Math.min(this.groundAngle - dy * 0.01, Math.PI / 2 - 0.01), 0);
-        }
-
-        lastX = x;
-        lastY = y;
-    }
-
     private void renderLoop() {
         long start = System.currentTimeMillis();
 
@@ -134,40 +105,17 @@ public class Main {
         // invoked during this call.
         glfwPollEvents();
 
-        // * Camera Code (can move into class)
-        // Setup camera projection
-        // 1. Find our current center position.
-        float lookAtX = WORLD_SIZE / 2;
-        float lookAtZ = WORLD_SIZE / 2;
-        float centerHeight = this.scenario.getWorld().getMap().getHeight((int) lookAtX, (int) lookAtZ);
+        // Update camera projection.
+        this.camera.calculate(window.getWidth() / window.getHeight());
 
-        // 2. Calculate the zoom modifier and find the distance and height from this point.
-        double zoomModifier = 5 + Math.pow(1.1, this.zoom);
-        double distance = zoomModifier * Math.cos(this.groundAngle);
-        double height = zoomModifier * Math.sin(this.groundAngle);
-
-        // 3. Find the camera position by taking an offset from the center and
-        //    finding the distance in each X and Z axis according to the view angle.
-        float cameraX = lookAtX + (float) (distance * Math.cos(this.viewAngle));
-        float cameraY = centerHeight + (float) height;
-        float cameraZ = lookAtZ + (float) (distance * Math.sin(this.viewAngle));
-
-        // 4. Create view projection.
-        Matrix4f viewProjection = new Matrix4f()
-            .perspective((float) Math.toRadians(45.0f), window.getWidth() / window.getHeight(), 0.01f, 1000.0f)
-            .lookAt(
-                    cameraX, cameraY, cameraZ,
-                    lookAtX, centerHeight, lookAtZ,
-                    0.0f, 1.0f, 0.0f);
-
-        // World rendering
-        this.scenario.getRenderer().draw(viewProjection);
+        // World rendering.
+        this.scenario.getRenderer().draw(this.camera);
 
         // Update title with render time.
-        window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime() + " - Zoom: " + this.zoom);
+        this.window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime() + " - Zoom: " + this.camera.getZoom());
 
         // Swap framebuffers.
-        window.swap();
+        this.window.swap();
     }
 
     public static void main(String[] args) {

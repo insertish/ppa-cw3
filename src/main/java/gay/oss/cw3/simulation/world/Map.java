@@ -20,6 +20,9 @@ public class Map {
     private float waterLevel = -8.0f;
 
     private final java.util.Map<EntityLayer, Grid<Entity>> entities;
+    private final java.util.Map<EntityLayer, Grid<Float>> rotation;
+    private final java.util.Map<EntityLayer, Grid<float[]>> offsets;
+
     private final Grid<Float> heightMap;
     private final Grid<BiomeType> biomeMap;
 
@@ -28,9 +31,15 @@ public class Map {
         this.depth = depth;
 
         this.entities = new EnumMap<>(EntityLayer.class);
+        this.rotation = new EnumMap<>(EntityLayer.class);
+        this.offsets = new EnumMap<>(EntityLayer.class);
+
         for (EntityLayer layer : EntityLayer.values()) {
             this.entities.put(layer, new Grid<>(width, depth));
+            this.rotation.put(layer, new Grid<>(width, depth));
+            this.offsets.put(layer, new Grid<>(width, depth));
         }
+
         this.heightMap = new Grid<>(width, depth);
         this.biomeMap = new Grid<>(width, depth);
     }
@@ -57,6 +66,18 @@ public class Map {
 
     public float getHeight(int x, int z) {
         return this.heightMap.get(x, z);
+    }
+
+    public Grid<Float> getRotations(EntityLayer layer) {
+        return this.rotation.get(layer);
+    }
+
+    public Grid<float[]> getOffsets(EntityLayer layer) {
+        return this.offsets.get(layer);
+    }
+
+    public BiomeType getBiome(int x, int z) {
+        return this.biomeMap.get(x, z);
     }
 
     public float[] getBiomeColour(int x, int z) {
@@ -98,7 +119,7 @@ public class Map {
 
                 BiomeType type = null;
                 if (value > 0.6) {
-                    type = BiomeType.Jungle;
+                    type = BiomeType.AridPlains;
                 } else if (value > -0.4) {
                     type = BiomeType.Plains;
                 } else {
@@ -123,6 +144,19 @@ public class Map {
         for (int x=0;x<this.width;x++) {
             for (int z=0;z<this.depth;z++) {
                 this.heightMap.set(x, z, heightNoise.GetNoise(x, z) * 40.0f);
+            }
+        }
+
+        // 3. Populate random rotation and position offset values
+        Random random = new Random(seed);
+        for (EntityLayer layer : EntityLayer.values()) {
+            var rotations = this.rotation.get(layer);
+            var offsets = this.offsets.get(layer);
+            for (int x=0;x<this.width;x++) {
+                for (int z=0;z<this.depth;z++) {
+                    rotations.set(x, z, random.nextFloat() * 2 * (float) Math.PI);
+                    offsets.set(x, z, new float[] { random.nextFloat() * 0.5f, random.nextFloat() * 0.5f });
+                }
             }
         }
     }

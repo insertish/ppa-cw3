@@ -1,7 +1,25 @@
 package gay.oss.cw3.renderer.shaders;
 
-import static org.lwjgl.opengl.GL40.*;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glDetachShader;
+import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glGetProgramiv;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glUniform1f;
+import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniform3fv;
+import static org.lwjgl.opengl.GL20.glUniform4fv;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +34,7 @@ import org.lwjgl.system.MemoryStack;
  */
 public class ShaderProgram {
     private static ShaderProgram CURRENT_SHADER;
+    private static final Map<String, Object> uniformValues = new HashMap<>();
 
     private final int id;
     private final Map<String, Integer> uniformLocations;
@@ -36,6 +55,13 @@ public class ShaderProgram {
         if (CURRENT_SHADER == this) return;
         glUseProgram(this.id);
         CURRENT_SHADER = this;
+
+        try {
+            this.applyStaticUniforms();
+        } catch (Exception e) {
+            System.err.println("Failed to apply static uniforms!");
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -107,6 +133,26 @@ public class ShaderProgram {
     }
 
     /**
+     * Set value at uniform key
+     * @param key Key identifying uniform
+     * @param value Arbitrary object to set
+     */
+    public static void setUniform(String key, Object value) {
+        ShaderProgram.uniformValues.put(key, value);
+    }
+
+    /**
+     * Apply static uniforms which were calculated earlier
+     */
+    public void applyStaticUniforms() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        for (String key : ShaderProgram.uniformValues.keySet()) {
+            Object value = ShaderProgram.uniformValues.get(key);
+            Method method = ShaderProgram.class.getMethod("setUniform", String.class, value.getClass());
+            method.invoke(this, key, value);
+        }
+    }
+
+    /**
      * Create a new shader program from the provided shaders
      * @param shaders Array of shaders
      * @return Newly constructed {@link ShaderProgram}
@@ -152,11 +198,11 @@ public class ShaderProgram {
      * @throws Exception if the shaders fail to compile or the shader program fails to link
      */
     public static ShaderProgram fromResources(String vertex, String fragment, @Nullable String geometry) throws Exception {
-        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + vertex + ".glsl").readAllBytes()));
-        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + fragment + ".glsl").readAllBytes()));
+        Shader vertexShader = Shader.create(GL_VERTEX_SHADER, Shader.load(vertex));
+        Shader fragShader   = Shader.create(GL_FRAGMENT_SHADER, Shader.load(fragment));
 
         if (geometry != null) {
-            Shader geoShader = Shader.create(GL_GEOMETRY_SHADER, new String(ShaderProgram.class.getResourceAsStream("/shaders/" + geometry + ".glsl").readAllBytes()));
+            Shader geoShader = Shader.create(GL_GEOMETRY_SHADER, Shader.load(geometry));
             return ShaderProgram.create(new Shader[] { vertexShader, fragShader, geoShader });
         }
 

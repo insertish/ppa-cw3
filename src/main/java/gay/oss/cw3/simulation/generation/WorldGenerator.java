@@ -7,8 +7,11 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.jetbrains.annotations.Nullable;
+
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.world.World;
+import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class WorldGenerator {
@@ -18,10 +21,12 @@ public class WorldGenerator {
     private static class Spawn {
         private final Class<?> entityClass;
         private final float chance;
+        private final @Nullable BiomeType[] biome;
 
-        public Spawn(Class<?> clazz, float chance) {
+        public Spawn(Class<?> clazz, float chance, @Nullable BiomeType[] biome) {
             this.entityClass = clazz;
             this.chance = chance;
+            this.biome = biome;
         }
     }
 
@@ -45,8 +50,8 @@ public class WorldGenerator {
         }
     }
 
-    public void registerEntity(EntityLayer layer, Class<?> entityClass, float spawnChance) {
-        this.spawnList.get(layer).add(new Spawn(entityClass, spawnChance));
+    public void registerEntity(EntityLayer layer, Class<?> entityClass, float spawnChance, @Nullable BiomeType[] biome) {
+        this.spawnList.get(layer).add(new Spawn(entityClass, spawnChance, biome));
     }
 
     public void generate() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -55,8 +60,24 @@ public class WorldGenerator {
         for (EntityLayer layer : EntityLayer.values()) {
             for (int x=0;x<map.getWidth();x++) {
                 for (int z=0;z<map.getDepth();z++) {
+                    float height = map.getHeight(x, z);
+                    if (height <= map.getWaterLevel()) continue;
+
                     ArrayList<Spawn> entries = this.spawnList.get(layer);
                     for (Spawn spawn : entries) {
+                        if (spawn.biome != null) {
+                            boolean canSpawn = false;
+                            BiomeType target = map.getBiome(x, z);
+                            for (BiomeType biome : spawn.biome) {
+                                if (target == biome) {
+                                    canSpawn = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!canSpawn) continue;
+                        }
+
                         if (random.nextFloat() < spawn.chance) {
                             Constructor<?> constructor = spawn.entityClass.getConstructor(World.class, Coordinate.class);
                             constructor.newInstance(world, new Coordinate(x, z));
