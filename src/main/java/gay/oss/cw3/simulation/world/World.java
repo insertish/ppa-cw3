@@ -54,7 +54,10 @@ public class World {
     }
 
     private void despawn(Entity entity) {
-        this.map.getEntities(entity.getLayer()).set(entity.getLocation(), null);
+        if (this.map.getEntities(entity.getLayer()).get(entity.getLocation()) == entity) {
+            this.map.getEntities(entity.getLayer()).set(entity.getLocation(), null);
+        }
+
         entity.setAlive(false);
     }
 
