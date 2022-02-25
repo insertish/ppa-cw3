@@ -72,4 +72,16 @@ public class Util {
                 -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s,
         };
     }
+
+    public static float[] intColourToFloats(final int colour) {
+        int r = (colour & 0x00ff0000) >> 16;
+        int g = (colour & 0x0000ff00) >> 8;
+        int b = (colour & 0x000000ff);
+
+        return new float[] {
+                r / 256f,
+                g / 256f,
+                b / 256f
+        };
+    }
 }
