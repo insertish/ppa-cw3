@@ -44,21 +44,13 @@ public class World {
             }
         }
 
-        synchronized (entitiesToSpawn) {
-            this.entitiesToSpawn.forEach(this::spawnInternal);
-            this.entitiesToSpawn.clear();
-        }
+        this.entities.addAll(this.entitiesToSpawn);
+        this.entitiesToSpawn.clear();
     }
 
     public void spawn(Entity entity) {
         this.entitiesToSpawn.add(entity);
-    }
-
-    private void spawnInternal(Entity entity) {
-        this.entities.add(entity);
-
-        Entity old_entity = this.map.getEntities(entity.getLayer()).set(entity.getLocation(), entity);
-        if (old_entity != null) old_entity.setAlive(false);
+        this.map.getEntities(entity.getLayer()).setWithoutOverwrite(entity.getLocation(), entity);
     }
 
     private void despawn(Entity entity) {
