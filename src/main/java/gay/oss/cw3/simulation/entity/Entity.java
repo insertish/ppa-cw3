@@ -20,7 +20,7 @@ public abstract class Entity {
     private int ageTicks;
     private boolean alive;
 
-    private int health;
+    private int health = 1;
     private double fullness;
 
     protected final EntityBrain brain = new EntityBrain();

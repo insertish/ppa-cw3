@@ -54,6 +54,7 @@ public class DefaultScenario extends Scenario {
             this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
             this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
             this.setFullness(this.getMaxFullness());
+            this.setHealth(this.getMaxHealth());
         }
 
         @Override
@@ -92,6 +93,7 @@ public class DefaultScenario extends Scenario {
             this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
             this.getAttributes().set(EntityAttribute.FULLNESS_TO_BREED, this.getMaxFullness()/2.0);
             this.setFullness(this.getMaxFullness());
+            this.setHealth(this.getMaxHealth());
         }
 
         @Override
