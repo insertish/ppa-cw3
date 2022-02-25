@@ -1,5 +1,6 @@
 package gay.oss.cw3.renderer.simulation;
 
+import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDepthMask;
 
 import java.util.HashMap;
@@ -142,8 +143,11 @@ public class WorldRenderer {
 
         // 0. setup global shader variables
         int mod = (world.getTime() % 100);
-        float[] colour = this.world.getDayCycle().getSunColour(mod > 80 ? (mod - 80) / 20.0f : 0);
-        this.lighting.setLightDiffuse(new Vector3f(colour));
+        float[] skyColour = this.world.getDayCycle().getSkyColour(mod > 80 ? (mod - 80) / 20.0f : 0);
+        glClearColor(skyColour[0], skyColour[1], skyColour[2], 1f);
+
+        float[] lightColour = this.world.getDayCycle().getSunColour(mod > 80 ? (mod - 80) / 20.0f : 0);
+        this.lighting.setLightDiffuse(new Vector3f(lightColour));
 
         float offset = (world.getTime() % 400) / 100.0f;
         float pos = 0;

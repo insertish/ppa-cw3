@@ -5,15 +5,17 @@ import gay.oss.cw3.renderer.Util;
 import static gay.oss.cw3.renderer.Util.intColourToFloats;
 
 public enum DayCycle {
-    MORNING(0xffffff),
-    AFTERNOON(0xfffcbf),
-    EVENING(0xe6b891),
-    NIGHT(0x4a5757);
+    MORNING(0xffffff, 0x8ba8b5),
+    AFTERNOON(0xfffcbf, 0x8dccd6),
+    EVENING(0xe6b891, 0x354960),
+    NIGHT(0x4a5757, 0x0d1d42);
 
     private final float[] sunColour;
+    private final float[] skyColour;
 
-    DayCycle(int sunColour) {
+    DayCycle(int sunColour, int skyColour) {
         this.sunColour = intColourToFloats(sunColour);
+        this.skyColour = intColourToFloats(skyColour);
     }
 
     public DayCycle next() {
@@ -35,6 +37,18 @@ public enum DayCycle {
             current[1] * (1 - progressionToNext) + next[1] * progressionToNext,
             current[2] * (1 - progressionToNext) + next[2] * progressionToNext,
         });
+    }
+
+    public float[] getSkyColour(float progressionToNext) {
+        float[] current = Util.rgbToOklab(this.skyColour);
+        float[] next = Util.rgbToOklab(this.next().skyColour);
+
+        return Util.oklabToRgb(new float[] {
+                        current[0] * (1 - progressionToNext) + next[0] * progressionToNext,
+                        current[1] * (1 - progressionToNext) + next[1] * progressionToNext,
+                        current[2] * (1 - progressionToNext) + next[2] * progressionToNext,
+                }
+        );
     }
 
     public static final int DAY_TICKS = 100;
