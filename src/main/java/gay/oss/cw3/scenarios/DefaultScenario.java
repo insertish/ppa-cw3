@@ -1,7 +1,5 @@
 package gay.oss.cw3.scenarios;
 
-import java.util.Random;
-
 import gay.oss.cw3.simulation.entity.Sex;
 import gay.oss.cw3.simulation.entity.brain.behaviours.*;
 import org.jetbrains.annotations.Nullable;
@@ -25,9 +23,11 @@ public class DefaultScenario extends Scenario {
         super.init();
 
         var generator = this.getGenerator();
-        generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f, null);
-        generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f, null);
-        generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.15f, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
+        generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f, false, true, null);
+        generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f, false, true, null);
+        generator.registerEntity(EntityLayer.ANIMALS, HerbivoreFish.class, 0.005f, true, false, null);
+        generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.15f, false, true, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
+        generator.registerEntity(EntityLayer.FOLIAGE, Kelp.class, 0.15f, true, false, null);
 
         if (this.isOpenGL) {
             // Configure models.
@@ -45,6 +45,8 @@ public class DefaultScenario extends Scenario {
             renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.01f);
             renderer.autoLoadModel(Rabbit.class, "bird.png", "bird", 0.3f);
             renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f);
+            renderer.autoLoadModel(Kelp.class, "grass-transparent.png", "grass", 0.5f);
+            renderer.autoLoadModel(HerbivoreFish.class, "amogus.png", "amogus", 1.5f);
             //renderer.autoLoadModel(Grass.class, "pine.png", "pine", 10);
         }
     }
@@ -120,8 +122,6 @@ public class DefaultScenario extends Scenario {
     }
 
     public static class Grass extends Entity {
-        private final Random random = new Random();
-
         public Grass(World world, Coordinate location) {
             super(world, EntityLayer.FOLIAGE, location, 0, true);
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
@@ -142,13 +142,97 @@ public class DefaultScenario extends Scenario {
                     var locations = this.getWorld().findFreeLocationsAboveWater(this.getLayer(), this.getLocation(), 1);
 
                     if (!locations.isEmpty()) {
-                        var coord = locations.get(random.nextInt(locations.size()));
+                        var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
                         new Grass(this.getWorld(), coord);
                         this.removeFullness(0.25);
                     }
                 }
 
             }
+        }
+    }
+
+    public static class Kelp extends Entity {
+        public Kelp(World world, Coordinate location) {
+            super(world, EntityLayer.FOLIAGE, location, 0, true);
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
+            this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 0.6);
+            this.setFullness(0.5);
+        }
+
+        @Override
+        protected boolean canGoInWater() {
+            return true;
+        }
+
+        @Override
+        protected boolean canGoOnLand() {
+            return false;
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                // photosynthesis
+                if (this.getWorld().getDayCycle() != DayCycle.NIGHT) {
+                    this.addFullness(0.01);
+                }
+
+                // spreading
+                if (this.getFullness() >= 0.5) {
+                    var locations = this.getWorld().findFreeLocationsAboveWater(this.getLayer(), this.getLocation(), 1);
+
+                    if (!locations.isEmpty()) {
+                        var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
+                        new Grass(this.getWorld(), coord);
+                        this.removeFullness(0.25);
+                    }
+                }
+            }
+        }
+    }
+
+    public static class HerbivoreFish extends AbstractBreedableEntity {
+        public HerbivoreFish(World world, Coordinate location) {
+            super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
+            this.getBrain().addBehaviour(new SleepBehaviour(this, false));
+            this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.0, 0.7, Kelp.class));
+            this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
+            this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
+
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
+            this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 30);
+            this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+            this.setFullness(this.getMaxFullness());
+            this.setHealth(this.getMaxHealth());
+        }
+
+        @Override
+        protected boolean canGoOnLand() {
+            return false;
+        }
+
+        @Override
+        protected boolean canGoInWater() {
+            return true;
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                this.getBrain().tick();
+                this.removeFullness(0.01);
+                if (this.getFullness() <= 0) {
+                    this.addHealth(-1);
+                }
+            }
+        }
+
+        @Override
+        public Entity createChild(Entity otherParent, Coordinate location) {
+            var result = new HerbivoreFish(this.getWorld(), location);
+            result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
+            return result;
         }
     }
 }

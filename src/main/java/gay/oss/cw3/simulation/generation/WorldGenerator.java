@@ -21,11 +21,15 @@ public class WorldGenerator {
     private static class Spawn {
         private final Class<?> entityClass;
         private final float chance;
+        private final boolean canSpawnOnWater;
+        private final boolean canSpawnOnLand;
         private final @Nullable BiomeType[] biome;
 
-        public Spawn(Class<?> clazz, float chance, @Nullable BiomeType[] biome) {
+        public Spawn(Class<?> clazz, float chance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
             this.entityClass = clazz;
             this.chance = chance;
+            this.canSpawnOnWater = canSpawnOnWater;
+            this.canSpawnOnLand = canSpawnOnLand;
             this.biome = biome;
         }
     }
@@ -50,8 +54,8 @@ public class WorldGenerator {
         }
     }
 
-    public void registerEntity(EntityLayer layer, Class<?> entityClass, float spawnChance, @Nullable BiomeType[] biome) {
-        this.spawnList.get(layer).add(new Spawn(entityClass, spawnChance, biome));
+    public void registerEntity(EntityLayer layer, Class<?> entityClass, float spawnChance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
+        this.spawnList.get(layer).add(new Spawn(entityClass, spawnChance, canSpawnOnWater, canSpawnOnLand, biome));
     }
 
     public void generate() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -60,11 +64,14 @@ public class WorldGenerator {
         for (EntityLayer layer : EntityLayer.values()) {
             for (int x=0;x<map.getWidth();x++) {
                 for (int z=0;z<map.getDepth();z++) {
-                    float height = map.getHeight(x, z);
-                    if (height <= map.getWaterLevel()) continue;
+                    final boolean isInWater = map.getHeight(x, z) <= map.getWaterLevel();
 
                     ArrayList<Spawn> entries = this.spawnList.get(layer);
                     for (Spawn spawn : entries) {
+                        if ((isInWater && !spawn.canSpawnOnWater) || (!isInWater && !spawn.canSpawnOnLand)) {
+                            continue;
+                        }
+
                         if (spawn.biome != null) {
                             boolean canSpawn = false;
                             BiomeType target = map.getBiome(x, z);
@@ -74,7 +81,7 @@ public class WorldGenerator {
                                     break;
                                 }
                             }
-                            
+
                             if (!canSpawn) continue;
                         }
 

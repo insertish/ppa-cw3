@@ -226,11 +226,11 @@ public abstract class Entity {
                 && this.getWorld().getEntity(this.getLayer(), location.x, location.z) == null;
     }
 
-    private boolean canGoOnLand() {
+    protected boolean canGoOnLand() {
         return true;
     }
 
-    private boolean canGoInWater() {
+    protected boolean canGoInWater() {
         return false;
     }
 
