@@ -1,21 +1,17 @@
 package gay.oss.cw3.simulation.world.attributes;
 
+import static gay.oss.cw3.renderer.Util.intColourToFloats;
+
 public enum DayCycle {
-    MORNING(new float[] { 1.0f, 1.0f, 1.0f }, 0),
-    AFTERNOON(new float[] { 1.0f, 0.99f, 0.75f }, 1),
-    EVENING(new float[] { 0.9f, 0.72f, 0.57f }, 2),
-    NIGHT(new float[] { 0.29f, 0.34f, 0.34f }, 3);
+    MORNING(0xffffff),
+    AFTERNOON(0xfffcbf),
+    EVENING(0xe6b891),
+    NIGHT(0x4a5757);
 
-    private float[] sunColour;
-    private int index;
-    
-    private DayCycle(float[] sunColour, int index) {
-        this.sunColour = sunColour;
-        this.index = index;
-    }
+    private final float[] sunColour;
 
-    public int getIndex() {
-        return this.index;
+    DayCycle(int sunColour) {
+        this.sunColour = intColourToFloats(sunColour);
     }
 
     public DayCycle next() {
