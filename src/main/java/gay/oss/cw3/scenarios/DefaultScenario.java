@@ -26,6 +26,7 @@ public class DefaultScenario extends Scenario {
         generator.registerEntity(EntityLayer.ANIMALS, Rabbit.class, 0.05f, false, true, null);
         generator.registerEntity(EntityLayer.ANIMALS, Hunter.class, 0.005f, false, true, null);
         generator.registerEntity(EntityLayer.ANIMALS, HerbivoreFish.class, 0.005f, true, false, null);
+        generator.registerEntity(EntityLayer.FOLIAGE, Tree.class, 0.01f, false, true, new BiomeType[] { BiomeType.Forest });
         generator.registerEntity(EntityLayer.FOLIAGE, Grass.class, 0.15f, false, true, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
         generator.registerEntity(EntityLayer.FOLIAGE, Kelp.class, 0.15f, true, false, null);
 
@@ -45,6 +46,7 @@ public class DefaultScenario extends Scenario {
             renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.01f);
             renderer.autoLoadModel(Rabbit.class, "bird.png", "bird", 0.3f);
             renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f);
+            renderer.autoLoadModel(Tree.class, "pine.png", "pine", 50.0f);
             renderer.autoLoadModel(Kelp.class, "grass-transparent.png", "grass", 0.5f);
             renderer.autoLoadModel(HerbivoreFish.class, "amogus.png", "amogus", 1.5f);
             //renderer.autoLoadModel(Grass.class, "pine.png", "pine", 10);
@@ -145,6 +147,38 @@ public class DefaultScenario extends Scenario {
                         var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
                         new Grass(this.getWorld(), coord);
                         this.removeFullness(0.25);
+                    }
+                }
+
+            }
+        }
+    }
+
+    public static class Tree extends Entity {
+        public Tree(World world, Coordinate location) {
+            super(world, EntityLayer.FOLIAGE, location, 0, true);
+            this.getAttributes().set(EntityAttribute.MAX_HEALTH, 10);
+            this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 10.0);
+            this.setFullness(0.5);
+            this.setHealth(this.getMaxHealth());
+        }
+
+        @Override
+        public void tick() {
+            if (this.isAlive()) {
+                // photosynthesis
+                if (this.getWorld().getDayCycle() != DayCycle.NIGHT) {
+                    this.addFullness(0.01);
+                }
+
+                // spreading
+                if (this.getFullness() >= 5.0) {
+                    var locations = this.getWorld().findFreeLocationsAboveWater(this.getLayer(), this.getLocation(), 1);
+
+                    if (!locations.isEmpty()) {
+                        var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
+                        new Tree(this.getWorld(), coord);
+                        this.removeFullness(2.5);
                     }
                 }
 
