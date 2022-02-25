@@ -1,4 +1,4 @@
-package gay.oss.cw3.renderer.shaders;
+package gay.oss.cw3.renderer.ui;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glDisable;
@@ -9,13 +9,17 @@ import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.objects.Texture;
+import gay.oss.cw3.renderer.shaders.Camera;
+import gay.oss.cw3.renderer.shaders.ShaderProgram;
 
 public abstract class UI {
     private Matrix4f viewProjection;
 
     private ShaderProgram colourShader;
     private ShaderProgram textureShader;
+
     private Mesh squareMesh;
+    private Font font;
 
     protected int width;
     protected int height;
@@ -23,6 +27,7 @@ public abstract class UI {
     public UI() throws Exception {
         this.colourShader = ShaderProgram.fromName("ui/colour");
         this.textureShader = ShaderProgram.fromName("ui/textured");
+
         this.squareMesh = Mesh.builder()
             .vertex(new float[] {
                 // BR
@@ -45,6 +50,25 @@ public abstract class UI {
                 0.0f, 0.0f,
             }, 2)
             .build();
+        
+        this.font = new FontRetro();
+    }
+
+    public void upload(Matrix4f transformation) {
+        Camera.upload(viewProjection, transformation);
+    }
+
+    public void upload(int x, int y, int w, int h) {
+        this.upload(
+            new Matrix4f()
+                .identity()
+                .translate(x, this.height - y - h, 0)
+                .scale(w, h, 0)
+        );
+    }
+
+    public Mesh getSquareMesh() {
+        return this.squareMesh;
     }
 
     private void calculate(int width, int height) {
@@ -52,19 +76,6 @@ public abstract class UI {
         this.height = height;
         this.viewProjection = new Matrix4f()
             .ortho2D(0, width, 0, height);
-    }
-
-    private void upload(Matrix4f transformation) {
-        Camera.upload(viewProjection, transformation);
-    }
-
-    private void upload(int x, int y, int w, int h) {
-        this.upload(
-            new Matrix4f()
-                .identity()
-                .translate(x, this.height - y - h, 0)
-                .scale(w, h, 0)
-        );
     }
 
     protected void drawRect(int x, int y, int w, int h, Texture texture) {
@@ -79,6 +90,10 @@ public abstract class UI {
         this.colourShader.setUniform("colour", colour);
         this.upload(x, y, w, h);
         this.squareMesh.draw();
+    }
+
+    protected void drawText(int x, int y, int size, String text) {
+        this.font.drawText(this, x, y, size, text);
     }
 
     protected abstract void drawUI();
