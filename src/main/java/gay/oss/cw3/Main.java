@@ -58,10 +58,16 @@ public class Main {
         this.scenario.generate();
 
         // Move the camera accordingly
+        var map = this.scenario.getWorld().getMap();
         float center = WORLD_SIZE / 2;
         camera.setX(center);
         camera.setZ(center);
-        camera.setY(this.scenario.getWorld().getMap().getHeight((int) center, (int) center));
+        camera.setY(
+            Math.max(
+                map.getHeight((int) center, (int) center),
+                map.getWaterLevel()
+            )
+        );
 
         // Off-load World tick to another thread
         tickThread = new Thread() {
