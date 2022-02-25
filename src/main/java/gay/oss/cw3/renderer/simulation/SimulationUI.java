@@ -15,6 +15,7 @@ import gay.oss.cw3.renderer.ui.framework.components.Image;
 import gay.oss.cw3.renderer.ui.framework.components.Text;
 import gay.oss.cw3.renderer.ui.framework.layouts.Anchor;
 import gay.oss.cw3.renderer.ui.framework.layouts.AnchorLayout;
+import gay.oss.cw3.renderer.ui.framework.layouts.FlowDirection;
 import gay.oss.cw3.renderer.ui.framework.layouts.FlowLayout;
 import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
@@ -58,9 +59,25 @@ public class SimulationUI extends UI {
                     .setGap(8)
                 )
                 .add(
+                    Anchor.BottomRight,
+                    new FlowLayout(new Node[] {
+                        new Box(new Text(font, "interesting", 20))
+                            .setPadding(8)
+                            .setColour(new Vector4f(0, 0, 0, 0.5f)),
+                        new Box(new Text(font, "interesting", 20))
+                            .setPadding(8)
+                            .setColour(new Vector4f(0, 0, 0, 0.5f)),
+                        new Box(new Text(font, "interesting", 20))
+                            .setPadding(8)
+                            .setColour(new Vector4f(0, 0, 0, 0.5f))
+                    })
+                    .setGap(8)
+                    .setDirection(FlowDirection.Column)
+                )
+                /*.add(
                     Anchor.BottomLeft,
                     new Text(font, "press h for help menu", 16)
-                )
+                )*/
         )
         .setPadding(24);
     }
