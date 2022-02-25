@@ -93,8 +93,18 @@ public abstract class Entity {
      *
      * @param location the location
      */
-    public void setLocation(Coordinate location) {
+    public void moveTo(Coordinate location) {
         this.world.moveEntity(this, this.location, location);
+        this.location = location;
+    }
+
+    /**
+     * Sets the entity's location.
+     *
+     * @param location the location
+     */
+    public void moveToOverwriting(Coordinate location) {
+        this.world.moveEntityDisplacing(this, this.location, location);
         this.location = location;
     }
 

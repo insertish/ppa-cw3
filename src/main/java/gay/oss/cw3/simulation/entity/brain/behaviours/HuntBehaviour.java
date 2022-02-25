@@ -57,8 +57,7 @@ public class HuntBehaviour extends MovementBehaviour {
     public void tick() {
         if (this.entity.getLocation().distanceTo(this.target.getLocation()) < 2) {
             this.ticksCouldntMove = 0;
-            this.target.setAlive(false);
-            this.entity.setLocation(this.target.getLocation());
+            this.entity.moveToOverwriting(this.target.getLocation());
             this.entity.addFullness(this.target.getFullness()*0.7);
             return;
         }
@@ -71,11 +70,10 @@ public class HuntBehaviour extends MovementBehaviour {
 
             if (entityAtLoc == null) {
                 this.ticksCouldntMove = 0;
-                this.entity.setLocation(newLoc);
+                this.entity.moveTo(newLoc);
             } else if (entityAtLoc == this.target) {
                 this.ticksCouldntMove = 0;
-                this.target.setAlive(false);
-                this.entity.setLocation(newLoc);
+                this.entity.moveToOverwriting(newLoc);
                 this.entity.addFullness(this.target.getFullness()*0.7);
             } else {
                 this.ticksCouldntMove++;

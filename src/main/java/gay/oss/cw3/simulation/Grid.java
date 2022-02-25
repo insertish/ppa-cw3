@@ -3,7 +3,7 @@ package gay.oss.cw3.simulation;
 import org.jetbrains.annotations.Nullable;
 
 public class Grid<T> {
-    private final Object lock = new Object();
+    public final Object lock = new Object();
 
     private final Object[][] grid;
     private final int width;
@@ -29,13 +29,23 @@ public class Grid<T> {
             if (!this.isInBounds(x, z)) return null; // or throw
             T t = (T) this.grid[x][z];
             this.grid[x][z] = obj;
-            System.out.printf("%1$s -> %2$s x %3$s%n", obj, t, new Coordinate(x, z));
             return t;
         }
     }
 
     public T set(Coordinate location, T obj) {
         return this.set(location.x, location.z, obj);
+    }
+
+    public void setWithoutOverwrite(Coordinate location, T obj) {
+        synchronized (lock) {
+            final @Nullable T previous;
+            if ((previous = this.get(location)) != null) {
+                throw new IllegalArgumentException(String.format("%1$s should be empty, contained %2$s", location, previous));
+            }
+
+            this.set(location, obj);
+        }
     }
 
     @SuppressWarnings("unchecked")

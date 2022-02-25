@@ -78,7 +78,7 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
 
             if (entityAtLoc == null) {
                 this.ticksCouldntMove = 0;
-                this.entity.setLocation(newLoc);
+                this.entity.moveTo(newLoc);
             } else if (entityAtLoc == this.target) {
                 this.breed();
             } else {

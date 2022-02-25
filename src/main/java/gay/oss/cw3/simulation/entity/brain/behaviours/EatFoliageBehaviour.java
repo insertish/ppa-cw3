@@ -70,7 +70,7 @@ public class EatFoliageBehaviour extends MovementBehaviour {
 
             if (entityAtLocInTheWay == null) {
                 this.ticksCouldntMove = 0;
-                this.entity.setLocation(newLoc);
+                this.entity.moveTo(newLoc);
             } else {
                 this.ticksCouldntMove++;
             }

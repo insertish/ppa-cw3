@@ -49,8 +49,8 @@ public class World {
     }
 
     public void spawn(Entity entity) {
-        this.entitiesToSpawn.add(entity);
         this.map.getEntities(entity.getLayer()).setWithoutOverwrite(entity.getLocation(), entity);
+        this.entitiesToSpawn.add(entity);
     }
 
     private void despawn(Entity entity) {
@@ -90,12 +90,32 @@ public class World {
         return this.map.isInBounds(location.x, location.z);
     }
 
-    public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
-        final @Nullable Entity previous;
-        if ((previous = this.map.getEntities(entity.getLayer()).set(from, null)) != entity) {
+    public void moveEntityDisplacing(final Entity entity, final Coordinate from, final Coordinate to) {
+        if (from.equals(to)) {
+            return;
+        }
+
+        final @Nullable Entity previous = this.map.getEntities(entity.getLayer()).set(from, null);
+        if (previous != entity) {
             throw new IllegalStateException(String.format("Attempted to move %1$s from %2$s to %3$s but it is not at %2$s, instead found %4$s!", entity, from, to, previous));
         }
 
-        this.map.getEntities(entity.getLayer()).set(to, entity);
+        final @Nullable Entity displaced = this.map.getEntities(entity.getLayer()).set(to, entity);
+        if (displaced != null) {
+            displaced.setAlive(false);
+        }
+    }
+
+    public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
+        if (from.equals(to)) {
+            return;
+        }
+
+        final @Nullable Entity previous = this.map.getEntities(entity.getLayer()).set(from, null);
+        if (previous != entity) {
+            throw new IllegalStateException(String.format("Attempted to move %1$s from %2$s to %3$s but it is not at %2$s, instead found %4$s!", entity, from, to, previous));
+        }
+
+        this.map.getEntities(entity.getLayer()).setWithoutOverwrite(to, entity);
     }
 }
