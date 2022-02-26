@@ -200,7 +200,7 @@ public abstract class Entity {
      *
      * @return          a list of nearby entities
      */
-    public List<Entity> getAdjacentEntities(int radius) {
+    public List<Entity> getAdjacentEntities(EntityLayer layer, int radius) {
         Coordinate location = this.getLocation();
         int x = location.x;
         int z = location.z;
@@ -208,12 +208,16 @@ public abstract class Entity {
         List<Entity> entities = new ArrayList<>();
         for (int i=-radius;i<radius+1;i++) {
             for (int j=-radius;j<radius+1;j++) {
-                Entity e = this.world.getEntity(this.getLayer(), x + i, z + j);
+                Entity e = this.world.getEntity(layer, x + i, z + j);
                 if (e != null && e != this) entities.add(e);
             }
         }
 
         return entities;
+    }
+
+    public List<Entity> getAdjacentEntities(int radius) {
+        return this.getAdjacentEntities(this.getLayer(), radius);
     }
 
     public boolean canMoveToDisregardingOccupancy(final Coordinate location) {

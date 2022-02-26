@@ -110,6 +110,10 @@ public class WorldRenderer {
             yOffset += 0.5f;
         }
 
+        if (layer == EntityLayer.AERIAL_ANIMALS) {
+            yOffset = 40f;
+        }
+
         for (int x=0;x<map.getWidth();x++) {
             for (int z=0;z<map.getDepth();z++) {
                 Entity entity = this.world.getEntity(layer, x, z);
@@ -190,5 +194,7 @@ public class WorldRenderer {
         glDepthMask(false);
         this.drawLayer(EntityLayer.FOLIAGE, camera);
         glDepthMask(true);
+
+        this.drawLayer(EntityLayer.AERIAL_ANIMALS, camera);
     }
 }
