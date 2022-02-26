@@ -6,6 +6,10 @@
         "org.lwjgl.opengl.GL15.*",
         "org.lwjgl.opengl.GL20.*",
         "org.lwjgl.opengl.GL30.*",
-        "org.lwjgl.opengl.GL40.*"
-    ]
+        "org.lwjgl.opengl.GL31.*",
+        "org.lwjgl.opengl.GL33.*",
+        "org.lwjgl.opengl.GL40.*",
+        "org.lwjgl.opengl.GL43.*",
+    ],
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m"
 }

@@ -3,13 +3,18 @@ package gay.oss.cw3.renderer.simulation;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDepthMask;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.objects.Material;
+import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Camera;
@@ -68,6 +73,15 @@ public class WorldRenderer {
             waterMesh,
             new Material(Resources.getShader("water"), Texture.fromResource("water.jpg"))
         );
+
+        var it = this.models.values().iterator();
+        it.next(); it.next(); it.next(); it.next();
+        List<Matrix4f> v = new ArrayList<>();
+        int COUNT = 1;
+        for (int i=0;i<COUNT;i++) {
+            v.add(new Matrix4f().translate(i, 0, i));
+        }
+        it.next().getMesh().testUploadMatrices(v);
     }
 
     public void setModel(Class<?> clazz, Model model) {
@@ -104,7 +118,7 @@ public class WorldRenderer {
         var map = this.world.getMap();
         var offsets = map.getOffsets(layer);
 
-        for (int x=0;x<map.getWidth();x++) {
+        /*for (int x=0;x<map.getWidth();x++) {
             for (int z=0;z<map.getDepth();z++) {
                 Entity entity = this.world.getEntity(layer, x, z);
                 if (entity != null) {
@@ -127,10 +141,32 @@ public class WorldRenderer {
                     model.draw(camera);
                 }
             }
+        }*/
+
+        var it = this.models.values().iterator();
+        it.next(); it.next(); it.next(); it.next();
+        Model model = it.next();
+        model.getTransformation().identity().scale(10, 10, 10);
+        Mesh mesh = model.getMesh();
+        model.use();
+        mesh.bind();
+        camera.upload();
+
+        List<Matrix4f> v = new ArrayList<>();
+        int COUNT = 10;
+        for (int i=0;i<COUNT;i++) {
+            v.add(new Matrix4f().identity());
         }
+
+        //mesh.testUploadMatrices(v);
+        mesh.drawInstanced(COUNT);
+        //model.draw(camera);
+
+        //bindArray
     }
 
     public void draw(Camera camera) {
+
         if (this.terrainModel == null || this.waterModel == null) {
             return;
         }
@@ -154,6 +190,11 @@ public class WorldRenderer {
         this.lighting.setLightDirection(new Vector4f(pos * 128.0f, 42.0f, pos * 128.0f, 0.0f));
         this.lighting.upload();
         
+        if (this.terrainModel != null) {
+            this.drawLayer(EntityLayer.ANIMALS, camera);
+            return;
+        }
+
         // 1. render terrain
         this.terrainModel.draw(camera);
 

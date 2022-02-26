@@ -106,6 +106,10 @@ public class Camera {
         this.fov = fov;
     }
 
+    public void upload() {
+        Camera.upload(this.viewProjection, null);
+    }
+
     public void upload(Matrix4f transformation) {
         Camera.upload(this.viewProjection, transformation);
     }
@@ -160,7 +164,11 @@ public class Camera {
 
     public static void upload(Matrix4f viewProjection, Matrix4f transformation) {
         var program = ShaderProgram.getCurrent();
-        program.setUniform("model", transformation);
-        program.setUniform("modelViewProjection", new Matrix4f(viewProjection).mul(transformation));
+        program.setUniform("viewProjection", viewProjection);
+
+        if (transformation != null) {
+            program.setUniform("model", transformation);
+            program.setUniform("modelViewProjection", new Matrix4f(viewProjection).mul(transformation));
+        }
     }
 }

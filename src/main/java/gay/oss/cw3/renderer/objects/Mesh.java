@@ -17,11 +17,17 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
+import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
+import static org.lwjgl.opengl.GL43.glVertexBindingDivisor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
@@ -42,6 +48,7 @@ public class Mesh {
     // ! FIXME: FIXME
     public boolean indexed;
     public int triangles;
+    public int indicesCount;
     
     private final List<Integer> vbo;
 
@@ -85,15 +92,27 @@ public class Mesh {
 
     /**
      * Draw this mesh using provided attributes.
-     * This does not support indexed rendering.
      */
     public void draw() {
         this.bind();
 
         if (this.indexed) {
-            glDrawElements(GL_TRIANGLES, this.triangles, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, this.indicesCount, GL_UNSIGNED_INT, 0);
         } else {
             glDrawArrays(GL_TRIANGLES, 0, this.vertices);
+        }
+    }
+
+    /**
+     * Draw multiple instances of this mesh.
+     */
+    public void drawInstanced(int count) {
+        this.bind();
+
+        if (this.indexed) {
+            glDrawElementsInstanced(GL_TRIANGLES, this.indicesCount, GL_UNSIGNED_INT, 0, count);
+        } else {
+            throw new IllegalStateException("Not indexed!");
         }
     }
 
@@ -112,11 +131,64 @@ public class Mesh {
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(attribute);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glVertexAttribPointer(attribute, components, GL_FLOAT, false, 0, 0);
 
         this.vbo.add(vbo);
         return vbo;
+    }
+
+    public void testUploadMatrices(List<Matrix4f> data) {
+        float buffer[] = new float[data.size() * 16];
+        for (int i=0;i<data.size();i++) {
+            data.get(i).get(buffer, i * 16);
+
+            /*int j = 0;
+            
+            buffer[j+0] = 0;
+            buffer[j+1] = 0;
+            buffer[j+2] = 0;
+            buffer[j+3] = 1;
+
+            buffer[j+4] = 0;
+            buffer[j+5] = 0;
+            buffer[j+6] = 1;
+            buffer[j+7] = 0;
+
+            buffer[j+8] = 0;
+            buffer[j+9] = 1;
+            buffer[j+10] = 0;
+            buffer[j+11] = 0;
+            
+            buffer[j+12] = 1;
+            buffer[j+13] = 0;
+            buffer[j+14] = 0;
+            buffer[j+15] = 0;*/
+        }
+
+        String a = "";
+        for (int j=0;j<16;j++) {
+            a = a + " " + buffer[j];
+        }
+        System.out.println(a);
+        // verified that this is indeed a identity matrix
+        //  1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0
+
+
+        this.bind();
+
+        int vbo = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+
+        for (int j=0;j<4;j++) {
+            int attribute = 3 + j;
+            glEnableVertexAttribArray(attribute);
+            glVertexAttribPointer(attribute, 4, GL_FLOAT, false, 16, 4 * j);
+            glVertexAttribDivisor(attribute, 1);
+            // glVertexBindingDivisor(attribute, 1);
+        }
+
+        Mesh.unbind();
     }
 
     /**
@@ -148,7 +220,8 @@ public class Mesh {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, builder.indices, GL_STATIC_DRAW);
             mesh.indexed = true;
-            mesh.triangles = builder.indices.length;
+            mesh.triangles = builder.indices.length / 3;
+            mesh.indicesCount = builder.indices.length;
             // add vbo
         }
 
