@@ -6,6 +6,9 @@ import gay.oss.cw3.provided.Field;
 import gay.oss.cw3.provided.SimulatorView;
 import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
+import gay.oss.cw3.scenarios.entities.Grass;
+import gay.oss.cw3.scenarios.entities.Hunter;
+import gay.oss.cw3.scenarios.entities.Rabbit;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.Entity;
 
@@ -18,9 +21,9 @@ public class TestBrains {
         var field = new Field(128, 128);
         var world = scenario.getWorld();
 
-        view.setColor(DefaultScenario.Hunter.class, Color.ORANGE);
-        view.setColor(DefaultScenario.Rabbit.class, Color.LIGHT_GRAY);
-        view.setColor(DefaultScenario.Grass.class, new Color(0x00dd00));
+        view.setColor(Hunter.class, Color.ORANGE);
+        view.setColor(Rabbit.class, Color.LIGHT_GRAY);
+        view.setColor(Grass.class, new Color(0x00dd00));
 
         int lastIter;
         while (true) {
@@ -30,7 +33,7 @@ public class TestBrains {
             field.clear();
 
             for (Entity entity : world.getEntities()) {
-                if (entity instanceof DefaultScenario.Grass) continue;
+                if (entity instanceof Grass) continue;
 
                 Coordinate loc = entity.getLocation();
                 field.place(entity, loc.x, loc.z);
