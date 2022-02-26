@@ -35,7 +35,6 @@ public class DefaultScenario extends Scenario {
     public void init() throws Exception {
         super.init();
 
-        var generator = this.getGenerator();
         this.registerEntity(EntityLayer.ANIMALS, "Rabbit", Rabbit.class, 0.05f, false, true, null);
         this.registerEntity(EntityLayer.ANIMALS, "Hunter", Hunter.class, 0.005f, false, true, null);
         this.registerEntity(EntityLayer.ANIMALS, "Herbivore Fish", HerbivoreFish.class, 0.005f, true, false, null);

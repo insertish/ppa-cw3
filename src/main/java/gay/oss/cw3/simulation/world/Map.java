@@ -143,11 +143,6 @@ public class Map {
         // 3. Populate random rotation and position offset values
         Random random = new Random(seed);
         for (EntityLayer layer : EntityLayer.values()) {
-            int yOffset = 0;
-            if (layer == EntityLayer.ANIMALS) {
-                yOffset += 0.2f;
-            }
-
             var offsets = this.offsets.get(layer);
             for (int x=0;x<this.width;x++) {
                 for (int z=0;z<this.depth;z++) {
@@ -157,7 +152,7 @@ public class Map {
                     offsets.set(x, z,
                         new float[] {
                             X,
-                            yOffset + this.getHeight(x, z),
+                            layer.yOffset + this.getHeight(x, z),
                             Z,
                             random.nextFloat() * 2 * (float) Math.PI
                         }
