@@ -9,6 +9,9 @@ import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class Tree extends Entity {
+    public static final double FRUIT_FULLNESS = 2.5;
+    private boolean hasFruit = false;
+
     public Tree(World world, Coordinate location) {
         super(world, EntityLayer.FOLIAGE, location, 0, true);
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 10);
@@ -25,17 +28,29 @@ public class Tree extends Entity {
                 this.addFullness(0.01);
             }
 
-            // spreading
-            if (this.getFullness() >= 5.0) {
+            // fruiting
+            if (this.getFullness() >= 5.0 && !this.hasFruit()) {
+                this.hasFruit = true;
+                this.removeFullness(FRUIT_FULLNESS);
+            }
+
+            if (this.hasFruit() && this.getWorld().getRandom().nextFloat() < 0.001) {
                 var locations = this.getWorld().findFreeLocationsAboveWater(this.getLayer(), this.getLocation(), 1);
 
                 if (!locations.isEmpty()) {
                     var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
                     new Tree(this.getWorld(), coord);
-                    this.removeFullness(2.5);
+                    this.hasFruit = false;
                 }
             }
-
         }
+    }
+
+    public boolean hasFruit() {
+        return this.hasFruit;
+    }
+
+    public void removeFruit() {
+        this.hasFruit = false;
     }
 }

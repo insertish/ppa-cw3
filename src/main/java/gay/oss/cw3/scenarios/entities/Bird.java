@@ -7,9 +7,9 @@ import gay.oss.cw3.simulation.entity.EntityAttribute;
 import gay.oss.cw3.simulation.entity.Sex;
 import gay.oss.cw3.simulation.entity.brain.Behaviour;
 import gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour;
-import gay.oss.cw3.simulation.entity.brain.behaviours.MovementBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.EatFruitFromTreesBehaviour;
+import gay.oss.cw3.simulation.entity.brain.behaviours.PerchInTreeBehaviour;
 import gay.oss.cw3.simulation.world.World;
-import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
@@ -24,8 +24,9 @@ public class Bird extends AbstractBreedableEntity {
         super(world, location, 0, true, EntityLayer.AERIAL_ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         //this.getBrain().addBehaviour(new SleepBehaviour(this, true));
         //this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, Rabbit.class));
+        this.getBrain().addBehaviour(new EatFruitFromTreesBehaviour(this, 1.0, 0.7));
         this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6));
-        this.getBrain().addBehaviour(new PerchInTreeBehaviour(1.0));
+        this.getBrain().addBehaviour(new PerchInTreeBehaviour(1.0, this));
         this.getBrain().addBehaviour(new BoidBehaviour(30));
 
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
@@ -40,7 +41,7 @@ public class Bird extends AbstractBreedableEntity {
     public void tick() {
         if (this.isAlive()) {
             this.getBrain().tick();
-            this.removeFullness(0.01);
+            this.removeFullness(0.005);
             if (this.getFullness() <= 0) {
                 this.addHealth(-1);
             }
@@ -58,63 +59,16 @@ public class Bird extends AbstractBreedableEntity {
         return velocity;
     }
 
-    private class PerchInTreeBehaviour extends MovementBehaviour {
-        private Tree tree = null;
+    @Override
+    public void moveTo(Coordinate location) {
+        var delta = location.subtract(Bird.this.getLocation());
+        this.velocity = new Vector2d(delta.x, delta.z);
 
-        protected PerchInTreeBehaviour(double speed) {
-            super(speed, Bird.this);
-        }
+        super.moveTo(location);
+    }
 
-        @Override
-        public boolean canStart() {
-            if (Bird.this.getWorld().getDayCycle() != DayCycle.EVENING && Bird.this.getWorld().getDayCycle() != DayCycle.NIGHT) {
-                return false;
-            }
-
-            this.tree = null;
-
-            this.findTree();
-
-            return this.tree != null;
-        }
-
-        @Override
-        public boolean canContinue() {
-            if (Bird.this.getWorld().getDayCycle() != DayCycle.EVENING && Bird.this.getWorld().getDayCycle() != DayCycle.NIGHT) {
-                return false;
-            }
-
-            if (this.tree == null) {
-                this.findTree();
-            }
-
-            return this.tree != null;
-        }
-
-        @Override
-        public void start() {
-        }
-
-        @Override
-        public void tick() {
-            var dir = this.tree.getLocation().subtract(this.entity.getLocation());
-            var newLoc = Bird.this.getLocation().add(this.calculateMovementInDirection(dir));
-
-            var delta = newLoc.subtract(Bird.this.getLocation());
-            Bird.this.velocity = new Vector2d(delta.x, delta.z);
-
-            if (Bird.this.canMoveTo(newLoc)) {
-                Bird.this.moveTo(newLoc);
-            }
-        }
-
-        private void findTree() {
-            this.tree = Bird.this.getAdjacentEntities(EntityLayer.FOLIAGE, 40).stream()
-                    .filter(Tree.class::isInstance)
-                    .map(Tree.class::cast)
-                    .findAny()
-                    .orElse(null);
-        }
+    private void moveToWithoutModifyingVelocity(Coordinate location) {
+        super.moveTo(location);
     }
 
     // http://www.kfish.org/boids/pseudocode.html
@@ -197,7 +151,7 @@ public class Bird extends AbstractBreedableEntity {
             var newLoc = Bird.this.getLocation().add(probabalisticallyRound(Bird.this.velocity.x), probabalisticallyRound(Bird.this.velocity.y));
 
             if (Bird.this.canMoveTo(newLoc)) {
-                Bird.this.moveTo(newLoc);
+                Bird.this.moveToWithoutModifyingVelocity(newLoc);
             }
         }
     }
