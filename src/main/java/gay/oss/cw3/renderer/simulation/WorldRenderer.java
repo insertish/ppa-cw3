@@ -102,13 +102,7 @@ public class WorldRenderer {
 
     private void drawLayer(EntityLayer layer, Camera camera) {
         var map = this.world.getMap();
-        var rotations = map.getRotations(layer);
         var offsets = map.getOffsets(layer);
-
-        float yOffset = 0;
-        if (layer == EntityLayer.ANIMALS) {
-            yOffset += 0.5f;
-        }
 
         for (int x=0;x<map.getWidth();x++) {
             for (int z=0;z<map.getDepth();z++) {
@@ -119,11 +113,11 @@ public class WorldRenderer {
                     var offset = offsets.get(x, z);
                     var translation = model.getTransformation()
                         .translation(
-                            x + 0.25f + offset[0],
-                            Math.max(map.getWaterLevel(), map.getHeight(x, z)) + yOffset,
-                            z + 0.25f + offset[1]
+                            x + offset[0],
+                            offset[1],
+                            z + offset[2]
                         )
-                        .rotate(rotations.get(x, z), 0, 1, 0);
+                        .rotate(offset[3], 0, 1, 0);
 
                     if (model instanceof ModelEntity) {
                         float s = ((ModelEntity) model).getScale();
@@ -162,8 +156,16 @@ public class WorldRenderer {
         
         // 1. render terrain
         this.terrainModel.draw(camera);
+
+        // 2. render entities        
+        this.drawLayer(EntityLayer.ANIMALS, camera);
         
-        // 2. render water
+        // we enable the depth mask so that we can support transparency here
+        glDepthMask(false);
+        this.drawLayer(EntityLayer.FOLIAGE, camera);
+        glDepthMask(true);
+        
+        // 3. render water
         var map = this.world.getMap();
         this.waterModel
             .getTransformation()
@@ -182,13 +184,5 @@ public class WorldRenderer {
         program.setUniform("waterDisplacementModifier", 1.4f);
         program.setUniform("waterRandomDisplacement", this.random.next());
         this.waterModel.draw(camera);
-
-        // 3. render entities        
-        this.drawLayer(EntityLayer.ANIMALS, camera);
-        
-        // we enable the depth mask so that we can support transparency here
-        glDepthMask(false);
-        this.drawLayer(EntityLayer.FOLIAGE, camera);
-        glDepthMask(true);
     }
 }

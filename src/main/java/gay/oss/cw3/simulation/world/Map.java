@@ -20,7 +20,6 @@ public class Map {
     private float waterLevel = -8.0f;
 
     private final java.util.Map<EntityLayer, Grid<Entity>> entities;
-    private final java.util.Map<EntityLayer, Grid<Float>> rotation;
     private final java.util.Map<EntityLayer, Grid<float[]>> offsets;
 
     private final Grid<Float> heightMap;
@@ -31,12 +30,10 @@ public class Map {
         this.depth = depth;
 
         this.entities = new EnumMap<>(EntityLayer.class);
-        this.rotation = new EnumMap<>(EntityLayer.class);
         this.offsets = new EnumMap<>(EntityLayer.class);
 
         for (EntityLayer layer : EntityLayer.values()) {
             this.entities.put(layer, new Grid<>(width, depth));
-            this.rotation.put(layer, new Grid<>(width, depth));
             this.offsets.put(layer, new Grid<>(width, depth));
         }
 
@@ -66,10 +63,6 @@ public class Map {
 
     public float getHeight(int x, int z) {
         return this.heightMap.get(x, z);
-    }
-
-    public Grid<Float> getRotations(EntityLayer layer) {
-        return this.rotation.get(layer);
     }
 
     public Grid<float[]> getOffsets(EntityLayer layer) {
@@ -150,12 +143,25 @@ public class Map {
         // 3. Populate random rotation and position offset values
         Random random = new Random(seed);
         for (EntityLayer layer : EntityLayer.values()) {
-            var rotations = this.rotation.get(layer);
+            int yOffset = 0;
+            if (layer == EntityLayer.ANIMALS) {
+                yOffset += 0.2f;
+            }
+
             var offsets = this.offsets.get(layer);
             for (int x=0;x<this.width;x++) {
                 for (int z=0;z<this.depth;z++) {
-                    rotations.set(x, z, random.nextFloat() * 2 * (float) Math.PI);
-                    offsets.set(x, z, new float[] { random.nextFloat() * 0.5f, random.nextFloat() * 0.5f });
+                    float X = 0.25f - random.nextFloat() * 0.5f;
+                    float Z = 0.25f - random.nextFloat() * 0.5f;
+
+                    offsets.set(x, z,
+                        new float[] {
+                            X,
+                            yOffset + this.getHeight(x, z),
+                            Z,
+                            random.nextFloat() * 2 * (float) Math.PI
+                        }
+                    );
                 }
             }
         }
