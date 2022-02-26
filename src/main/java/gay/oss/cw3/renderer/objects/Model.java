@@ -38,13 +38,13 @@ public class Model {
     }
 
     public void draw(Matrix4f viewProjection) {
-        this.material.use();
+        this.use();
         Camera.upload(viewProjection, this.transformation);
         this.mesh.draw();
     }
 
     public void draw(Camera camera) {
-        this.material.use();
+        this.use();
         camera.upload(this.transformation);
         this.mesh.draw();
     }
