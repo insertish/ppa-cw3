@@ -1,8 +1,9 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id "com.williambl.bluej_jar.bluej-jar" version "0.1"
+    id 'java'
 }
 
 switch (OperatingSystem.current()) {
@@ -23,6 +24,12 @@ version = project.version
 
 sourceCompatibility = 11
 targetCompatibility = 11
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'gay.oss.cw3.Main'
+    }
+}
 
 repositories {
     mavenCentral()
