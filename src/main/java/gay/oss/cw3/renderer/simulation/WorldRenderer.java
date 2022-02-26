@@ -1,6 +1,9 @@
 package gay.oss.cw3.renderer.simulation;
 
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_FRONT;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glDepthMask;
 
 import java.util.ArrayList;
@@ -186,7 +189,9 @@ public class WorldRenderer {
         this.lighting.upload();
 
         // 1. render terrain
+        glCullFace(GL_FRONT);
         this.terrainModel.draw(camera);
+        glCullFace(GL_BACK);
 
         // 2. render entities
         this.drawEntities(camera);
@@ -209,6 +214,9 @@ public class WorldRenderer {
         program.setUniform("waterWaveSpeed", 0.1f);
         program.setUniform("waterDisplacementModifier", 1.4f);
         program.setUniform("waterRandomDisplacement", this.random.next());
+        
+        glCullFace(GL_FRONT);
         this.waterModel.draw(camera);
+        glCullFace(GL_BACK);
     }
 }
