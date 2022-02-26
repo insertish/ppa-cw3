@@ -14,3 +14,5 @@ calculate the actual height at location
 get the X / Y random offsets, then take the average and plop it down
 
 INSTANCED RENDERING - IMPORTANT
+
+move font info into files

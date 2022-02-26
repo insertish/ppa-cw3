@@ -10,7 +10,7 @@ import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.simulation.ui.components.EntityList;
 import gay.oss.cw3.renderer.simulation.ui.components.TickText;
 import gay.oss.cw3.renderer.ui.Font;
-import gay.oss.cw3.renderer.ui.FontRetro;
+import gay.oss.cw3.renderer.ui.FontPixel;
 import gay.oss.cw3.renderer.ui.UI;
 import gay.oss.cw3.renderer.ui.framework.Box;
 import gay.oss.cw3.renderer.ui.framework.Node;
@@ -43,7 +43,7 @@ public class SimulationUI extends UI {
         dayCycleTextures.put(DayCycle.EVENING, Texture.fromResource("ui/daycycle/evening.png"));
         dayCycleTextures.put(DayCycle.NIGHT, Texture.fromResource("ui/daycycle/night.png"));
 
-        Font font = new FontRetro();
+        Font font = new FontPixel();
         this.dayCycleIndicator = new Image(null);
         this.uiRoot = new Box(
             new AnchorLayout()
