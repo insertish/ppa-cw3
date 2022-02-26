@@ -56,13 +56,13 @@ public class DefaultScenario extends Scenario {
             // snake.png 0.01f
 
             //renderer.autoLoadModel(Hunter.class, "hunter.jpg");
-            renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.01f);
-            renderer.autoLoadModel(Rabbit.class, "ferret.png", "ferret", 0.5f);
-            renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f);
-            renderer.autoLoadModel(Tree.class, "pine.png", "pine", 50.0f);
-            renderer.autoLoadModel(Kelp.class, "grass-transparent.png", "grass", 0.5f);
-            renderer.autoLoadModel(HerbivoreFish.class, "amogus.png", "amogus", 1.5f);
-            renderer.autoLoadModel(Bird.class, "bird.png", "bird", 0.5f);
+            renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.01f, false);
+            renderer.autoLoadModel(Rabbit.class, "ferret.png", "ferret", 0.5f, false);
+            renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f, true);
+            renderer.autoLoadModel(Tree.class, "pine.png", "pine", 50.0f, false);
+            renderer.autoLoadModel(Kelp.class, "grass-transparent.png", "grass", 0.5f, true);
+            renderer.autoLoadModel(HerbivoreFish.class, "amogus.png", "amogus", 1.5f, false);
+            renderer.autoLoadModel(Bird.class, "bird.png", "bird", 0.5f, false);
             //renderer.autoLoadModel(Grass.class, "pine.png", "pine", 10);
         }
     }

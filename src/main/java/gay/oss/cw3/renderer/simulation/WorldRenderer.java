@@ -2,33 +2,26 @@ package gay.oss.cw3.renderer.simulation;
 
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDepthMask;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL30.glBindBufferBase;
-import static org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BUFFER;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.objects.Material;
-import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Camera;
+import gay.oss.cw3.renderer.shaders.Instanced;
 import gay.oss.cw3.renderer.shaders.Lighting;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.World;
-import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class WorldRenderer {
     private final World world;
@@ -38,6 +31,7 @@ public class WorldRenderer {
     private Model waterModel;
 
     private Lighting lighting;
+    private Instanced instancedRenderer;
 
     public WorldRenderer(World world) {
         this.world = world;
@@ -80,116 +74,94 @@ public class WorldRenderer {
             new Material(Resources.getShader("water"), Texture.fromResource("water.jpg"))
         );
 
-        /*var it = this.models.values().iterator();
-        it.next(); it.next(); it.next(); it.next();
-        List<Matrix4f> v = new ArrayList<>();
-        int COUNT = 1;
-        for (int i=0;i<COUNT;i++) {
-            v.add(new Matrix4f().translate(i, 0, i));
-        }
-        it.next().getMesh().testUploadMatrices(v);*/
+        this.instancedRenderer = new Instanced();
     }
 
     public void setModel(Class<?> clazz, Model model) {
         this.models.put(clazz, model);
     }
 
-    public void autoLoadModel(Class<?> clazz, String name) throws Exception {
-        this.setModel(clazz, new ModelEntity("entities/" + name));
+    public void autoLoadModel(Class<?> clazz, String name, String modelName, float scale, boolean transparent) throws Exception {
+        this.setModel(clazz, new ModelEntity("entities/" + name, "entities/" + modelName, scale, transparent));
     }
 
-    public void autoLoadModel(Class<?> clazz, String name, String modelName, float scale) throws Exception {
-        this.setModel(clazz, new ModelEntity("entities/" + name, "entities/" + modelName, scale));
-    }
+    private void drawEntities(Camera camera) {
+        var map = this.world.getMap();
+        Map<Class<?>, List<Matrix4f>> layers = new HashMap<>();
 
-    private static class SmoothedRandom {
-        private float value;
-        private final float variation;
-        private final Random random = new Random();
-
-        public SmoothedRandom(float initialValue, float variation) {
-            this.value = initialValue;
-            this.variation = variation;
+        for (Class<?> clazz : this.models.keySet()) {
+            layers.put(clazz, new ArrayList<>());
         }
 
-        public float next() {
-            this.value += this.random.nextFloat() * this.variation;
-            return this.value;
+        synchronized (this.world) {
+            for (Entity entity : this.world.getEntities()) {
+                var list = layers.get(entity.getClass());
+                if (list != null) {
+                    var loc = entity.getLocation();
+                    var offset = map
+                        .getOffsets(entity.getLayer())
+                        .get(loc);
+                    
+                    list.add(new Matrix4f()
+                        .translation(
+                            loc.x + offset[0],
+                            offset[1],
+                            loc.z + offset[2]
+                        )
+                        .rotate(offset[3], 0, 1, 0));
+                }
+            }
+        }
+
+        var keys = this.models.keySet()
+            .stream()
+            .sorted((a, b) -> {
+                var modelA = this.models.get(a);
+                var modelB = this.models.get(b);
+
+                if ((modelA instanceof ModelEntity) && (modelB instanceof ModelEntity)) {
+                    if (((ModelEntity) modelA).isTransparent()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    return 0;
+                }
+            })
+            .collect(Collectors.toList());
+
+        for (Class<?> clazz : keys) {
+            Model model = this.models.get(clazz);
+            var transformations = layers.get(clazz);
+
+            boolean masked = false;
+            if (model instanceof ModelEntity) {
+                var ent = (ModelEntity) model;
+                var s = ent.getScale();
+                for (Matrix4f matrix : transformations) {
+                    matrix.scale(s, s * 2, s);
+                }
+
+                if (ent.isTransparent()) {
+                    masked = true;
+                    glDepthMask(false);
+                }
+            }
+
+            model.use();
+            camera.upload();
+            this.instancedRenderer.draw(model.getMesh(), transformations);
+
+            if (masked) {
+                glDepthMask(true);
+            }
         }
     }
 
     private SmoothedRandom random = new SmoothedRandom(1, 0.002f);
 
-    private void drawLayer(EntityLayer layer, Camera camera) {
-        var map = this.world.getMap();
-        var offsets = map.getOffsets(layer);
-
-        /*for (int x=0;x<map.getWidth();x++) {
-            for (int z=0;z<map.getDepth();z++) {
-                Entity entity = this.world.getEntity(layer, x, z);
-                if (entity != null) {
-                    Model model = this.models.get(entity.getClass());
-
-                    var offset = offsets.get(x, z);
-                    var translation = model.getTransformation()
-                        .translation(
-                            x + offset[0],
-                            offset[1],
-                            z + offset[2]
-                        )
-                        .rotate(offset[3], 0, 1, 0);
-
-                    if (model instanceof ModelEntity) {
-                        float s = ((ModelEntity) model).getScale();
-                        translation.scale(s, s*2, s);
-                    }
-                    
-                    model.draw(camera);
-                }
-            }
-        }*/
-
-        var it = this.models.values().iterator();
-        it.next(); it.next(); it.next(); it.next();
-        Model model = it.next();
-        model.getTransformation().identity().translate(64, 0, 64).scale(10, 10, 10);
-        Mesh mesh = model.getMesh();
-        model.use();
-        mesh.bind();
-        camera.upload(model.getTransformation());
-
-        List<Matrix4f> data = new ArrayList<>();
-        int COUNT = 10;
-        for (int i=0;i<COUNT;i++) {
-            data.add(new Matrix4f().identity().translate(64 + i * 5, 0, 64 + i * 5).scale(10, 10, 10));
-        }
-
-        float buffer[] = new float[data.size() * 16];
-        for (int i=0;i<data.size();i++) {
-            data.get(i).get(buffer, i * 16);
-        }
-
-        /**GLuint ssboModelMatrices;
-        glGenBuffers(1, &ssboModelMatrices);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboModelMatrices);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * modelMatrices.size(), modelMatrices.data(), GL_STATIC_DRAW);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssboModelMatrices);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); */
-        int ssbo = glGenBuffers();
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, buffer, GL_STATIC_DRAW);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-        //mesh.testUploadMatrices(v);
-        mesh.drawInstanced(COUNT);
-        //model.draw(camera);
-
-        //bindArray
-    }
-
     public void draw(Camera camera) {
-
         if (this.terrainModel == null || this.waterModel == null) {
             return;
         }
@@ -212,24 +184,12 @@ public class WorldRenderer {
 
         this.lighting.setLightDirection(new Vector4f(pos * 128.0f, 42.0f, pos * 128.0f, 0.0f));
         this.lighting.upload();
-        
-        if (this.terrainModel != null) {
-            this.drawLayer(EntityLayer.ANIMALS, camera);
-            return;
-        }
 
         // 1. render terrain
         this.terrainModel.draw(camera);
 
         // 2. render entities
-        this.drawLayer(EntityLayer.ANIMALS, camera);
-
-        // we enable the depth mask so that we can support transparency here
-        glDepthMask(false);
-        this.drawLayer(EntityLayer.FOLIAGE, camera);
-        glDepthMask(true);
-
-        this.drawLayer(EntityLayer.AERIAL_ANIMALS, camera);
+        this.drawEntities(camera);
 
         // 3. render water
         var map = this.world.getMap();

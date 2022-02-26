@@ -138,61 +138,6 @@ public class Mesh {
         return vbo;
     }
 
-    public void testUploadMatrices(List<Matrix4f> data) {
-        float buffer[] = new float[data.size() * 16];
-        for (int i=0;i<data.size();i++) {
-            data.get(i).get(buffer, i * 16);
-
-            /*int j = 0;
-            
-            buffer[j+0] = 0;
-            buffer[j+1] = 0;
-            buffer[j+2] = 0;
-            buffer[j+3] = 1;
-
-            buffer[j+4] = 0;
-            buffer[j+5] = 0;
-            buffer[j+6] = 1;
-            buffer[j+7] = 0;
-
-            buffer[j+8] = 0;
-            buffer[j+9] = 1;
-            buffer[j+10] = 0;
-            buffer[j+11] = 0;
-            
-            buffer[j+12] = 1;
-            buffer[j+13] = 0;
-            buffer[j+14] = 0;
-            buffer[j+15] = 0;*/
-        }
-
-        String a = "";
-        for (int j=0;j<16;j++) {
-            a = a + " " + buffer[j];
-        }
-        System.out.println(a);
-        // verified that this is indeed a identity matrix
-        //  1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0
-
-
-        this.bind();
-
-        int vbo = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, data.size() * 16 * 4, GL_STREAM_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, buffer);
-
-        for (int j=0;j<4;j++) {
-            int attribute = 3 + j;
-            glEnableVertexAttribArray(attribute);
-            glVertexAttribPointer(attribute, 4, GL_FLOAT, false, 16, 4 * j);
-            glVertexAttribDivisor(attribute, 1);
-            // glVertexBindingDivisor(attribute, 1);
-        }
-
-        Mesh.unbind();
-    }
-
     /**
      * Construct a new Mesh using data given by the {@link Builder}
      * @param builder Builder with mesh data
