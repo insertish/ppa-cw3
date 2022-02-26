@@ -2,6 +2,12 @@ package gay.oss.cw3.renderer.simulation;
 
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDepthMask;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL30.glBindBufferBase;
+import static org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BUFFER;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,14 +80,14 @@ public class WorldRenderer {
             new Material(Resources.getShader("water"), Texture.fromResource("water.jpg"))
         );
 
-        var it = this.models.values().iterator();
+        /*var it = this.models.values().iterator();
         it.next(); it.next(); it.next(); it.next();
         List<Matrix4f> v = new ArrayList<>();
         int COUNT = 1;
         for (int i=0;i<COUNT;i++) {
             v.add(new Matrix4f().translate(i, 0, i));
         }
-        it.next().getMesh().testUploadMatrices(v);
+        it.next().getMesh().testUploadMatrices(v);*/
     }
 
     public void setModel(Class<?> clazz, Model model) {
@@ -146,17 +152,34 @@ public class WorldRenderer {
         var it = this.models.values().iterator();
         it.next(); it.next(); it.next(); it.next();
         Model model = it.next();
-        model.getTransformation().identity().scale(10, 10, 10);
+        model.getTransformation().identity().translate(64, 0, 64).scale(10, 10, 10);
         Mesh mesh = model.getMesh();
         model.use();
         mesh.bind();
-        camera.upload();
+        camera.upload(model.getTransformation());
 
-        List<Matrix4f> v = new ArrayList<>();
+        List<Matrix4f> data = new ArrayList<>();
         int COUNT = 10;
         for (int i=0;i<COUNT;i++) {
-            v.add(new Matrix4f().identity());
+            data.add(new Matrix4f().identity().translate(64 + i * 5, 0, 64 + i * 5).scale(10, 10, 10));
         }
+
+        float buffer[] = new float[data.size() * 16];
+        for (int i=0;i<data.size();i++) {
+            data.get(i).get(buffer, i * 16);
+        }
+
+        /**GLuint ssboModelMatrices;
+        glGenBuffers(1, &ssboModelMatrices);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboModelMatrices);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * modelMatrices.size(), modelMatrices.data(), GL_STATIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssboModelMatrices);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); */
+        int ssbo = glGenBuffers();
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, buffer, GL_STATIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
         //mesh.testUploadMatrices(v);
         mesh.drawInstanced(COUNT);
