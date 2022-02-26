@@ -71,6 +71,12 @@ public class Bird extends AbstractBreedableEntity {
         super.moveTo(location);
     }
 
+    @Override
+    public float yOffset() {
+        var factor = (2.0-Math.min(this.getVelocity().length(), 2.0))/2.0;
+        return (float) -(this.getLayer().yOffset*factor);
+    }
+
     // http://www.kfish.org/boids/pseudocode.html
     private class BoidBehaviour implements Behaviour {
         private final int sightRadius;

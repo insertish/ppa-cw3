@@ -114,7 +114,7 @@ public class WorldRenderer {
                     var translation = model.getTransformation()
                         .translation(
                             x + offset[0],
-                            offset[1],
+                            entity.yOffset() + offset[1],
                             z + offset[2]
                         )
                         .rotate(offset[3], 0, 1, 0);

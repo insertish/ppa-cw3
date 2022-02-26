@@ -239,6 +239,18 @@ public abstract class Entity {
     }
 
     /**
+     * Provides an offset on the y-axis for rendering this entity. This is applied in addition to the
+     * {@link EntityLayer#yOffset layer's y-offset}.
+     *
+     * <p>This is mostly useful for aerial or aquatic entities.</p>
+     *
+     * @return the rendering y-offset for this entity.
+     */
+    public float yOffset() {
+        return 0f;
+    }
+
+    /**
      * Ticks this entity.
      */
     public abstract void tick();
