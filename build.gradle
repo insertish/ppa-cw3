@@ -4,6 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id "com.williambl.bluej_jar.bluej-jar" version "0.1"
     id 'java'
+    id 'application'
 }
 
 switch (OperatingSystem.current()) {
@@ -74,4 +75,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+ext {
+   javaMainClass = "gay.oss.cw3.Main"
+}
+
+application {
+    mainClassName = javaMainClass
 }
