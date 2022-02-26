@@ -1,16 +1,18 @@
 - shadows
-- FONT RENDERING
-
-- basic ui
-- show ticks
-- show time
-
-- ortho UI renderer
-- add icon for current day cycle
-- add tick counter to screen
 
 - calculate delta time in loop
 
-- add rate limit
+# - add rate limit(?)
 - add ability to switch off entity render
 - toggle render indicator above entities
+
+- right click pan
+- colour code shit
+- help menu
+
+calculate the actual height at location
+get the X / Y random offsets, then take the average and plop it down
+
+INSTANCED RENDERING - IMPORTANT
+
+move font info into files

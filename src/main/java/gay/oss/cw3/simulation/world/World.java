@@ -1,6 +1,10 @@
 package gay.oss.cw3.simulation.world;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
@@ -66,6 +70,15 @@ public class World {
 
     public int getEntityCount() {
         return this.entities.size();
+    }
+
+    public int getEntityCount(Class<?> clazz) {
+        synchronized (this.entities) {
+            return (int) this.entities
+                .stream()
+                .filter(entity -> entity.getClass().isAssignableFrom(clazz))
+                .count();
+        }
     }
 
     public Map getMap() {

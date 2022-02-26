@@ -13,7 +13,5 @@ out vec2 fragUV;
 
 void main() {
     gl_Position = modelViewProjection * vec4(vertexPos, 1.0);
-    fragUV = vertexUV / atlas;
-    fragUV.x += float(atlasX) / atlas;
-    fragUV.y += float(atlasY) / atlas;
+    fragUV = vec2(vertexUV.x + atlasX, vertexUV.y + atlasY) / atlas;
 }
