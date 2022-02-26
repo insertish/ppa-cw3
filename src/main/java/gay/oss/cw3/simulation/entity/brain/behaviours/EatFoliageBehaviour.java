@@ -3,6 +3,7 @@ package gay.oss.cw3.simulation.entity.brain.behaviours;
 import java.util.Random;
 
 import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class EatFoliageBehaviour extends MovementBehaviour {
     private final Random random = new Random();
@@ -28,17 +29,14 @@ public class EatFoliageBehaviour extends MovementBehaviour {
             return false;
         }
 
-        var potentialTargets = this.entity.getAdjacentEntities(5);
+        var potentialTargets = this.entity.getAdjacentEntities(EntityLayer.FOLIAGE, 10);
         if (potentialTargets.isEmpty()) {
             return false;
         }
 
         var potentialTarget = potentialTargets.get(random.nextInt(potentialTargets.size()));
-        for (Class<? extends Entity> targetClass : this.targetClasses) {
-            if (potentialTarget.isAlive() && targetClass.isInstance(potentialTarget)) {
-                this.target = potentialTarget;
-                break;
-            }
+        if (this.isTarget(potentialTarget)) {
+            this.target = potentialTarget;
         }
 
         return this.target != null;
@@ -55,6 +53,11 @@ public class EatFoliageBehaviour extends MovementBehaviour {
 
     @Override
     public void tick() {
+        var standingOn = this.entity.getWorld().getEntity(EntityLayer.FOLIAGE, this.entity.getLocation().x, this.entity.getLocation().z);
+        if (standingOn != null && this.isTarget(standingOn)) {
+            this.target = standingOn;
+        }
+
         if (this.entity.getLocation().equals(this.target.getLocation())) {
             this.ticksCouldntMove = 0;
             this.target.setAlive(false);
@@ -71,5 +74,15 @@ public class EatFoliageBehaviour extends MovementBehaviour {
         } else {
             this.ticksCouldntMove++;
         }
+    }
+
+    private boolean isTarget(Entity potentialTarget) {
+        for (Class<? extends Entity> targetClass : this.targetClasses) {
+            if (potentialTarget.isAlive() && targetClass.isInstance(potentialTarget)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

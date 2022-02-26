@@ -56,7 +56,7 @@ public class DefaultScenario extends Scenario {
             // snake.png 0.01f
 
             //renderer.autoLoadModel(Hunter.class, "hunter.jpg");
-            renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.01f);
+            renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.03f);
             renderer.autoLoadModel(Rabbit.class, "ferret.png", "ferret", 0.5f);
             renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f);
             renderer.autoLoadModel(Tree.class, "pine.png", "pine", 50.0f);
@@ -79,6 +79,7 @@ public class DefaultScenario extends Scenario {
             this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
             this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
             this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+            this.getAttributes().set(EntityAttribute.FULLNESS_TO_BREED, this.getMaxFullness()/2.0);
             this.setFullness(this.getMaxFullness());
             this.setHealth(this.getMaxHealth());
         }
