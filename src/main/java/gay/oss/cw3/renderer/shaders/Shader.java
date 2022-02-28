@@ -72,7 +72,12 @@ public class Shader {
     /**
      * Final Pattern for matching dynamic files includes in shaders.
      */
-    private static final Pattern pattern = Pattern.compile("^\\s*#include \"([\\w\\.]+)\"$", Pattern.MULTILINE);
+    private static final Pattern patternInclude = Pattern.compile("^\\s*#include \"([\\w\\.]+)\"$", Pattern.MULTILINE);
+
+    /**
+     * Final Pattern for matching variables in shaders.
+     */
+    private static final Pattern patternVariable = Pattern.compile("#\\[([\\w\\._]+)\\]", Pattern.MULTILINE);
 
     /**
      * Load a specific shader resource as a String.
@@ -95,11 +100,20 @@ public class Shader {
 
         // Scan the shader source for "imports" and
         // load them from the shaders/lib folder.
-        return pattern
-            .matcher(source)
+        return patternInclude
+            .matcher(
+                patternVariable.matcher(source)
+                    .replaceAll(mr -> {
+                        String variable = mr.group(1);
+            
+                        return ShaderVariables.get(variable);
+                    })
+            )
             .replaceAll(mr -> {
+                String localPath = mr.group(1);
+
                 try {
-                    return Shader.loadResource("lib/" + mr.group(1));
+                    return Shader.loadResource("lib/" + localPath);
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
                 }

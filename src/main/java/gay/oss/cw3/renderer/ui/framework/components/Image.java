@@ -2,6 +2,7 @@ package gay.oss.cw3.renderer.ui.framework.components;
 
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.events.Event;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
 /**
@@ -49,4 +50,7 @@ public class Image extends Node {
     public int getHeight() {
         return 0;
     }
+
+    @Override
+    public void handle(Event event) {}
 }

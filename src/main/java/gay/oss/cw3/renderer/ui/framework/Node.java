@@ -1,6 +1,7 @@
 package gay.oss.cw3.renderer.ui.framework;
 
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.events.Event;
 
 /**
  * Abstract representation of a UI node
@@ -27,4 +28,10 @@ public abstract class Node {
      * @return Height
      */
     public abstract int getHeight();
+
+    /**
+     * Handle incoming Event
+     * @param event Event
+     */
+    public abstract void handle(Event event);
 }

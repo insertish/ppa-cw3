@@ -3,6 +3,7 @@ package gay.oss.cw3.renderer.ui.framework.components;
 import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.events.Event;
 import gay.oss.cw3.renderer.ui.fonts.Font;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
@@ -109,4 +110,7 @@ public class Text extends Node {
     public int getHeight() {
         return this.getSize();
     }
+
+    @Override
+    public void handle(Event event) {}
 }

@@ -6,8 +6,9 @@ import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.simulation.ui.components.DayCycleBox;
 import gay.oss.cw3.renderer.simulation.ui.components.EntityList;
+import gay.oss.cw3.renderer.simulation.ui.components.HelpMenuBox;
 import gay.oss.cw3.renderer.simulation.ui.components.TickText;
-import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.RootUI;
 import gay.oss.cw3.renderer.ui.fonts.Font;
 import gay.oss.cw3.renderer.ui.fonts.FontPixel;
 import gay.oss.cw3.renderer.ui.framework.Box;
@@ -23,9 +24,8 @@ import gay.oss.cw3.simulation.world.World;
 /**
  * Root node of the Simulation UI.
  */
-public class SimulationUI extends UI {
+public class SimulationUI extends RootUI {
     private Scenario scenario;
-    private Node uiRoot;
 
     /**
      * Construct a new SimulationUI
@@ -33,7 +33,7 @@ public class SimulationUI extends UI {
      * @throws Exception if we fail to initialise the UI
      */
     public SimulationUI(Scenario scenario) throws Exception {
-        super();
+        super(null);
         this.scenario = scenario;
         this.init();
     }
@@ -44,7 +44,7 @@ public class SimulationUI extends UI {
      */
     private void init() throws Exception {
         Font font = new FontPixel();
-        this.uiRoot = new Box(
+        this.rootNode = new Box(
             new AnchorLayout()
                 // Display the day cycle and tick counter in the top left.
                 .add(
@@ -70,14 +70,16 @@ public class SimulationUI extends UI {
                     Anchor.BottomLeft,
                     new FlowLayout(Arrays.asList(
                         new Node[] {
-                            new Text(font, "N: generate new map", 16),
-                            new Text(font, "Scroll: zoom camera", 16),
-                            new Text(font, "LMB Drag: rotate camera", 16),
-                            //new Text(font, "press h for help menu", 16)
+                            new Text(font, "press H for help menu", 16)
                         }
                     ))
                     .setDirection(FlowDirection.Column)
                 )
+                // Display a help menu in the centre.
+                /*.add(
+                    Anchor.CenterMiddle,
+                    new HelpMenuBox(font)
+                )*/
         )
         .setPadding(24);
     }
@@ -111,10 +113,5 @@ public class SimulationUI extends UI {
             System.err.println("Failed to reinitialise simulation UI!");
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void drawUI(int width, int height) {
-        this.uiRoot.draw(this, 0, 0, width, height);
     }
 }

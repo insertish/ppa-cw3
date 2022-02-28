@@ -3,6 +3,7 @@ package gay.oss.cw3.renderer.ui.framework.layouts;
 import java.util.List;
 
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.events.Event;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
 /**
@@ -150,6 +151,13 @@ public class FlowLayout extends Node {
             }
 
             return height + (children.size() - 1) * gap;
+        }
+    }
+
+    @Override
+    public void handle(Event event) {
+        for (Node child : this.children) {
+            child.handle(event);
         }
     }
 }
