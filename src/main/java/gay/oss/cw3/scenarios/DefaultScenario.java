@@ -38,7 +38,7 @@ public class DefaultScenario extends Scenario {
 
             //renderer.autoLoadModel(Hunter.class, "hunter.jpg");
             renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.03f, false);
-            renderer.autoLoadModel(Rabbit.class, "ferret.png", "ferret", 0.5f, false);
+            renderer.autoLoadModel(Rabbit.class, "bunny.png", "bunny", 0.05f, false);
             renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f, true);
             renderer.autoLoadModel(Tree.class, "pine.png", "pine", 50.0f, false);
             renderer.autoLoadModel(Kelp.class, "grass-transparent.png", "grass", 0.5f, true);

@@ -18,7 +18,7 @@ public class Kelp extends Entity {
      * @param location          the entity's initial location
      */
     public Kelp(World world, Coordinate location) {
-        super(world, EntityLayer.FOLIAGE, location, 0, true);
+        super(world, EntityLayer.FOLIAGE, location);
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
         this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 0.6);
         this.setFullness(0.5);
@@ -44,14 +44,25 @@ public class Kelp extends Entity {
 
             // spreading
             if (this.getFullness() >= 0.5) {
-                var locations = this.getWorld().findFreeLocationsAboveWater(this.getLayer(), this.getLocation(), 1);
+                var locations = this.getWorld().findMatchingLocations(this.getLocation(), 1, coord ->
+                        this.getWorld().isInBounds(coord)
+                                && this.getWorld().getEntity(this.getLayer(), coord.x, coord.z) == null
+                                && !this.getWorld().isAboveWater(coord)
+                );
 
                 if (!locations.isEmpty()) {
                     var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
-                    new Grass(this.getWorld(), coord);
+                    this.getWorld().spawn(new Grass(this.getWorld(), coord));
                     this.removeFullness(0.25);
                 }
             }
         }
+    }
+
+    @Override
+    public float yOffset() {
+        var height = this.getWorld().getMap().getHeight(this.getLocation().x, this.getLocation().z);
+        var offset = this.getWorld().getMap().getWaterLevel() - height - 10f;
+        return height > height+offset ? 0f : offset;
     }
 }

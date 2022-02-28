@@ -158,7 +158,7 @@ public class World {
         return this.findMatchingLocations(around, radius, coord ->
                 this.isInBounds(coord)
                         && this.getEntity(layer, coord.x, coord.z) == null
-                        && this.map.getHeight(coord.x, coord.z) > this.map.getWaterLevel()
+                        && this.isAboveWater(coord)
         );
     }
 

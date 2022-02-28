@@ -63,4 +63,11 @@ public class HerbivoreFish extends AbstractBreedableEntity {
         result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
         return result;
     }
+
+    @Override
+    public float yOffset() {
+        var height = this.getWorld().getMap().getHeight(this.getLocation().x, this.getLocation().z);
+        var offset = this.getWorld().getMap().getWaterLevel() - height - 10f;
+        return height > height+offset ? 0f : offset;
+    }
 }

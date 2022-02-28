@@ -1,6 +1,5 @@
 package gay.oss.cw3.scenarios.entities;
 
-import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
@@ -19,7 +18,7 @@ public class Grass extends Entity {
      * @param location          the entity's initial location
      */
     public Grass(World world, Coordinate location) {
-        super(world, EntityLayer.FOLIAGE, location, 0, true);
+        super(world, EntityLayer.FOLIAGE, location);
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
         this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 0.6);
         this.setFullness(0.5);
@@ -39,7 +38,7 @@ public class Grass extends Entity {
 
                 if (!locations.isEmpty()) {
                     var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
-                    new Grass(this.getWorld(), coord);
+                    this.getWorld().spawn(new Grass(this.getWorld(), coord));
                     this.removeFullness(0.25);
                 }
             }

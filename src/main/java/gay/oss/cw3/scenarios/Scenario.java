@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -58,7 +59,7 @@ public abstract class Scenario {
      * @param canSpawnOnLand Whether the entity can spawn on land
      * @param biome Array of biomes the entity is permitted to spawn in
      */
-    protected void registerEntity(EntityLayer layer, String name, Vector3f colour, Class<?> entityClass, float spawnChance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
+    protected void registerEntity(EntityLayer layer, String name, Vector3f colour, Class<? extends Entity> entityClass, float spawnChance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
         this.entityNames.put(entityClass, name);
         this.entityColours.put(entityClass, colour);
         this.generator.registerEntity(layer, entityClass, spawnChance, canSpawnOnWater, canSpawnOnLand, biome);

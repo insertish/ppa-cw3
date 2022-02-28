@@ -6,6 +6,7 @@ import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * A behaviour that makes entities mate with other entities and have children.
@@ -14,6 +15,7 @@ import java.util.*;
  */
 public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehaviour {
     private final Random random = new Random();
+    private final Predicate<Coordinate> birthPositionPredicate;
     private final T entity;
 
     private T target;
@@ -22,12 +24,24 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
     /**
      * Create a new BreedBehaviour.
      *
+     * @param entity                    the entity
+     * @param speed                     the movement speed modifier
+     * @param birthPositionPredicate    a predicate for valid positions to spawn the child
+     */
+    public BreedBehaviour(T entity, double speed, Predicate<Coordinate> birthPositionPredicate) {
+        super(speed, entity);
+        this.entity = entity;
+        this.birthPositionPredicate = birthPositionPredicate;
+    }
+
+    /**
+     * Create a new BreedBehaviour.
+     *
      * @param entity    the entity
      * @param speed     the movement speed modifier
      */
     public BreedBehaviour(T entity, double speed) {
-        super(speed, entity);
-        this.entity = entity;
+        this(entity, speed, ((Entity)entity)::canMoveTo);
     }
 
     @SuppressWarnings("unchecked") // `isInstance` check means that (T) cast is safe
@@ -83,7 +97,7 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         var dir = this.target.getLocation().subtract(this.entity.getLocation());
         var newLoc = this.entity.getLocation().add(this.calculateMovementInDirection(dir));
 
-        if (this.entity.getWorld().isInBounds(newLoc)) {
+        if (this.entity.canMoveTo(newLoc)) {
             var entityAtLoc = this.entity.getWorld().getEntity(entity.getLayer(), newLoc.x, newLoc.z);
 
             if (entityAtLoc == null) {
@@ -108,6 +122,8 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         var baby = this.entity.createChild(this.target, babyPos);
         if (baby == null) {
             return;
+        } else {
+            this.entity.getWorld().spawn(baby);
         }
 
         this.entity.startBreedingAttempt();
@@ -117,8 +133,8 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
 
     private @Nullable Coordinate findAvailablePositionAround(int radius, Entity a, Entity b) {
         final Set<Coordinate> positions = new HashSet<>();
-        positions.addAll(a.getWorld().findFreeLocationsAboveWater(a.getLayer(), a.getLocation(), radius));
-        positions.addAll(b.getWorld().findFreeLocationsAboveWater(b.getLayer(), b.getLocation(), radius));
+        positions.addAll(a.getWorld().findMatchingLocations(a.getLocation(), radius, birthPositionPredicate));
+        positions.addAll(b.getWorld().findMatchingLocations(b.getLocation(), radius, birthPositionPredicate));
 
         if (positions.isEmpty()) {
             return null;
