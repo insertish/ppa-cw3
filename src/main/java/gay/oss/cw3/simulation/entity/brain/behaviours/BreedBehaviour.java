@@ -7,6 +7,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * A behaviour that makes entities mate with other entities and have children.
+ *
+ * @param <T> the type of the entity this behaviour is attached to
+ */
 public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehaviour {
     private final Random random = new Random();
     private final T entity;
@@ -14,6 +19,12 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
     private T target;
     private int ticksCouldntMove;
 
+    /**
+     * Create a new BreedBehaviour.
+     *
+     * @param entity    the entity
+     * @param speed     the movement speed modifier
+     */
     public BreedBehaviour(T entity, double speed) {
         super(speed, entity);
         this.entity = entity;

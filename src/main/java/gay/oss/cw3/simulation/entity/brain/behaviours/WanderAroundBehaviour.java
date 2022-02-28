@@ -5,11 +5,23 @@ import gay.oss.cw3.simulation.entity.Entity;
 
 import java.util.Random;
 
+/**
+ * A behaviour that makes entities wander around.
+ *
+ * <p>A direction is chosen when the behaviour starts, and the entity will move in that direction. With a 0.5% chance
+ * (roughly every 200 ticks), the entity will change this direction.</p>
+ */
 public class WanderAroundBehaviour extends MovementBehaviour {
     private final Random random = new Random();
 
     private Coordinate direction = null;
 
+    /**
+     * Create a new WanderAroundBehaviour
+     *
+     * @param entity    the entity
+     * @param speed     the movement speed modifier
+     */
     public WanderAroundBehaviour(Entity entity, double speed) {
         super(speed, entity);
     }

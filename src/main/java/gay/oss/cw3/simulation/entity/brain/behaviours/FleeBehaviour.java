@@ -5,6 +5,11 @@ import java.util.Random;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 
+/**
+ * A behaviour to flee threats.
+ *
+ * <p>It is recommended to place this at the highest priority.</p>
+ */
 public class FleeBehaviour extends MovementBehaviour {
     private final Random random = new Random();
     private final int fearDistance;
@@ -13,6 +18,14 @@ public class FleeBehaviour extends MovementBehaviour {
     private Entity threat;
     private int ticksCouldntMove = 0;
 
+    /**
+     * Create a new FleeBehaviour.
+     *
+     * @param entity            the entity
+     * @param speed             the movement speed modifier
+     * @param fearDistance      the distance to look for threats in
+     * @param fearedClasses     the classes of entities considered threats
+     */
     @SafeVarargs
     public FleeBehaviour(Entity entity, double speed, int fearDistance, Class<? extends Entity>... fearedClasses) {
         super(speed, entity);
