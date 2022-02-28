@@ -42,8 +42,7 @@ public final class EntityBrain {
         final var lastRunBehaviour = this.currentBehaviour;
         this.currentBehaviour = null;
         for (Behaviour behaviour : this.behaviours) {
-            final boolean wasOnLastTime = behaviour == lastRunBehaviour;
-            if (wasOnLastTime) {
+            if (behaviour == lastRunBehaviour) {
                 if (behaviour.canContinue()) {
                     behaviour.tick();
                     this.currentBehaviour = behaviour;
