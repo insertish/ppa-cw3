@@ -17,9 +17,20 @@ import org.joml.Vector2d;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A bird-style aerial animal entity.
+ *
+ * <p>Birds uniquely keep track of their velocity. This is so that their {@link BoidBehaviour} can run properly.</p>
+ */
 public class Bird extends AbstractBreedableEntity {
     private Vector2d velocity = new Vector2d();
 
+    /**
+     * Creates a new bird entity
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     */
     public Bird(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.AERIAL_ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         //this.getBrain().addBehaviour(new SleepBehaviour(this, true));
@@ -55,6 +66,9 @@ public class Bird extends AbstractBreedableEntity {
         return result;
     }
 
+    /**
+     * @return the velocity of this bird
+     */
     public Vector2d getVelocity() {
         return velocity;
     }
@@ -77,10 +91,21 @@ public class Bird extends AbstractBreedableEntity {
         return (float) -(this.getLayer().yOffset*factor);
     }
 
-    // http://www.kfish.org/boids/pseudocode.html
-    private class BoidBehaviour implements Behaviour {
+    /**
+     * A behaviour that makes an entity move with 'Boid' AI.
+     *
+     * <p>Boids simulate flocking behaviour with a simple set of rules.</p>
+     *
+     * <p>The specific rules used here are from <a href="http://www.kfish.org/boids/pseudocode.html">this website</a>.</p>
+     */
+    protected class BoidBehaviour implements Behaviour {
         private final int sightRadius;
 
+        /**
+         * Create a new BoidBehaviour.
+         *
+         * @param sightRadius the radius within which this bird can see others
+         */
         public BoidBehaviour(int sightRadius) {
             this.sightRadius = sightRadius;
         }
