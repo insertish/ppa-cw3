@@ -44,7 +44,11 @@ public class Kelp extends Entity {
 
             // spreading
             if (this.getFullness() >= 0.5) {
-                var locations = this.getWorld().findFreeLocationsAboveWater(this.getLayer(), this.getLocation(), 1);
+                var locations = this.getWorld().findMatchingLocations(this.getLocation(), 1, coord ->
+                        this.getWorld().isInBounds(coord)
+                                && this.getWorld().getEntity(this.getLayer(), coord.x, coord.z) == null
+                                && !this.getWorld().isAboveWater(coord)
+                );
 
                 if (!locations.isEmpty()) {
                     var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
