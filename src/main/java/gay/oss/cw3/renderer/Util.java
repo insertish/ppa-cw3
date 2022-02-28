@@ -4,7 +4,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
- * Common utility functions for working with graphics libraries
+ * Common utility functions for working with graphics
  */
 public class Util {
     /**
@@ -19,6 +19,19 @@ public class Util {
         }
     }
 
+    /**
+     * Process a set of 3 vertices to calculate a face normal vector
+     * @param x0 X position of vector 0
+     * @param y0 Y position of vector 0
+     * @param z0 Z position of vector 0
+     * @param x1 X position of vector 1
+     * @param y1 Y position of vector 1
+     * @param z1 Z position of vector 1
+     * @param x2 X position of vector 2
+     * @param y2 Y position of vector 2
+     * @param z2 Z position of vector 2
+     * @return Face Normal Vector
+     */
     public static float[] calculateNormal(float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2) {
         // Based on pseudo-code from Khronos OpenGL wiki
         // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Pseudo-code
@@ -37,6 +50,12 @@ public class Util {
         };
     }
 
+    /**
+     * Infer the positions of vertex data from a given pointer to calculate a face normal
+     * @param data Float data to index into
+     * @param index Pointer to first element to read from
+     * @return Face Normal Vector
+     */
     public static float[] calculateNormalFromPointer(float data[], int index) {
         return calculateNormal(
             data[index  ], data[index+1], data[index+2],
@@ -45,6 +64,11 @@ public class Util {
         );
     }
 
+    /**
+     * Convert an RGB colour space vector to Oklab colour space
+     * @param color RGB colour space vector
+     * @return Oklab colour space vector
+     */
     public static float[] rgbToOklab(float[] color) {
         float l = (float) Math.cbrt(0.4122214708f * color[0] + 0.5363325363f * color[1] + 0.0514459929f * color[2]);
         float m = (float) Math.cbrt(0.2119034982f * color[0] + 0.6806995451f * color[1] + 0.1073969566f * color[2]);
@@ -57,6 +81,11 @@ public class Util {
         };
     }
 
+    /**
+     * Convert an Oklab colour space vector to RGB colour space
+     * @param color Oklab colour space vector
+     * @return RGB colour space vector
+     */
     public static float[] oklabToRgb(float[] color) {
         float l_ = color[0] + 0.3963377774f * color[1] + 0.2158037573f * color[2];
         float m_ = color[0] - 0.1055613458f * color[1] - 0.0638541728f * color[2];
@@ -73,6 +102,11 @@ public class Util {
         };
     }
 
+    /**
+     * Convert a given integer to an RGB colour space vector
+     * @param colour Integer representing a colour
+     * @return RGB colour space vector
+     */
     public static float[] intColourToFloats(final int colour) {
         int r = (colour & 0x00ff0000) >> 16;
         int g = (colour & 0x0000ff00) >> 8;

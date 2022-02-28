@@ -1,7 +1,7 @@
 package gay.oss.cw3.renderer.interfaces;
 
 /**
- * Cursor position callback
+ * Cursor position callback, this is a partial of GLFWCursorPosCallbackI.
  */
 public interface ICursorPosCallback {
     /**

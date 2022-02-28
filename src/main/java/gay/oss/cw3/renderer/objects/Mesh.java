@@ -8,10 +8,8 @@ import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glBufferSubData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -20,15 +18,11 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
-import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
 
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
@@ -46,10 +40,8 @@ public class Mesh {
     private final int vao;
     private final int vertices;
 
-    // ! FIXME: FIXME
-    public boolean indexed;
-    public int triangles;
-    public int indicesCount;
+    private final boolean indexed;
+    private final int indices;
     
     private final List<Integer> vbo;
 
@@ -62,6 +54,22 @@ public class Mesh {
         this.vao = vao;
         this.vertices = vertices;
         this.indexed = false;
+        this.indices = 0;
+
+        this.vbo = new ArrayList<>();
+    }
+
+    /**
+     * Construct a new indexed Mesh
+     * @param vao Vertex Array Object ID
+     * @param vertices Number of vertices in this mesh
+     * @param indices Number of indices in this mesh
+     */
+    private Mesh(int vao, int vertices, int indices) {
+        this.vao = vao;
+        this.vertices = vertices;
+        this.indices = indices;
+        this.indexed = true;
 
         this.vbo = new ArrayList<>();
     }
@@ -75,6 +83,9 @@ public class Mesh {
         CURRENT_VAO = this.vao;
     }
 
+    /**
+     * De-allocate the Array and Buffer Objects used for this Mesh.
+     */
     public void destroy() {
         glDeleteVertexArrays(this.vao);
         
@@ -98,7 +109,7 @@ public class Mesh {
         this.bind();
 
         if (this.indexed) {
-            glDrawElements(GL_TRIANGLES, this.indicesCount, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, this.indices, GL_UNSIGNED_INT, 0);
         } else {
             glDrawArrays(GL_TRIANGLES, 0, this.vertices);
         }
@@ -111,7 +122,7 @@ public class Mesh {
         this.bind();
 
         if (this.indexed) {
-            glDrawElementsInstanced(GL_TRIANGLES, this.indicesCount, GL_UNSIGNED_INT, 0, count);
+            glDrawElementsInstanced(GL_TRIANGLES, this.indices, GL_UNSIGNED_INT, 0, count);
         } else {
             throw new IllegalStateException("Not indexed!");
         }
@@ -149,7 +160,12 @@ public class Mesh {
             throw new IllegalStateException("Must specify vertices.");
 
         int vao = glGenVertexArrays();
-        final var mesh = new Mesh(vao, builder.vertices);
+        final Mesh mesh;
+        if (builder.indices != null) {
+            mesh = new Mesh(vao, builder.vertices, builder.indices.length);
+        } else {
+            mesh = new Mesh(vao, builder.vertices);
+        }
 
         mesh.bind();
         mesh.bindArray(0, 3, builder.vertex);
@@ -166,10 +182,6 @@ public class Mesh {
             int vbo = glGenBuffers();
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, builder.indices, GL_STATIC_DRAW);
-            mesh.indexed = true;
-            mesh.triangles = builder.indices.length / 3;
-            mesh.indicesCount = builder.indices.length;
-            // add vbo
         }
 
         Mesh.unbind();
@@ -184,10 +196,17 @@ public class Mesh {
         Obj obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
         Builder builder = Mesh.builder();
 
+        // We assume that all .obj files that we load have been normalised
+        // ahead of time and all include: indices, vertices, UVs, and normals.
         builder.indices(ObjData.getFaceVertexIndicesArray(obj));
         builder.vertex(ObjData.getVerticesArray(obj));
         builder.render(ObjData.getTexCoordsArray(obj, 2), 2);
         builder.normal(ObjData.getNormalsArray(obj));
+
+        // When exporting from Blender:
+        // - Enable triangulate faces
+        // - Disable write materials
+        // - Ensure write UVs is on
 
         return builder;
     }
@@ -267,18 +286,27 @@ public class Mesh {
             if (this.vertices % 3 != 0)
                 throw new IllegalStateException("Not a triangle!");
 
+            // Pre-allocate memory for normal data.
             float normals[] = new float[this.vertices * 3];
             float vert[] = this.vertex;
             
+            // Cycle through each known triangle.
             for (int triangle=0;triangle<this.vertices/3;triangle++) {
                 int offset = triangle * 9;
 
+                // Calculate the face normal to the triangle.
                 float[] n = Util.calculateNormal(
                     vert[offset  ], vert[offset+1], vert[offset+2],
                     vert[offset+3], vert[offset+4], vert[offset+5],
                     vert[offset+6], vert[offset+7], vert[offset+8]
                 );
 
+                // We apply a very simple algorithm here, and just
+                // apply the same face normal to each vertex.
+                //
+                // This will give a distinct appearance to each
+                // triangle, and will produce a "low-poly" sort of
+                // appearance to the mesh when lighting is applied. 
                 for (int vertex=0;vertex<3;vertex++) {
                     normals[offset + vertex * 3] = n[0];
                     normals[offset + vertex * 3 + 1] = n[1];

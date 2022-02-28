@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import org.joml.Vector4f;
 
-import gay.oss.cw3.renderer.ui.Font;
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.fonts.Font;
 import gay.oss.cw3.renderer.ui.framework.Box;
 import gay.oss.cw3.renderer.ui.framework.Node;
 import gay.oss.cw3.renderer.ui.framework.components.Text;
@@ -13,12 +13,21 @@ import gay.oss.cw3.renderer.ui.framework.layouts.FlowDirection;
 import gay.oss.cw3.renderer.ui.framework.layouts.FlowLayout;
 import gay.oss.cw3.scenarios.Scenario;
 
+/**
+ * UI element representing data from a single Entity type.
+ */
 public class EntityBox extends Box {
     private Scenario scenario;
     private Class<?> clazz;
 
     private Text count;
 
+    /**
+     * Construct a new EntityBox
+     * @param scenario Scenario we should gather data from
+     * @param clazz Relevant entity class
+     * @param font Font we should render text with
+     */
     public EntityBox(Scenario scenario, Class<?> clazz, Font font) {
         super(null);
 

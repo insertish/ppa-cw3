@@ -12,6 +12,9 @@ import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 
+/**
+ * UI helper class
+ */
 public abstract class UI {
     private Matrix4f viewProjection;
 
@@ -23,6 +26,10 @@ public abstract class UI {
     protected int width;
     protected int height;
 
+    /**
+     * Create a new UI render helper
+     * @throws Exception if we fail to load one or more resources
+     */
     public UI() throws Exception {
         this.colourShader = ShaderProgram.fromName("ui/colour");
         this.textureShader = ShaderProgram.fromName("ui/textured");
@@ -51,23 +58,42 @@ public abstract class UI {
             .build();
     }
 
+    /**
+     * Upload a given transformation applied to the UI's view projection
+     * @param transformation Tranformation Matrix
+     */
     public void upload(Matrix4f transformation) {
         Camera.upload(viewProjection, transformation);
     }
 
+    /**
+     * Calculate a transformation matrix for the given coordinates
+     * @param x X position
+     * @param y Y position
+     * @param w Width
+     * @param h Height
+     */
     public void upload(int x, int y, int w, int h) {
         this.upload(
             new Matrix4f()
-                .identity()
-                .translate(x, this.height - y - h, 0)
+                .translation(x, this.height - y - h, 0)
                 .scale(w, h, 0)
         );
     }
 
+    /**
+     * Get the square mesh used for rendering
+     * @return Square Mesh
+     */
     public Mesh getSquareMesh() {
         return this.squareMesh;
     }
 
+    /**
+     * Calculate the view projection matrix based on the width and height provided
+     * @param width Width
+     * @param height Height
+     */
     private void calculate(int width, int height) {
         this.width = width;
         this.height = height;
@@ -75,6 +101,14 @@ public abstract class UI {
             .ortho2D(0, width, 0, height);
     }
 
+    /**
+     * Draw a textured rectangle
+     * @param x X position
+     * @param y Y position
+     * @param w Width
+     * @param h Height
+     * @param texture Texture to draw
+     */
     public void drawRect(int x, int y, int w, int h, Texture texture) {
         texture.bind();
         this.textureShader.use();
@@ -82,6 +116,14 @@ public abstract class UI {
         this.squareMesh.draw();
     }
 
+    /**
+     * Draw a coloured rectangle
+     * @param x X position
+     * @param y Y position
+     * @param w Width
+     * @param h Height
+     * @param colour RGBA colour space vector
+     */
     public void drawRect(int x, int y, int w, int h, Vector4f colour) {
         this.colourShader.use();
         this.colourShader.setUniform("colour", colour);
@@ -89,8 +131,18 @@ public abstract class UI {
         this.squareMesh.draw();
     }
 
+    /**
+     * Abstract method to draw the UI given accessible width and height
+     * @param width Width
+     * @param height Height
+     */
     protected abstract void drawUI(int width, int height);
 
+    /**
+     * Draw this UI root node to the screen
+     * @param width Width
+     * @param height Height
+     */
     public void draw(int width, int height) {
         this.calculate(width, height);
         glDisable(GL_DEPTH_TEST);

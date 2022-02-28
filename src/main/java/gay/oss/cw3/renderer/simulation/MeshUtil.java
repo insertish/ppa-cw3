@@ -4,7 +4,18 @@ import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.simulation.world.Map;
 
+/**
+ * Class with a set of utilities for generating different types of meshes.
+ */
 public class MeshUtil {
+    /**
+     * Generate an indexed subdivided plane.
+     * @param width Width Units
+     * @param depth Depth Units
+     * @param center Whether the plane should be centred
+     * @param subdivide Number of subdivisions to perform
+     * @return New Mesh
+     */
     public static Mesh makeIndexedPlane(float width, float depth, boolean center, int subdivide) {
         float x0 = center ? - width / 2 : 0;
         float z0 = center ? - depth / 2 : 0;
@@ -54,6 +65,15 @@ public class MeshUtil {
             .build();
     }
 
+    /**
+     * Generate a new non-indexed subdivided plane.
+     * Prefer to use {@link MeshUtil#makeIndexedPlane}.
+     * @param width Width Units
+     * @param depth Depth Units
+     * @param center Whether the plane should be centred
+     * @param subdivide Number of subdivisions to perform
+     * @return New Mesh
+     */
     public static Mesh makePlane(float width, float depth, boolean center, int subdivide) {
         float x0 = center ? - width / 2 : 0;
         float z0 = center ? - depth / 2 : 0;
@@ -120,6 +140,14 @@ public class MeshUtil {
             .build();
     }
 
+    /**
+     * Generate a new non-indexed cube mesh.
+     * @param width Width Units
+     * @param height Height Units
+     * @param depth Depth Units
+     * @param center Whether the cube should be centred
+     * @return New Mesh
+     */
     public static Mesh makeCube(float width, float height, float depth, boolean center) {
         float x0 = center ? (- width / 2) : 0;
         float y0 = center ? (- height / 2) : 0;
@@ -235,6 +263,11 @@ public class MeshUtil {
             .build();
     }
 
+    /**
+     * Generate an indexed mesh with normals from a {@link Map}.
+     * @param map Given Map
+     * @return New Mesh
+     */
     public static Mesh generateIndexedMeshFromMap(Map map) {
         int width = map.getWidth();
         int depth = map.getDepth();
@@ -310,6 +343,12 @@ public class MeshUtil {
         return mesh;
     }
 
+    /**
+     * Generate a non-indexed mesh with per-face normals for a given {@link Map}.
+     * Prefer to use {@link MeshUtil#generateIndexedMeshFromMap}.
+     * @param map Given Map
+     * @return New Mesh
+     */
     public static Mesh generateMeshFromMap(Map map) {
         int width = map.getWidth();
         int depth = map.getDepth();

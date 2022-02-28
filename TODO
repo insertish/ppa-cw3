@@ -1,3 +1,5 @@
+get rid of SSBOs for OpenGL 4.1 or lower
+
 UI:
 - events / buttons
 - coloured text
@@ -31,3 +33,17 @@ skybox:
 kelp: https://sketchfab.com/3d-models/kelp-83202894d3f64a129d7fdeefc044aed8
 
 ADD LOD
+
+Add .dispose() to all UI Nodes
+dispose Texture after use
+
+
+
+REPORT
+------
+can talk about choice to use singletons
+used builder patterns with the UI framework
+
+
+
+CUSTOM MOUSE CURSOR POG POG POG 

@@ -40,6 +40,10 @@ public class Material {
         this.shaderProgram.use();
     }
 
+    /**
+     * Get the associated shader program.
+     * @return Shader Program
+     */
     public ShaderProgram getProgram() {
         return this.shaderProgram;
     }

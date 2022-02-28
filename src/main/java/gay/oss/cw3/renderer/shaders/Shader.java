@@ -69,15 +69,32 @@ public class Shader {
         return new Shader(id);
     }
 
+    /**
+     * Final Pattern for matching dynamic files includes in shaders.
+     */
     private static final Pattern pattern = Pattern.compile("^\\s*#include \"([\\w\\.]+)\"$", Pattern.MULTILINE);
 
+    /**
+     * Load a specific shader resource as a String.
+     * @return String value
+     * @throws IOException if the shader is not found.
+     */
     private static String loadResource(String path) throws IOException {
         return new String(ShaderProgram.class.getResourceAsStream("/shaders/" + path + ".glsl").readAllBytes());
     }
 
+    /**
+     * Load a shader source by its path.
+     * This will dynamically load any specificed imports.
+     * @param path Path within shader resource bounds
+     * @return Shader source
+     * @throws IOException if the shader is not found.
+     */
     public static String load(String path) throws IOException {
         String source = Shader.loadResource(path);
 
+        // Scan the shader source for "imports" and
+        // load them from the shaders/lib folder.
         return pattern
             .matcher(source)
             .replaceAll(mr -> {
