@@ -37,6 +37,7 @@ public class Texture {
      * @throws IOException if there was an error reading the texture data
      */
     public Texture(final InputStream dataStream) throws IOException {
+        // Use STBImage to load the raw image data in.
         final byte[] data = dataStream.readAllBytes(); // throws IOException
         final ByteBuffer nativeDataBuf = MemoryUtil.memAlloc(data.length);
         nativeDataBuf.put(data);
@@ -50,6 +51,7 @@ public class Texture {
 
         MemoryUtil.memFree(nativeDataBuf);
 
+        // Prepare the OpenGL texture.
         this.width = width[0];
         this.height = height[0];
 
@@ -57,10 +59,12 @@ public class Texture {
 
         glBindTexture(GL_TEXTURE_2D, id);
 
+        // We use nearest neighbour scaling in all cases.
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        // Upload texture data to the GPU.
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, loadedTexture);
     }
 

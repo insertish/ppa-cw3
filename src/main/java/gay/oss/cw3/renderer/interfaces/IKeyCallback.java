@@ -3,7 +3,7 @@ package gay.oss.cw3.renderer.interfaces;
 import org.lwjgl.glfw.GLFW;
 
 /**
- * Key press callback
+ * Key press callback, this is a partial of GLFWKeyCallbackI.
  */
 public interface IKeyCallback {
     /**

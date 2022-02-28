@@ -5,40 +5,78 @@ import java.util.List;
 import gay.oss.cw3.renderer.ui.UI;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
+/**
+ * The Flow Layout, similarly to Flex box in CSS3, allows you to
+ * order elements in rows or columns with an optional gap or
+ * optional alignment of children in the opposite axis.
+ * 
+ * <p>
+ * More information about Flexbox:
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
+ * </p>
+ */
 public class FlowLayout extends Node {
     private List<Node> children;
     private int gap;
     private FlowDirection direction;
     private Alignment alignment;
 
+    /**
+     * Construct a new FlowLayout
+     * @param children List of Node children
+     */
     public FlowLayout(List<Node> children) {
         this.children = children;
         this.setDirection(FlowDirection.Row);
         this.setAlignment(Alignment.Start);
     }
 
+    /**
+     * Get the direction of the Flow layout
+     * @return Direction of elements
+     */
     public FlowDirection getDirection() {
         return direction;
     }
 
+    /**
+     * Set the direction of the Flow layout
+     * @param direction Direction of elements
+     */
     public FlowLayout setDirection(FlowDirection direction) {
         this.direction = direction;
         return this;
     }
 
+    /**
+     * Get the alignment of the Flow layout
+     * @return Alignment of elements
+     */
     public Alignment getAlignment() {
         return alignment;
     }
 
+    /**
+     * Set the alignment of the Flow layout
+     * @param alignment Alignment of elements
+     */
     public FlowLayout setAlignment(Alignment alignment) {
         this.alignment = alignment;
         return this;
     }
 
+    /**
+     * Get the gap between elements
+     * @return Gap
+     */
     public int getGap() {
         return gap;
     }
 
+    /**
+     * Set the gap between elements
+     * @param gap Gap
+     */
     public FlowLayout setGap(int gap) {
         this.gap = gap;
         return this;

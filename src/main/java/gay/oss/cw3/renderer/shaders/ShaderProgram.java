@@ -219,6 +219,9 @@ public class ShaderProgram {
         return ShaderProgram.fromResources(name + ".vert", name + ".frag", null);
     }
 
+    /**
+     * Get the currently active Shader Program.
+     */
     public static ShaderProgram getCurrent() {
         return ShaderProgram.CURRENT_SHADER;
     }

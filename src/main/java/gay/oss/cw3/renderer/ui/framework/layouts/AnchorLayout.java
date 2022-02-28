@@ -6,13 +6,24 @@ import java.util.Map;
 import gay.oss.cw3.renderer.ui.UI;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
+/**
+ * Layout used for aligning children to corners of the provided area.
+ */
 public class AnchorLayout extends Node {
     private Map<Anchor, Node> children;
 
+    /**
+     * Construct a new AnchorLayout
+     */
     public AnchorLayout() {
         this.children = new EnumMap<>(Anchor.class);
     }
 
+    /**
+     * Add a new child to the AnchorLayout
+     * @param anchor Child position
+     * @param child Child Node
+     */
     public AnchorLayout add(Anchor anchor, Node child) {
         this.children.put(anchor, child);
         return this;

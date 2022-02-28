@@ -7,6 +7,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+/**
+ * Calculate the average values given float arrays of length 3.
+ */
 public class ColorAverageCollector implements Collector<float[], ColorAverageCollector.ResultHolder, float[]> {
     @Override
     public Supplier<ResultHolder> supplier() {
@@ -47,14 +50,27 @@ public class ColorAverageCollector implements Collector<float[], ColorAverageCol
         return Set.of(Characteristics.UNORDERED);
     }
 
+    /**
+     * Helper class for holding the current provided values
+     */
     static class ResultHolder {
         int count;
         float[] accumulator;
 
+        /**
+         * Construct a new ResultHolder
+         * @param count Current count
+         * @param accumulator Current accumulator value
+         */
         ResultHolder(int count, float[] accumulator) {
             this.set(count, accumulator);
         }
 
+        /**
+         * Set the current count and accumulator
+         * @param count Count
+         * @param accumulator Accumulator
+         */
         void set(int count, float[] accumulator) {
             this.count = count;
             this.accumulator = accumulator;

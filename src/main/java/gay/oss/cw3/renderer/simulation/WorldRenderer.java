@@ -18,7 +18,6 @@ import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.objects.Material;
 import gay.oss.cw3.renderer.objects.Model;
-import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.renderer.shaders.Instanced;
 import gay.oss.cw3.renderer.shaders.Lighting;
@@ -26,6 +25,9 @@ import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.World;
 
+/**
+ * Helper class for rendering the World in 3D space.
+ */
 public class WorldRenderer {
     private final World world;
     private final HashMap<Class<?>, Model> models;
@@ -36,21 +38,32 @@ public class WorldRenderer {
     private Lighting lighting;
     private Instanced instancedRenderer;
 
+    /**
+     * Construct a new WorldRenderer.
+     * @param world Target World
+     */
     public WorldRenderer(World world) {
         this.world = world;
         this.models = new HashMap<>();
         this.lighting = new Lighting();
     }
 
+    /**
+     * Initialise the WorldRenderer and all relevant resources.
+     * @throws Exception if we fail to load one or more resources
+     */
     public void init() throws Exception {
         var map = this.world.getMap();
+
+        // Destroy existing terrain mesh if it exists.
         if (this.terrainModel != null) {
             this.terrainModel.destroyMesh();
         }
 
+        // Generate a new terrain model.
         this.terrainModel = new Model(
             MeshUtil.generateIndexedMeshFromMap(map),
-            new Material(Resources.getShader("terrain"), Texture.fromResource("grass/diffuse.jpg"))
+            new Material(Resources.getShader("terrain"), Resources.getTexture("grass/diffuse.jpg"))
         );
 
         if (this.waterModel != null) {
@@ -74,7 +87,7 @@ public class WorldRenderer {
 
         this.waterModel = new Model(
             waterMesh,
-            new Material(Resources.getShader("water"), Texture.fromResource("water.jpg"))
+            new Material(Resources.getShader("water"), Resources.getTexture("water.jpg"))
         );
 
         this.instancedRenderer = new Instanced();

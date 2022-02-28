@@ -1,5 +1,8 @@
 package gay.oss.cw3.renderer.ui.framework.layouts;
 
+/**
+ * Anchored position within a container.
+ */
 public enum Anchor {
     TopLeft(0, 0),
     TopMiddle(1, 0),
@@ -14,15 +17,28 @@ public enum Anchor {
     private int x;
     private int y;
 
+    /**
+     * Construct a new Anchor
+     * @param x Relative X position
+     * @param y Relative Y position
+     */
     private Anchor(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Get relative X position
+     * @return relative X position
+     */
     public int getX() {
         return this.x;
     }
 
+    /**
+     * Get relative Y position
+     * @return relative Y position
+     */
     public int getY() {
         return this.y;
     }

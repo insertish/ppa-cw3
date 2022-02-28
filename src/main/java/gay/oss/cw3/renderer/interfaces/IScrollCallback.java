@@ -1,7 +1,7 @@
 package gay.oss.cw3.renderer.interfaces;
 
 /**
- * Scroll callback
+ * Scroll callback, this is a partial of GLFWScrollCallbackI.
  */
 public interface IScrollCallback {
     /**

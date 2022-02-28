@@ -3,7 +3,7 @@ package gay.oss.cw3.renderer.interfaces;
 import org.lwjgl.glfw.GLFW;
 
 /**
- * Mouse button callback
+ * Mouse button callback, this is a partial of GLFWMouseButtonCallbackI.
  */
 public interface IMouseButtonCallback {
     /**

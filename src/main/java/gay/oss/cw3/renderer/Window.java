@@ -130,6 +130,7 @@ public class Window {
     public void configureGL() {
         this.useContext();
 
+        // Enable GL, Vsync and setup viewport.
         GL.createCapabilities();
         glfwSwapInterval(1);
         glViewport(0, 0, this.getWidth(), this.getHeight());
@@ -148,41 +149,68 @@ public class Window {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
+    /**
+     * Set the callback for key press events
+     * @param cbfun Key press callback
+     */
     public void setKeyCallback(IKeyCallback cbfun) {
         glfwSetKeyCallback(this.pointer, (win, key, scancode, action, modifiers) -> {
             cbfun.invoke(key, action, modifiers);
         });
     }
 
+    /**
+     * Set the callback for mouse scroll events
+     * @param cbfun Scroll callback
+     */
     public void setScrollCallback(IScrollCallback cbfun) {
         glfwSetScrollCallback(this.pointer, (win, x, y) -> {
             cbfun.invoke(x, y);
         });
     }
 
+    /**
+     * Set the callback for mouse button events
+     * @param cbfun Mouse button callback
+     */
     public void setMouseButtonCallback(IMouseButtonCallback cbfun) {
         glfwSetMouseButtonCallback(this.pointer, (win, button, action, modifiers) -> {
             cbfun.invoke(button, action, modifiers);
         });
     }
 
+    /**
+     * Set the callback for cursor position events
+     * @param cbfun Cursor position callback
+     */
     public void setCursorPosCallback(ICursorPosCallback cbfun) {
         glfwSetCursorPosCallback(this.pointer, (win, xPos, yPos) -> {
             cbfun.invoke(xPos, yPos);
         });
     }
 
+    /**
+     * Grab the mouse cursor from the user
+     */
     public void grabMouse() {
         glfwSetInputMode(this.pointer, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+        // If possible, prefer to use raw motion
         if (glfwRawMouseMotionSupported())
             glfwSetInputMode(this.pointer, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     }
 
+    /**
+     * Free the mouse cursor and give it back to the user
+     */
     public void freeMouse() {
         glfwSetInputMode(this.pointer, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
+    /**
+     * Set the current Window title
+     * @param title Title
+     */
     public void setTitle(String title) {
         glfwSetWindowTitle(this.pointer, title);
     }
@@ -192,11 +220,21 @@ public class Window {
      */
     public static void setWindowHints() {
         glfwDefaultWindowHints();
+
+        // Configure it to be hidden by default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+        // Make the window resizable
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
+        // Tell OpenGL to give us errors
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+
+        // Configure OpenGL to use version 4.1
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+        // Use OpenGL core
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     }
 
@@ -217,6 +255,7 @@ public class Window {
 
         final var window = new Window(pointer, width, height, title);
 
+        // Whenever the framebuffer size updates, we need to update the viewport.
         glfwSetFramebufferSizeCallback(pointer, (win, w, h) -> {
             glViewport(0, 0, w, h);
             window.width = w;
