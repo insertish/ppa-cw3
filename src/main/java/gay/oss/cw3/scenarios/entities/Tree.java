@@ -51,7 +51,7 @@ public class Tree extends Entity {
 
                 if (!locations.isEmpty()) {
                     var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
-                    new Tree(this.getWorld(), coord);
+                    this.getWorld().spawn(new Tree(this.getWorld(), coord));
                     this.hasFruit = false;
                 }
             }

@@ -27,7 +27,7 @@ public abstract class Entity {
     protected final EntityAttributeMap attributes = new EntityAttributeMap();
 
     /**
-     * Creates <em>and automatically spawns</em> an entity.
+     * Creates an entity. The entity must be spawned in a world with {@link World#spawn(Entity)}.
      *
      * @param world             the world the entity will reside in
      * @param layer             the entity's layer
@@ -37,11 +37,11 @@ public abstract class Entity {
         this.world = world;
         this.layer = layer;
         this.location = location;
-        this.world.spawn(this);
     }
 
     /**
-     * Creates <em>and automatically spawns</em> an entity at the origin of the world.
+     * Creates an entity at the origin of the world. The entity must be spawned in a world with
+     * {@link World#spawn(Entity)}.
      *
      * @param world             the world the entity will reside in
      * @param layer             the entity's layer

@@ -108,6 +108,8 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         var baby = this.entity.createChild(this.target, babyPos);
         if (baby == null) {
             return;
+        } else {
+            this.entity.getWorld().spawn(baby);
         }
 
         this.entity.startBreedingAttempt();

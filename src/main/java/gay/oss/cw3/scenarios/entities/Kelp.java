@@ -48,7 +48,7 @@ public class Kelp extends Entity {
 
                 if (!locations.isEmpty()) {
                     var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
-                    new Grass(this.getWorld(), coord);
+                    this.getWorld().spawn(new Grass(this.getWorld(), coord));
                     this.removeFullness(0.25);
                 }
             }

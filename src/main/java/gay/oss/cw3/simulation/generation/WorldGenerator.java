@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
+import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import gay.oss.cw3.simulation.Coordinate;
@@ -25,7 +26,7 @@ public class WorldGenerator {
      * Generator spawn rate entry
      */
     private static class Spawn {
-        private final Class<?> entityClass;
+        private final Class<? extends Entity> entityClass;
         private final float chance;
         private final boolean canSpawnOnWater;
         private final boolean canSpawnOnLand;
@@ -39,7 +40,7 @@ public class WorldGenerator {
          * @param canSpawnOnLand Whether the entity can spawn on land
          * @param biome Array of biomes the entity is permitted to spawn in
          */
-        public Spawn(Class<?> clazz, float chance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
+        public Spawn(Class<? extends Entity> clazz, float chance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
             this.entityClass = clazz;
             this.chance = chance;
             this.canSpawnOnWater = canSpawnOnWater;
@@ -92,7 +93,7 @@ public class WorldGenerator {
      * @param canSpawnOnLand Whether the entity can spawn on land
      * @param biome Array of biomes the entity is permitted to spawn in
      */
-    public void registerEntity(EntityLayer layer, Class<?> entityClass, float spawnChance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
+    public void registerEntity(EntityLayer layer, Class<? extends Entity> entityClass, float spawnChance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
         this.spawnList.get(layer).add(new Spawn(entityClass, spawnChance, canSpawnOnWater, canSpawnOnLand, biome));
     }
 
@@ -131,8 +132,8 @@ public class WorldGenerator {
                         }
 
                         if (random.nextFloat() < spawn.chance) {
-                            Constructor<?> constructor = spawn.entityClass.getConstructor(World.class, Coordinate.class);
-                            constructor.newInstance(world, new Coordinate(x, z));
+                            Constructor<? extends Entity> constructor = spawn.entityClass.getConstructor(World.class, Coordinate.class);
+                            world.spawn(constructor.newInstance(world, new Coordinate(x, z)));
                             break;
                         }
                     }
