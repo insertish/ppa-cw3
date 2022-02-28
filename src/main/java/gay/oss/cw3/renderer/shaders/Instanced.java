@@ -23,7 +23,8 @@ public class Instanced {
      * Construct a new instanced mesh renderer.
      */
     public Instanced() {
-        this.ssbo = glGenBuffers();
+        if (ShaderVariables.isSsboSupported())
+            this.ssbo = glGenBuffers();
     }
 
     /**
@@ -45,7 +46,7 @@ public class Instanced {
      * Upload bulk transformation data for the meshes.
      * @param data List of 4x4 Matrices
      */
-    private void upload(List<Matrix4f> data) {
+    private void uploadSSBO(List<Matrix4f> data) {
         float buffer[] = new float[data.size() * 16];
         for (int i=0;i<data.size();i++) {
             data.get(i).get(buffer, i * 16);
@@ -60,9 +61,17 @@ public class Instanced {
      * @param transformations List of 4x4 Transformation Matrices
      */
     public void draw(Mesh mesh, List<Matrix4f> transformations) {
-        this.bind();
-        this.upload(transformations);
-        mesh.drawInstanced(transformations.size());
-        Instanced.unbind();
+        if (ShaderVariables.isSsboSupported()) {
+            this.bind();
+            this.uploadSSBO(transformations);
+            mesh.drawInstanced(transformations.size());
+            Instanced.unbind();
+        } else {
+            var program = ShaderProgram.getCurrent();
+            for (Matrix4f transformation : transformations) {
+                program.setUniform("model", transformation);
+                mesh.draw();
+            }
+        }
     }
 }

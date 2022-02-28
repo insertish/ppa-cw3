@@ -6,16 +6,13 @@ layout (location = 1) in vec2 vertexUV;
 
 uniform mat4 viewProjection;
 
-layout(std430, binding = 0) buffer modelMatrices
-{
-    mat4 model[];
-};
+#[model_uniform]
 
 out vec2 fragUV;
 
 void main() {
-    gl_Position = viewProjection * model[gl_InstanceID] * vec4(vertexPos, 1.0);
+    gl_Position = viewProjection * #[model] * vec4(vertexPos, 1.0);
     fragUV = vertexUV;
 
-    #include "lighting.body.instanced.vert"
+    #[instanced_lighting]
 }
