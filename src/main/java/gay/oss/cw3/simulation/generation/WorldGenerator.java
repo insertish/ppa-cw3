@@ -110,7 +110,7 @@ public class WorldGenerator {
         for (EntityLayer layer : EntityLayer.values()) {
             for (int x=0;x<map.getWidth();x++) {
                 for (int z=0;z<map.getDepth();z++) {
-                    final boolean isInWater = map.getHeight(x, z) <= map.getWaterLevel();
+                    final boolean isInWater = !this.world.isAboveWater(new Coordinate(x, z));
 
                     ArrayList<Spawn> entries = this.spawnList.get(layer);
                     for (Spawn spawn : entries) {
