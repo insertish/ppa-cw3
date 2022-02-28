@@ -56,10 +56,48 @@ public class Main {
     }
 
     /**
+     * Pause the tick thread
+     */
+    public void pause() {
+        if (this.tickThread != null) {
+            this.tickThread.interrupt();
+            this.tickThread = null;
+            this.ui.pause();
+        }
+    }
+
+    /**
+     * Resume the tick thread
+     */
+    public void resume() {
+        if (this.tickThread == null) {
+            this.tickThread = new Thread() {
+                public void run() {
+                    try {
+                        var world = scenario.getWorld();
+                        while (!Thread.currentThread().isInterrupted()) {
+                            synchronized (world) {
+                                world.tick();
+                            }
+    
+                            Thread.sleep(16);
+                        }
+                    } catch (InterruptedException e) {
+                        // Close out of thread.
+                    }
+                }
+            };
+            
+            this.tickThread.start();
+            this.ui.resume();
+        }
+    }
+
+    /**
      * Clean up everything before shutting down
      */
     public void destroy() {
-        this.tickThread.interrupt();
+        this.pause();
     }
 
     /**
@@ -68,7 +106,7 @@ public class Main {
      */
     private void generateWorld() throws Exception {
         // Kill existing thread if running
-        if (this.tickThread != null) this.tickThread.interrupt();
+        this.pause();
 
         // Generate world
         this.scenario.init();
@@ -88,24 +126,7 @@ public class Main {
         );
 
         // Off-load World tick to another thread
-        tickThread = new Thread() {
-            public void run() {
-                try {
-                    var world = scenario.getWorld();
-                    while (!Thread.currentThread().isInterrupted()) {
-                        synchronized (world) {
-                            world.tick();
-                        }
-
-                        Thread.sleep(16);
-                    }
-                } catch (InterruptedException e) {
-                    // Close out of thread.
-                }
-            }
-        };
-        
-        tickThread.start();
+        this.resume();
     }
 
     /**
@@ -121,6 +142,12 @@ public class Main {
             try {
                 this.generateWorld();
             } catch (Exception e) {}
+        } else if (key == GLFW.GLFW_KEY_SPACE) {
+            if (this.tickThread == null) {
+                this.resume();
+            } else {
+                this.pause();
+            }
         }
     }
 
