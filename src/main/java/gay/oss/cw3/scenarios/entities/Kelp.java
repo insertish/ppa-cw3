@@ -7,7 +7,16 @@ import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * Kelp is essentially the aquatic equivalent of {@link Grass}.
+ */
 public class Kelp extends Entity {
+    /**
+     * Creates a new Kelp entity.
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     */
     public Kelp(World world, Coordinate location) {
         super(world, EntityLayer.FOLIAGE, location, 0, true);
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);

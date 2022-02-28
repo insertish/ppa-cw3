@@ -12,7 +12,16 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.WanderAroundBehaviour;
 import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * The herbivore fish entity eats kelp to stay alive.
+ */
 public class HerbivoreFish extends AbstractBreedableEntity {
+    /**
+     * Creates a new herbivore fish entity.
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     */
     public HerbivoreFish(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new SleepBehaviour(this, false));

@@ -14,7 +14,18 @@ import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * An animal entity representing a fox.
+ *
+ * <p>Foxes are carnivores who hunt {@link Rabbit rabbits}.</p>
+ */
 public class Hunter extends AbstractBreedableEntity {
+    /**
+     * Creates a new fox entity.
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     */
     public Hunter(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new SleepBehaviour(this, true));

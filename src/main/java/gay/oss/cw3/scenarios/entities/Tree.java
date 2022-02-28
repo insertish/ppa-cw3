@@ -8,10 +8,23 @@ import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * Tree entities are quite unique - they spread very slowly, and have no predators. They produce fruit, which other
+ * entities may eat. This prevents the trees from spreading but does not harm them.
+ */
 public class Tree extends Entity {
+    /**
+     * The amount of hunger stored in a fruit.
+     */
     public static final double FRUIT_FULLNESS = 2.5;
     private boolean hasFruit = false;
 
+    /**
+     * Creates a new Tree entity.
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     */
     public Tree(World world, Coordinate location) {
         super(world, EntityLayer.FOLIAGE, location, 0, true);
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 10);
@@ -46,10 +59,16 @@ public class Tree extends Entity {
         }
     }
 
+    /**
+     * @return whether this entity currently has fruit
+     */
     public boolean hasFruit() {
         return this.hasFruit;
     }
 
+    /**
+     * Remove a fruit from this entity
+     */
     public void removeFruit() {
         this.hasFruit = false;
     }

@@ -9,7 +9,18 @@ import gay.oss.cw3.simulation.entity.brain.behaviours.*;
 import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * An animal entity representing a rabbit.
+ *
+ * <p>Rabbits are herbivores who eat grass and are hunted by {@link Hunter foxes}.</p>
+ */
 public class Rabbit extends AbstractBreedableEntity {
+    /**
+     * Create a new rabbit entity.
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     */
     public Rabbit(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));

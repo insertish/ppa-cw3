@@ -8,7 +8,16 @@ import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * A foliage entity representing grass.
+ */
 public class Grass extends Entity {
+    /**
+     * Create a new Grass entity.
+     *
+     * @param world             the world the entity will reside in
+     * @param location          the entity's initial location
+     */
     public Grass(World world, Coordinate location) {
         super(world, EntityLayer.FOLIAGE, location, 0, true);
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
