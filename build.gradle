@@ -19,6 +19,9 @@ switch (OperatingSystem.current()) {
         break
 }
 
+// project.ext.lwjglNatives = "natives-windows"
+// project.ext.lwjglNatives = "natives-linux"
+
 group = project.group_name
 archivesBaseName = project.name
 version = project.version

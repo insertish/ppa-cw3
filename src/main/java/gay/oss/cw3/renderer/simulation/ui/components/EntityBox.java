@@ -36,6 +36,7 @@ public class EntityBox extends Box {
             Arrays.asList(new Node[] {
                 count,
                 new Text(font, scenario.getEntityName(clazz), 20)
+                    .setColour(new Vector4f(scenario.getEntityColour(clazz), 1))
             })
         )
         .setDirection(FlowDirection.Row)

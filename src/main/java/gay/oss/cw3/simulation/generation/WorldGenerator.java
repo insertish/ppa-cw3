@@ -14,10 +14,16 @@ import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * Helper class for generating new worlds
+ */
 public class WorldGenerator {
     private final World world;
     private final Random random;
 
+    /**
+     * Generator spawn rate entry
+     */
     private static class Spawn {
         private final Class<?> entityClass;
         private final float chance;
@@ -25,6 +31,14 @@ public class WorldGenerator {
         private final boolean canSpawnOnLand;
         private final @Nullable BiomeType[] biome;
 
+        /**
+         * Information about spawn rates for a certain entity type
+         * @param clazz Class used to instantiate a new Entity
+         * @param chance Spawn chance
+         * @param canSpawnOnWater Whether the entity can spawn on water
+         * @param canSpawnOnLand Whether the entity can spawn on land
+         * @param biome Array of biomes the entity is permitted to spawn in
+         */
         public Spawn(Class<?> clazz, float chance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
             this.entityClass = clazz;
             this.chance = chance;
@@ -34,30 +48,61 @@ public class WorldGenerator {
         }
     }
 
+    /**
+     * Keep track of all spawn rates registered
+     */
     private final Map<EntityLayer, ArrayList<Spawn>> spawnList = new EnumMap<>(EntityLayer.class);
 
+    /**
+     * Construct a new WorldGenerator for a World
+     * @param world World
+     */
     public WorldGenerator(World world) {
         this.world = world;
         this.random = new Random();
         this.populateList();
     }
 
+    /**
+     * Construct a new WorldGenerator for a World and provide a generation seed
+     * @param world World
+     * @param seed Seed used for random data
+     */
     public WorldGenerator(World world, long seed) {
         this.world = world;
         this.random = new Random(seed);
         this.populateList();
     }
 
+    /**
+     * Populate the spawn list with known entity layers
+     */
     private void populateList() {
         for (EntityLayer layer : EntityLayer.values()) {
             this.spawnList.put(layer, new ArrayList<>());
         }
     }
 
+    /**
+     * Register a new Entity to spawn in the World
+     * @param layer Layer at which this Entity will spawn
+     * @param entityClass The relevant Class used to create new instances of this Entity
+     * @param spawnChance Spawn chance
+     * @param canSpawnOnWater Whether the entity can spawn on water
+     * @param canSpawnOnLand Whether the entity can spawn on land
+     * @param biome Array of biomes the entity is permitted to spawn in
+     */
     public void registerEntity(EntityLayer layer, Class<?> entityClass, float spawnChance, boolean canSpawnOnWater, boolean canSpawnOnLand, @Nullable BiomeType[] biome) {
         this.spawnList.get(layer).add(new Spawn(entityClass, spawnChance, canSpawnOnWater, canSpawnOnLand, biome));
     }
 
+    /**
+     * Generate a new World
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public void generate() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         var map = this.world.getMap();
 
