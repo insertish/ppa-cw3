@@ -5,6 +5,9 @@ import java.util.Random;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * A behaviour that makes entities eat foliage around them. Essentially a herbivore equivalent of {@link HuntBehaviour}.
+ */
 public class EatFoliageBehaviour extends MovementBehaviour {
     private final Random random = new Random();
     private final double targetFullnessFraction;
@@ -13,6 +16,14 @@ public class EatFoliageBehaviour extends MovementBehaviour {
     private Entity target;
     private int ticksCouldntMove = 0;
 
+    /**
+     * Create a new EatFoliageBehaviour.
+     *
+     * @param entity                    the entity
+     * @param speed                     the movement speed modifier
+     * @param targetFullnessFraction    the fullness that this entity will try to reach by eating foliage
+     * @param targetClasses             the classes that are valid food
+     */
     @SafeVarargs
     public EatFoliageBehaviour(Entity entity, double speed, double targetFullnessFraction, Class<? extends Entity>... targetClasses) {
         super(speed, entity);

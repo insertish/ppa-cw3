@@ -6,9 +6,18 @@ import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * A behaviour that makes entities perch in trees during the evening and night.
+ */
 public class PerchInTreeBehaviour extends MovementBehaviour {
     private Tree tree = null;
 
+    /**
+     * Create a new PerchInTreeBehaviour.
+     *
+     * @param entity    the entity
+     * @param speed     the movement speed modifier
+     */
     public PerchInTreeBehaviour(double speed, Entity entity) {
         super(speed, entity);
     }

@@ -7,12 +7,24 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 import java.util.Comparator;
 import java.util.Random;
 
+/**
+ * A behaviour to make an entity eat fruit from trees.
+ *
+ * @see Tree
+ */
 public class EatFruitFromTreesBehaviour extends MovementBehaviour {
     private final double targetFullnessFraction;
 
     private Tree target;
     private int ticksCouldntMove = 0;
 
+    /**
+     * Create a new EatFruitFromTreesBehaviour.
+     *
+     * @param entity                    the entity
+     * @param speed                     the movement speed modifier
+     * @param targetFullnessFraction    the fullness that this entity will try to reach by eating fruit
+     */
     public EatFruitFromTreesBehaviour(Entity entity, double speed, double targetFullnessFraction) {
         super(speed, entity);
         this.targetFullnessFraction = targetFullnessFraction;
