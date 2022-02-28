@@ -1,3 +1,10 @@
+UI:
+- events / buttons
+- coloured text
+
+
+
+
 - shadows
 
 - calculate delta time in loop
@@ -16,3 +23,11 @@ get the X / Y random offsets, then take the average and plop it down
 INSTANCED RENDERING - IMPORTANT
 
 move font info into files
+
+skybox:
+- https://www.youtube.com/watch?v=RlveD6jQ7O8
+- https://www.reddit.com/r/opengl/comments/1qbd2u/simple_skybox_with_procedural_gradient/
+
+kelp: https://sketchfab.com/3d-models/kelp-83202894d3f64a129d7fdeefc044aed8
+
+ADD LOD

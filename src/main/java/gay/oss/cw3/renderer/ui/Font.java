@@ -3,6 +3,9 @@ package gay.oss.cw3.renderer.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector4f;
+
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 
@@ -27,9 +30,12 @@ public class Font {
         }
     }
 
-    public void drawText(UI ui, int x, int y, int size, String text) {
+    public void drawText(UI ui, int x, int y, int size, String text, @Nullable Vector4f colour) {
         this.shader.use();
         this.shader.setUniform("atlas", this.atlas);
+
+        Vector4f c = colour == null ? new Vector4f(1, 1, 1, 1) : colour;
+        this.shader.setUniform("colour", c);
         
         this.fontTexture.bind();
         

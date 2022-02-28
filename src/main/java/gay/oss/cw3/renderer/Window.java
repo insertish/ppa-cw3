@@ -30,6 +30,7 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -140,8 +141,7 @@ public class Window {
         glEnable(GL_DEPTH_TEST);
 
         // Enable backface culling
-        // ! FIXME: the terrain model has the wrong windings
-        // glEnable(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
 
         // Enable transparency
         glEnable(GL_BLEND);

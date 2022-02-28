@@ -8,8 +8,10 @@ import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glBufferSubData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -17,11 +19,16 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
+import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
@@ -42,6 +49,7 @@ public class Mesh {
     // ! FIXME: FIXME
     public boolean indexed;
     public int triangles;
+    public int indicesCount;
     
     private final List<Integer> vbo;
 
@@ -85,15 +93,27 @@ public class Mesh {
 
     /**
      * Draw this mesh using provided attributes.
-     * This does not support indexed rendering.
      */
     public void draw() {
         this.bind();
 
         if (this.indexed) {
-            glDrawElements(GL_TRIANGLES, this.triangles, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, this.indicesCount, GL_UNSIGNED_INT, 0);
         } else {
             glDrawArrays(GL_TRIANGLES, 0, this.vertices);
+        }
+    }
+
+    /**
+     * Draw multiple instances of this mesh.
+     */
+    public void drawInstanced(int count) {
+        this.bind();
+
+        if (this.indexed) {
+            glDrawElementsInstanced(GL_TRIANGLES, this.indicesCount, GL_UNSIGNED_INT, 0, count);
+        } else {
+            throw new IllegalStateException("Not indexed!");
         }
     }
 
@@ -112,7 +132,6 @@ public class Mesh {
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(attribute);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glVertexAttribPointer(attribute, components, GL_FLOAT, false, 0, 0);
 
         this.vbo.add(vbo);
@@ -148,7 +167,8 @@ public class Mesh {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, builder.indices, GL_STATIC_DRAW);
             mesh.indexed = true;
-            mesh.triangles = builder.indices.length;
+            mesh.triangles = builder.indices.length / 3;
+            mesh.indicesCount = builder.indices.length;
             // add vbo
         }
 
