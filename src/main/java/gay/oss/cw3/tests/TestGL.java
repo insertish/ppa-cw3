@@ -37,7 +37,7 @@ public class TestGL {
         });
 
         // Init model for preview
-        model = new ModelEntity("entities/bird.png", "entities/bird", 1, false);
+        model = new ModelEntity("entities/kelp.jpg", "entities/kelp", 1, false);
     }
 
     private void onKeyPress(int key, int modifiers) {

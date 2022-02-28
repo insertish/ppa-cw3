@@ -93,10 +93,24 @@ public class WorldRenderer {
         this.instancedRenderer = new Instanced();
     }
 
+    /**
+     * Set the model used for an entity type
+     * @param clazz Class used for Entity
+     * @param model Model to use
+     */
     public void setModel(Class<?> clazz, Model model) {
         this.models.put(clazz, model);
     }
 
+    /**
+     * Automatically determine and load the correct model.
+     * @param clazz
+     * @param name
+     * @param modelName
+     * @param scale
+     * @param transparent
+     * @throws Exception
+     */
     public void autoLoadModel(Class<?> clazz, String name, String modelName, float scale, boolean transparent) throws Exception {
         this.setModel(clazz, new ModelEntity("entities/" + name, "entities/" + modelName, scale, transparent));
     }
