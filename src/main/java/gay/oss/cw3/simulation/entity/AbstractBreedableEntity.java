@@ -5,16 +5,38 @@ import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A partial implementation of {@link Breedable} that handles much of the code that applies to all implementations.
+ */
 public abstract class AbstractBreedableEntity extends Entity implements Breedable {
     private int lastBreedAttempt;
 
     protected Sex sex;
 
+    /**
+     * Create a new AbstractBreedableEntity.
+     *
+     * @param world             the world the entity will reside in
+     * @param layer             the entity's layer
+     * @param location          the entity's initial location
+     * @param initialAgeTicks   the entity's initial age
+     * @param alive             whether the entity is alive
+     * @param sex               the sex of this entity
+     */
     public AbstractBreedableEntity(World world, Coordinate location, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
         super(world, layer, location, initialAgeTicks, alive);
         this.sex = sex;
     }
 
+    /**
+     * Create a new AbstractBreedableEntity.
+     *
+     * @param world             the world the entity will reside in
+     * @param initialAgeTicks   the entity's initial age
+     * @param alive             whether the entity is alive
+     * @param layer             the entity's layer
+     * @param sex               the sex of this entity
+     */
     public AbstractBreedableEntity(World world, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
         super(world, initialAgeTicks, alive, layer);
         this.sex = sex;
