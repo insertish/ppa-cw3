@@ -22,14 +22,13 @@ public class ModelEntity {
      * @param modelName Name of the Model, used to look up the obj file
      * @param scale Scale used for rendering this Model
      * @param renderMode Whether this Model has transparency and needs to be done in a separate render pass (and if it needs to have culling disabled)
-     * @param lod Whether to load level of detail variants for this model
      * @throws Exception if we fail to initialise one or more resources
      */
-    public ModelEntity(String textureName, String modelName, float scale, RenderMode renderMode, boolean lod) throws Exception {
+    public ModelEntity(String textureName, String modelName, float scale, RenderMode renderMode) throws Exception {
         this.mesh = Mesh.loadObjFromResource("entities/" + modelName).build();        
         this.material = new Material(Resources.getShader("entity"), Resources.getTexture(textureName));
 
-        if (lod) {
+        if (renderMode == RenderMode.UseLOD) {
             this.meshLOD2 = Mesh.loadObjFromResource("entities/lod2/" + modelName).build();
             this.meshLOD3 = Mesh.loadObjFromResource("entities/lod3/" + modelName).build();
         }

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
-import gay.oss.cw3.renderer.ui.fonts.Font;
 
 /**
  * Helper class for loading different types of resources.

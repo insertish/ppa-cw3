@@ -115,11 +115,10 @@ public class WorldRenderer {
      * @param modelName Name of the Model, used to look up the obj file
      * @param scale Scale used for rendering this Model
      * @param renderMode Whether this Model has transparency and needs to be done in a separate render pass (and if it needs to have culling disabled)
-     * @param lod Whether to load level of detail variants for this model
      * @throws Exception if we fail to initialise one or more resources
      */
-    public void autoLoadModel(Class<?> clazz, String textureName, String modelName, float scale, RenderMode renderMode, boolean lod) throws Exception {
-        this.setModel(clazz, new ModelEntity("entities/" + textureName, modelName, scale, renderMode, lod));
+    public void autoLoadModel(Class<?> clazz, String textureName, String modelName, float scale, RenderMode renderMode) throws Exception {
+        this.setModel(clazz, new ModelEntity("entities/" + textureName, modelName, scale, renderMode));
     }
 
     /**
@@ -157,7 +156,7 @@ public class WorldRenderer {
                 var modelB = this.models.get(b);
 
                 if ((modelA instanceof ModelEntity) && (modelB instanceof ModelEntity)) {
-                    if (((ModelEntity) modelA).getRenderMode() != RenderMode.Normal) {
+                    if (((ModelEntity) modelA).getRenderMode() == RenderMode.Transparent) {
                         return 1;
                     } else {
                         return -1;
@@ -183,6 +182,7 @@ public class WorldRenderer {
                 lodMatrices.put(lod, new ArrayList<>());
             }
 
+            // Cycle through all the known locations of entities.
             for (Vector3f location : locations) {
                 float[] cellOffsets = offsets.get((int) location.x, (int) location.z);
                 Vector3f worldSpaceLocation = location.add(cellOffsets[0], cellOffsets[1], cellOffsets[2]);
@@ -200,9 +200,7 @@ public class WorldRenderer {
                 }
             }
 
-            boolean masked = false;
-            boolean cullingOff = false;
-
+            // Scale all model matrices as appropriate.
             var scale = model.getScale();
             for (LevelOfDetail lod : LevelOfDetail.ORDERING) {
                 for (Matrix4f matrix : lodMatrices.get(lod)) {
@@ -210,29 +208,29 @@ public class WorldRenderer {
                 }
             }
 
-            if (model.getRenderMode() != RenderMode.Normal) {
+            // If we need to render transparently, disable culling and
+            // prevent any writes to the depth buffer to prevent weird artifacts.
+            boolean masked = false;
+            if (model.getRenderMode() == RenderMode.Transparent) {
                 masked = true;
                 glDepthMask(false);
-            }
-
-            if (model.getRenderMode() == RenderMode.TransparentNoCull) {
-                cullingOff = true;
                 glDisable(GL_CULL_FACE);
             }
 
+            // Cycle through each LOD and render as appropriate.
             for (LevelOfDetail lod : LevelOfDetail.ORDERING) {
                 var transformations = lodMatrices.get(lod);
 
-                model.use();
-                camera.upload();
-                this.instancedRenderer.draw(model.getMesh(lod), transformations);
+                if (!transformations.isEmpty()) {
+                    model.use();
+                    camera.upload();
+                    this.instancedRenderer.draw(model.getMesh(lod), transformations);
+                }
             }
 
+            // Re-enable culling and writing to depth buffer after we are done.
             if (masked) {
                 glDepthMask(true);
-            }
-
-            if (cullingOff) {
                 glEnable(GL_CULL_FACE);
             }
         }
@@ -240,6 +238,10 @@ public class WorldRenderer {
 
     private SmoothedRandom random = new SmoothedRandom(1, 0.002f);
 
+    /**
+     * Draw the World to the screen
+     * @param camera Camera
+     */
     public void draw(Camera camera) {
         if (this.terrainModel == null || this.waterModel == null) {
             return;
