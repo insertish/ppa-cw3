@@ -6,6 +6,7 @@ import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.simulation.ui.components.DayCycleBox;
 import gay.oss.cw3.renderer.simulation.ui.components.EntityList;
+import gay.oss.cw3.renderer.simulation.ui.components.HelpMenuBox;
 import gay.oss.cw3.renderer.simulation.ui.components.TickText;
 import gay.oss.cw3.renderer.ui.RootUI;
 import gay.oss.cw3.renderer.ui.fonts.Font;
@@ -69,14 +70,16 @@ public class SimulationUI extends RootUI {
                     Anchor.BottomLeft,
                     new FlowLayout(Arrays.asList(
                         new Node[] {
-                            new Text(font, "N: generate new map", 16),
-                            new Text(font, "Scroll: zoom camera", 16),
-                            new Text(font, "LMB Drag: rotate camera", 16),
-                            //new Text(font, "press h for help menu", 16)
+                            new Text(font, "press H for help menu", 16)
                         }
                     ))
                     .setDirection(FlowDirection.Column)
                 )
+                // Display a help menu in the centre.
+                /*.add(
+                    Anchor.CenterMiddle,
+                    new HelpMenuBox(font)
+                )*/
         )
         .setPadding(24);
     }

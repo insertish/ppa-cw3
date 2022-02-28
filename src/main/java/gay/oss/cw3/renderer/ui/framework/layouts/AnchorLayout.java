@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.events.Event;
 import gay.oss.cw3.renderer.ui.framework.Node;
 
 /**
@@ -60,5 +61,13 @@ public class AnchorLayout extends Node {
     @Override
     public int getHeight() {
         return 0;
+    }
+
+    @Override
+    public void handle(Event event) {
+        for (Anchor anchor : Anchor.values()) {
+            if (event.isCanceled()) break;
+            this.children.get(anchor).handle(event);
+        }
     }
 }

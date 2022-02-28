@@ -15,6 +15,14 @@ public abstract class Event {
     }
 
     /**
+     * Whether this Event was canceled from propagating any further.
+     * @return Whether Event was canceled
+     */
+    public boolean isCanceled() {
+        return this.canceled;
+    }
+
+    /**
      * Whether we can continue to process this event.
      * @return Whether we can continue
      */

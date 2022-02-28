@@ -3,6 +3,7 @@ package gay.oss.cw3.renderer.ui.framework;
 import org.joml.Vector4f;
 
 import gay.oss.cw3.renderer.ui.UI;
+import gay.oss.cw3.renderer.ui.events.Event;
 
 /**
  * Simple container UI element
@@ -104,22 +105,33 @@ public class Box extends Node {
 
     @Override
     public void draw(UI ui, int x, int y, int w, int h) {
-        if (colour != null) {
-            ui.drawRect(x, y, w, h, colour);
+        if (this.colour != null) {
+            ui.drawRect(x, y, w, h, this.colour);
         }
 
-        this.child.draw(ui, x + padding, y + padding, w - 2 * padding, h - 2 * padding);
+        if (this.child != null) {
+            this.child.draw(ui, x + padding, y + padding, w - 2 * padding, h - 2 * padding);
+        }
     }
 
     @Override
     public int getWidth() {
+        if (this.child == null) return this.minWidth;
+
         int width = this.child.getWidth() + this.padding * 2;
         return Math.max(this.minWidth, width);
     }
 
     @Override
     public int getHeight() {
+        if (this.child == null) return this.minHeight;
+
         int height = this.child.getHeight() + this.padding * 2;
         return Math.max(this.minHeight, height);
+    }
+
+    @Override
+    public void handle(Event event) {
+        this.child.handle(event);
     }
 }
