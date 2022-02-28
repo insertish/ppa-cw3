@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import gay.oss.cw3.renderer.Window;
 import gay.oss.cw3.renderer.interfaces.ICursorPosCallback;
@@ -31,21 +32,13 @@ public class Camera {
      * @param aspectRatio Current Window aspect ratio
      */
     public void calculate(float aspectRatio) {
-        // 1. Calculate the zoom modifier and find the distance and height from this point.
-        double zoomModifier = 5 + Math.pow(1.1, this.zoom);
-        double distance = zoomModifier * Math.cos(this.groundAngle);
-        double height = zoomModifier * Math.sin(this.groundAngle);
+        // 1. Calculate eye position vector.
+        Vector3f eyePosition = this.getEyePositionVector();
 
-        // 2. Find the camera position by taking an offset from the center and
-        //    finding the distance in each X and Z axis according to the view angle.
-        float cameraX = this.x + (float) (distance * Math.cos(this.viewAngle));
-        float cameraY = this.y + (float) height;
-        float cameraZ = this.z + (float) (distance * Math.sin(this.viewAngle));
-
-        // 3. Create view projection.
+        // 2. Create view projection.
         this.viewProjection = new Matrix4f()
             .perspective((float) fov, aspectRatio, 0.01f, 1000.0f)
-            .lookAt(cameraX, cameraY, cameraZ,
+            .lookAt(eyePosition.x, eyePosition.y, eyePosition.z,
                     this.x, this.y, this.z,
                     0.0f, 1.0f, 0.0f);
     }
@@ -259,6 +252,25 @@ public class Camera {
      */
     public void setZ(float z) {
         this.z = z;
+    }
+
+    /**
+     * Compute the Camera's eye position Vector.
+     * @return Position Vector
+     */
+    public Vector3f getEyePositionVector() {
+        // 1. Calculate the zoom modifier and find the distance and height from this point.
+        double zoomModifier = 5 + Math.pow(1.1, this.zoom);
+        double distance = zoomModifier * Math.cos(this.groundAngle);
+        double height = zoomModifier * Math.sin(this.groundAngle);
+
+        // 2. Find the camera position by taking an offset from the center and
+        //    finding the distance in each X and Z axis according to the view angle.
+        float cameraX = this.x + (float) (distance * Math.cos(this.viewAngle));
+        float cameraY = this.y + (float) height;
+        float cameraZ = this.z + (float) (distance * Math.sin(this.viewAngle));
+
+        return new Vector3f(cameraX, cameraY, cameraZ);
     }
 
     /**

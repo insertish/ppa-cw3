@@ -2,6 +2,7 @@ package gay.oss.cw3.scenarios;
 
 import org.joml.Vector3f;
 
+import gay.oss.cw3.renderer.simulation.RenderMode;
 import gay.oss.cw3.scenarios.entities.*;
 
 import gay.oss.cw3.simulation.world.attributes.BiomeType;
@@ -39,13 +40,13 @@ public class DefaultScenario extends Scenario {
             // kelp.jpg
 
             //renderer.autoLoadModel(Hunter.class, "hunter.jpg");
-            renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.03f, false);
-            renderer.autoLoadModel(Rabbit.class, "bunny.png", "bunny", 0.05f, false);
-            renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f, true);
-            renderer.autoLoadModel(Tree.class, "pine.png", "pine", 50.0f, false);
-            renderer.autoLoadModel(Kelp.class, "kelp.jpg", "kelp", 100f, true);
-            renderer.autoLoadModel(HerbivoreFish.class, "fish.png", "fish", 0.01f, false);
-            renderer.autoLoadModel(Bird.class, "bird.png", "bird", 0.5f, false);
+            renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.03f, RenderMode.Normal, true);
+            renderer.autoLoadModel(Rabbit.class, "bunny.png", "bunny", 0.05f, RenderMode.Normal, true);
+            renderer.autoLoadModel(Grass.class, "grass-transparent.png", "grass", 0.5f, RenderMode.TransparentNoCull, false);
+            renderer.autoLoadModel(Tree.class, "pine.png", "pine", 50.0f, RenderMode.Normal, true);
+            renderer.autoLoadModel(Kelp.class, "kelp.jpg", "kelp", 100f, RenderMode.Normal, true);
+            renderer.autoLoadModel(HerbivoreFish.class, "fish.png", "fish", 0.01f, RenderMode.Normal, true);
+            renderer.autoLoadModel(Bird.class, "bird.png", "bird", 0.5f, RenderMode.Normal, true);
             //renderer.autoLoadModel(Grass.class, "pine.png", "pine", 10);
         }
     }

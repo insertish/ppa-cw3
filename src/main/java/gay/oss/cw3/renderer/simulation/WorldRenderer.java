@@ -1,12 +1,16 @@
 package gay.oss.cw3.renderer.simulation;
 
 import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_FRONT;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glDepthMask;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +24,19 @@ import gay.oss.cw3.renderer.objects.Material;
 import gay.oss.cw3.renderer.objects.Model;
 import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.renderer.shaders.Instanced;
+import gay.oss.cw3.renderer.shaders.LevelOfDetail;
 import gay.oss.cw3.renderer.shaders.Lighting;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.World;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
  * Helper class for rendering the World in 3D space.
  */
 public class WorldRenderer {
     private final World world;
-    private final HashMap<Class<?>, Model> models;
+    private final HashMap<Class<?>, ModelEntity> models;
 
     private Model terrainModel;
     private Model waterModel;
@@ -98,51 +104,52 @@ public class WorldRenderer {
      * @param clazz Class used for Entity
      * @param model Model to use
      */
-    public void setModel(Class<?> clazz, Model model) {
+    public void setModel(Class<?> clazz, ModelEntity model) {
         this.models.put(clazz, model);
     }
 
     /**
      * Automatically determine and load the correct model.
-     * @param clazz
-     * @param name
-     * @param modelName
-     * @param scale
-     * @param transparent
-     * @throws Exception
+     * @param clazz Associated class
+     * @param textureName Texture used for rendering this Entity
+     * @param modelName Name of the Model, used to look up the obj file
+     * @param scale Scale used for rendering this Model
+     * @param renderMode Whether this Model has transparency and needs to be done in a separate render pass (and if it needs to have culling disabled)
+     * @param lod Whether to load level of detail variants for this model
+     * @throws Exception if we fail to initialise one or more resources
      */
-    public void autoLoadModel(Class<?> clazz, String name, String modelName, float scale, boolean transparent) throws Exception {
-        this.setModel(clazz, new ModelEntity("entities/" + name, "entities/" + modelName, scale, transparent));
+    public void autoLoadModel(Class<?> clazz, String textureName, String modelName, float scale, RenderMode renderMode, boolean lod) throws Exception {
+        this.setModel(clazz, new ModelEntity("entities/" + textureName, modelName, scale, renderMode, lod));
     }
 
+    /**
+     * Draw all entities.
+     * @param camera Camera to use for rendering
+     */
     private void drawEntities(Camera camera) {
         var map = this.world.getMap();
-        Map<Class<?>, List<Matrix4f>> layers = new HashMap<>();
+        Map<Class<?>, List<Vector3f>> layers = new HashMap<>();
+        Map<Class<?>, EntityLayer> knownLayer = new HashMap<>();
 
         for (Class<?> clazz : this.models.keySet()) {
             layers.put(clazz, new ArrayList<>());
         }
 
+        // Pull out all entities to render.
+        // We should aim to take as little time here as possible.
         synchronized (this.world) {
             for (Entity entity : this.world.getEntities()) {
-                var list = layers.get(entity.getClass());
+                var clazz = entity.getClass();
+                var list = layers.get(clazz);
                 if (list != null) {
                     var loc = entity.getLocation();
-                    var offset = map
-                        .getOffsets(entity.getLayer())
-                        .get(loc);
-                    
-                    list.add(new Matrix4f()
-                        .translation(
-                            loc.x + offset[0],
-                            entity.yOffset() + offset[1],
-                            loc.z + offset[2]
-                        )
-                        .rotate(offset[3], 0, 1, 0));
+                    list.add(new Vector3f(loc.x, entity.yOffset(), loc.z));
+                    knownLayer.put(clazz, entity.getLayer());
                 }
             }
         }
 
+        // Sort models to render non-transparent entities first.
         var keys = this.models.keySet()
             .stream()
             .sorted((a, b) -> {
@@ -150,7 +157,7 @@ public class WorldRenderer {
                 var modelB = this.models.get(b);
 
                 if ((modelA instanceof ModelEntity) && (modelB instanceof ModelEntity)) {
-                    if (((ModelEntity) modelA).isTransparent()) {
+                    if (((ModelEntity) modelA).getRenderMode() != RenderMode.Normal) {
                         return 1;
                     } else {
                         return -1;
@@ -161,30 +168,72 @@ public class WorldRenderer {
             })
             .collect(Collectors.toList());
 
+        // Pre-compute the camera's eye position.
+        Vector3f eyePosition = camera.getEyePositionVector();
+
+        // Batch render each set of models.
         for (Class<?> clazz : keys) {
-            Model model = this.models.get(clazz);
-            var transformations = layers.get(clazz);
+            ModelEntity model = this.models.get(clazz);
+            var locations = layers.get(clazz);
+            var offsets = map.getOffsets(knownLayer.get(clazz));
 
-            boolean masked = false;
-            if (model instanceof ModelEntity) {
-                var ent = (ModelEntity) model;
-                var s = ent.getScale();
-                for (Matrix4f matrix : transformations) {
-                    matrix.scale(s, s * 2, s);
-                }
+            // Prepare level of detail map.
+            Map<LevelOfDetail, List<Matrix4f>> lodMatrices = new EnumMap<>(LevelOfDetail.class);
+            for (LevelOfDetail lod : LevelOfDetail.ORDERING) {
+                lodMatrices.put(lod, new ArrayList<>());
+            }
 
-                if (ent.isTransparent()) {
-                    masked = true;
-                    glDepthMask(false);
+            for (Vector3f location : locations) {
+                float[] cellOffsets = offsets.get((int) location.x, (int) location.z);
+                Vector3f worldSpaceLocation = location.add(cellOffsets[0], cellOffsets[1], cellOffsets[2]);
+
+                // Calculate Level of Detail
+                float distance = worldSpaceLocation.distance(eyePosition);
+                LevelOfDetail lod = LevelOfDetail.fromDistance((int) distance);
+
+                if (lod != LevelOfDetail.DoNotRender) {
+                    lodMatrices.get(lod).add(
+                        new Matrix4f()
+                            .translation(worldSpaceLocation)
+                            .rotate(cellOffsets[3], 0, 1, 0)
+                    );
                 }
             }
 
-            model.use();
-            camera.upload();
-            this.instancedRenderer.draw(model.getMesh(), transformations);
+            boolean masked = false;
+            boolean cullingOff = false;
+
+            var scale = model.getScale();
+            for (LevelOfDetail lod : LevelOfDetail.ORDERING) {
+                for (Matrix4f matrix : lodMatrices.get(lod)) {
+                    matrix.scale(scale, scale * 2, scale);
+                }
+            }
+
+            if (model.getRenderMode() != RenderMode.Normal) {
+                masked = true;
+                glDepthMask(false);
+            }
+
+            if (model.getRenderMode() == RenderMode.TransparentNoCull) {
+                cullingOff = true;
+                glDisable(GL_CULL_FACE);
+            }
+
+            for (LevelOfDetail lod : LevelOfDetail.ORDERING) {
+                var transformations = lodMatrices.get(lod);
+
+                model.use();
+                camera.upload();
+                this.instancedRenderer.draw(model.getMesh(lod), transformations);
+            }
 
             if (masked) {
                 glDepthMask(true);
+            }
+
+            if (cullingOff) {
+                glEnable(GL_CULL_FACE);
             }
         }
     }
