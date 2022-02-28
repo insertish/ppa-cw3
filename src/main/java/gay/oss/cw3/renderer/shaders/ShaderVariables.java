@@ -1,5 +1,7 @@
 package gay.oss.cw3.renderer.shaders;
 
+import static org.lwjgl.glfw.GLFW.glfwExtensionSupported;
+
 /**
  * Helper class for determining OpenGL capabilities
  * and feeding that information into shaders.
@@ -13,7 +15,9 @@ public class ShaderVariables {
      */
     private static void init() {
         if (!initialised) {
-            ssboSupported = true;
+            // Refer to https://www.khronos.org/registry/OpenGL/index_gl.php
+            ssboSupported = glfwExtensionSupported("GL_ARB_shader_storage_buffer_object");
+            initialised = true;
         }
     }
 
