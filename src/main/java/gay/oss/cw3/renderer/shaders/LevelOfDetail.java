@@ -2,7 +2,7 @@ package gay.oss.cw3.renderer.shaders;
 
 public enum LevelOfDetail {
     High(20),
-    Medium(50),
+    Medium(70),
     Low(250),
     DoNotRender(0);
 
