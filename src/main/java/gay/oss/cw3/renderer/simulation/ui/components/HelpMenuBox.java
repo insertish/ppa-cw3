@@ -25,6 +25,7 @@ public class HelpMenuBox extends Box {
                     new Box(null).setMinHeight(16),
                     new Text(font, "H: Toggle Help Menu", 20),
                     new Text(font, "N: Generate New World", 20),
+                    new Text(font, "SPACE: Toggle Simulation", 20),
                     new Text(font, "LMB DRAG: Rotate Camera", 20),
                     new Text(font, "SCROLL: Zoom Camera", 20),
                     new Box(null).setMinHeight(16),

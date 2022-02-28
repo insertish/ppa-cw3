@@ -7,6 +7,7 @@ import org.joml.Vector4f;
 import gay.oss.cw3.renderer.simulation.ui.components.DayCycleBox;
 import gay.oss.cw3.renderer.simulation.ui.components.EntityList;
 import gay.oss.cw3.renderer.simulation.ui.components.HelpMenuBox;
+import gay.oss.cw3.renderer.simulation.ui.components.PlayStateBox;
 import gay.oss.cw3.renderer.simulation.ui.components.TickText;
 import gay.oss.cw3.renderer.ui.RootUI;
 import gay.oss.cw3.renderer.ui.fonts.Font;
@@ -26,6 +27,7 @@ import gay.oss.cw3.simulation.world.World;
  */
 public class SimulationUI extends RootUI {
     private Scenario scenario;
+    private boolean playing;
 
     /**
      * Construct a new SimulationUI
@@ -51,6 +53,8 @@ public class SimulationUI extends RootUI {
                     Anchor.TopLeft,
                     new FlowLayout(Arrays.asList(
                         new Node[] {
+                            /*new PlayStateBox(this)
+                                .setMinSize(64),*/
                             new DayCycleBox(this)
                                 .setMinSize(64),
                             new Box(new TickText(font, 24, this))
@@ -85,6 +89,20 @@ public class SimulationUI extends RootUI {
     }
 
     /**
+     * Tell the UI we are paused.
+     */
+    public void pause() {
+        this.playing = false;
+    }
+
+    /**
+     * Tell the UI we resumed.
+     */
+    public void resume() {
+        this.playing = true;
+    }
+
+    /**
      * Get the current World in use by the Scenario.
      * @return World
      */
@@ -98,6 +116,14 @@ public class SimulationUI extends RootUI {
      */
     public Scenario getScenario() {
         return this.scenario;
+    }
+
+    /**
+     * Check whether we are currently playing.
+     * @return Whether we are playing
+     */
+    public boolean isPlaying() {
+        return this.playing;
     }
 
     /**
