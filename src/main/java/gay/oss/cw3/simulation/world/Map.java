@@ -14,10 +14,14 @@ import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 public class Map {
+    final static float SEA_FLOOR_HEIGHT = -20f;
+    final float BEACH_DISTANCE_FRACTION = 0.6f; // set to 1f to disable islandification
+    final float SEA_DISTANCE_FRACTION = 0.99f;
+
     private final int width;
     private final int depth;
     
-    private float waterLevel = -8.0f;
+    private final float waterLevel = -8.0f;
 
     private final java.util.Map<EntityLayer, Grid<Entity>> entities;
     private final java.util.Map<EntityLayer, Grid<float[]>> offsets;
@@ -136,7 +140,7 @@ public class Map {
 
         for (int x=0;x<this.width;x++) {
             for (int z=0;z<this.depth;z++) {
-                this.heightMap.set(x, z, heightNoise.GetNoise(x, z) * 40.0f);
+                this.heightMap.set(x, z, adjustGroundHeightToSeaFloor(heightNoise.GetNoise(x, z) * 40.0f, x, z));
             }
         }
 
@@ -160,6 +164,30 @@ public class Map {
                 }
             }
         }
+    }
+
+    private float adjustGroundHeightToSeaFloor(final float height, final int x, final int z) {
+        final int adjustedX = x - this.width/2;
+        final int adjustedZ = z - this.depth/2;
+        final float beachDistance = BEACH_DISTANCE_FRACTION*0.5f*this.width;
+        final float seaDistance = SEA_DISTANCE_FRACTION*0.5f*this.width;
+        float distToCentre = (float) Math.sqrt((adjustedX * adjustedX) + (adjustedZ * adjustedZ));
+
+        if (distToCentre < beachDistance) {
+            return height;
+        }
+
+        if (distToCentre > seaDistance) {
+            return SEA_FLOOR_HEIGHT;
+        }
+
+        var factor = easeInOutCubic((distToCentre-beachDistance)/(seaDistance-beachDistance));
+
+        return (1f-factor)*height + factor*SEA_FLOOR_HEIGHT;
+    }
+
+    private static float easeInOutCubic(float x) {
+        return x < 0.5f ? 4f * x * x * x : (float) (1f - Math.pow(-2f * x + 2f, 3f) / 2f);
     }
 
     public void generate() {
