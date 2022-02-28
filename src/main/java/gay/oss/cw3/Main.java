@@ -83,7 +83,7 @@ public class Main {
                             world.tick();
                         }
 
-                        Thread.sleep(10);
+                        Thread.sleep(16);
                     }
                 } catch (InterruptedException e) {
                     // Close out of thread.
