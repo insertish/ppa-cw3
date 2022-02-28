@@ -17,8 +17,8 @@ public abstract class Entity {
     private final EntityLayer layer;
     private Coordinate location;
 
-    private int ageTicks;
-    private boolean alive;
+    private int ageTicks = 0;
+    private boolean alive = true;
 
     private int health = 1;
     private double fullness;
@@ -32,15 +32,11 @@ public abstract class Entity {
      * @param world             the world the entity will reside in
      * @param layer             the entity's layer
      * @param location          the entity's initial location
-     * @param initialAgeTicks   the entity's initial age
-     * @param alive             whether the entity is alive
      */
-    public Entity(World world, EntityLayer layer, Coordinate location, int initialAgeTicks, boolean alive) {
+    public Entity(World world, EntityLayer layer, Coordinate location) {
         this.world = world;
         this.layer = layer;
         this.location = location;
-        this.ageTicks = initialAgeTicks;
-        this.alive = alive;
         this.world.spawn(this);
     }
 
@@ -48,12 +44,10 @@ public abstract class Entity {
      * Creates <em>and automatically spawns</em> an entity at the origin of the world.
      *
      * @param world             the world the entity will reside in
-     * @param initialAgeTicks   the entity's initial age
-     * @param alive             whether the entity is alive
      * @param layer             the entity's layer
      */
-    public Entity(World world, int initialAgeTicks, boolean alive, EntityLayer layer) {
-        this(world, layer, Coordinate.ORIGIN, initialAgeTicks, alive);
+    public Entity(World world, EntityLayer layer) {
+        this(world, layer, Coordinate.ORIGIN);
     }
 
     /**

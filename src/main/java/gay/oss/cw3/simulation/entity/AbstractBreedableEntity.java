@@ -24,7 +24,7 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
      * @param sex               the sex of this entity
      */
     public AbstractBreedableEntity(World world, Coordinate location, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
-        super(world, layer, location, initialAgeTicks, alive);
+        super(world, layer, location);
         this.sex = sex;
     }
 
@@ -38,7 +38,7 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
      * @param sex               the sex of this entity
      */
     public AbstractBreedableEntity(World world, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
-        super(world, initialAgeTicks, alive, layer);
+        super(world, layer);
         this.sex = sex;
     }
 

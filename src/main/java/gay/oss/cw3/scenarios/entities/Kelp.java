@@ -18,7 +18,7 @@ public class Kelp extends Entity {
      * @param location          the entity's initial location
      */
     public Kelp(World world, Coordinate location) {
-        super(world, EntityLayer.FOLIAGE, location, 0, true);
+        super(world, EntityLayer.FOLIAGE, location);
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);
         this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 0.6);
         this.setFullness(0.5);
