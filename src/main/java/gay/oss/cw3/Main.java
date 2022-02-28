@@ -16,6 +16,9 @@ import gay.oss.cw3.renderer.simulation.ui.SimulationUI;
 import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
 
+/**
+ * This is the main entrypoint for the simulation
+ */
 public class Main {
     public static int WORLD_SIZE = 128;//64;//256;//128;
 
@@ -25,6 +28,10 @@ public class Main {
     private Scenario scenario;
     private Thread tickThread;
 
+    /**
+     * Prepare the simulation and configure LWJGL / OpenGL for rendering
+     * @throws Exception if something fails to initialise
+     */
     private void init() throws Exception {
         Util.initialiseLWJGL();
 
@@ -48,10 +55,17 @@ public class Main {
         this.generateWorld();
     }
 
+    /**
+     * Clean up everything before shutting down
+     */
     public void destroy() {
         this.tickThread.interrupt();
     }
 
+    /**
+     * Generate a new World
+     * @throws Exception if the Scenario fails to generate
+     */
     private void generateWorld() throws Exception {
         // Kill existing thread if running
         if (this.tickThread != null) this.tickThread.interrupt();
@@ -94,6 +108,11 @@ public class Main {
         tickThread.start();
     }
 
+    /**
+     * Handle user input
+     * @param key Key code
+     * @param modifiers Key modifiers
+     */
     private void onKeyPress(int key, int modifiers) {
         if (key == GLFW_KEY_ESCAPE) {
             // should quit render loop and clean up
@@ -105,6 +124,9 @@ public class Main {
         }
     }
 
+    /**
+     * Graphics render loop
+     */
     private void renderLoop() {
         long start = System.currentTimeMillis();
 
@@ -131,6 +153,10 @@ public class Main {
         this.window.swap();
     }
 
+    /**
+     * Entrypoint into the application
+     * @param args Arguments
+     */
     public static void main(String[] args) {
         var instance = new Main();
 
