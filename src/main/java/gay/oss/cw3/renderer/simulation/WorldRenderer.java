@@ -45,6 +45,7 @@ public class WorldRenderer {
 
     private Model terrainModel;
     private Model waterModel;
+    private Skybox skybox;
 
     private Lighting lighting;
     private Instanced instancedRenderer;
@@ -78,10 +79,12 @@ public class WorldRenderer {
             new Material(Resources.getShader("terrain"), Resources.getTexture("grass/diffuse.jpg"))
         );
 
+        // Destroy existing water mesh if it exists.
         if (this.waterModel != null) {
             this.waterModel.destroyMesh();
         }
         
+        // Generate the water model.
         var waterMesh = MeshUtil.makeIndexedPlane(1, 1, false, 5);
         
         int length = (int) Math.pow(2, 5);
@@ -101,7 +104,11 @@ public class WorldRenderer {
             waterMesh,
             new Material(Resources.getShader("water"), Resources.getTexture("water.jpg"))
         );
+        
+        // Setup skybox and materials for rendering
+        this.skybox = new Skybox();
 
+        // Setup instanced renderer
         this.instancedRenderer = new Instanced();
     }
 
@@ -290,7 +297,6 @@ public class WorldRenderer {
         // 0. setup global shader variables
         int mod = (world.getTime() % 100);
         float[] skyColour = this.world.getDayCycle().getSkyColour(mod > 80 ? (mod - 80) / 20.0f : 0);
-        glClearColor(skyColour[0], skyColour[1], skyColour[2], 1f);
 
         float[] lightColour = this.world.getDayCycle().getSunColour(mod > 80 ? (mod - 80) / 20.0f : 0);
         this.lighting.setLightDiffuse(new Vector3f(lightColour));
@@ -306,18 +312,21 @@ public class WorldRenderer {
         this.lighting.setLightDirection(new Vector4f(pos * 128.0f, 42.0f, pos * 128.0f, 0.0f));
         this.lighting.upload();
 
-        // 1. render terrain
+        // 1. render skybox
+        this.skybox.draw(camera, new Vector3f(skyColour[0], skyColour[1], skyColour[2]));
+
+        // 2. render terrain
         glCullFace(GL_FRONT);
         this.terrainModel.draw(camera);
         glCullFace(GL_BACK);
 
-        // 2. render entities
+        // 3. render entities
         this.drawEntities(camera);
 
-        // 3. render particles
+        // 4. render particles
         this.drawParticles(camera);
 
-        // 4. render water
+        // 5. render water
         var map = this.world.getMap();
         this.waterModel
             .getTransformation()

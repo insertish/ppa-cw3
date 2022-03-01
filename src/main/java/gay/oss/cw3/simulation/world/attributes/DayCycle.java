@@ -6,7 +6,7 @@ import static gay.oss.cw3.renderer.Util.intColourToFloats;
 
 public enum DayCycle {
     MORNING(0xffffff, 0x8ba8b5),
-    AFTERNOON(0xfffcbf, 0x8dccd6),
+    AFTERNOON(0xfffcbf, 0xffffff),
     EVENING(0xe6b891, 0x354960),
     NIGHT(0x4a5757, 0x0d1d42);
 
