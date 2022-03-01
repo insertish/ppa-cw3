@@ -1,13 +1,14 @@
 package gay.oss.cw3;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_N;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_P;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
-
-import org.lwjgl.glfw.GLFW;
 
 import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
@@ -28,6 +29,8 @@ public class Main {
     private SimulationUI ui;
     private Scenario scenario;
     private Thread tickThread;
+
+    private boolean renderParticles = true;
 
     /**
      * Prepare the simulation and configure LWJGL / OpenGL for rendering
@@ -64,7 +67,7 @@ public class Main {
         if (this.tickThread != null) {
             this.tickThread.interrupt();
             this.tickThread = null;
-            this.ui.pause();
+            this.ui.setFlagPlaying(false);
         }
     }
 
@@ -91,7 +94,7 @@ public class Main {
             };
             
             this.tickThread.start();
-            this.ui.resume();
+            this.ui.setFlagPlaying(true);
         }
     }
 
@@ -137,19 +140,26 @@ public class Main {
      * @param modifiers Key modifiers
      */
     private void onKeyPress(int key, int modifiers) {
-        if (key == GLFW_KEY_ESCAPE) {
-            // should quit render loop and clean up
-            System.exit(0);
-        } else if (key == GLFW.GLFW_KEY_N) {
-            try {
-                this.generateWorld();
-            } catch (Exception e) {}
-        } else if (key == GLFW.GLFW_KEY_SPACE) {
-            if (this.tickThread == null) {
-                this.resume();
-            } else {
-                this.pause();
-            }
+        switch (key) {
+            case GLFW_KEY_ESCAPE:
+                System.exit(0);
+                break;
+            case GLFW_KEY_N:
+                try {
+                    this.generateWorld();
+                } catch (Exception e) {}
+                break;
+            case GLFW_KEY_SPACE:
+                if (this.tickThread == null) {
+                    this.resume();
+                } else {
+                    this.pause();
+                }
+                break;
+            case GLFW_KEY_P:
+                this.renderParticles = !this.renderParticles;
+                this.ui.setParticleState(this.renderParticles);
+                break;
         }
     }
 
@@ -170,7 +180,7 @@ public class Main {
         this.camera.calculate(window.getWidth() / window.getHeight());
 
         // World rendering.
-        this.scenario.getRenderer().draw(this.camera);
+        this.scenario.getRenderer().draw(this.camera, this.renderParticles);
 
         // Draw the UI.
         this.ui.draw(window.getWidth(), window.getHeight());

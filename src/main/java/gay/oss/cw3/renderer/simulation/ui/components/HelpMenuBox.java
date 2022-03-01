@@ -43,9 +43,11 @@ public class HelpMenuBox extends Box {
                 new Box(null).setMinHeight(16),
                 new Text(font, "H: Toggle Help Menu", fontSize),
                 new Text(font, "N: Generate New World", fontSize),
+                new Text(font, "P: Toggle Particles", fontSize),
                 new Text(font, "SPACE: Toggle Simulation", fontSize),
                 new Text(font, "LMB DRAG: Rotate Camera", fontSize),
                 new Text(font, "SCROLL: Zoom Camera", fontSize),
+                new Text(font, "ESCAPE: Quit Simulation", fontSize),
             }
         ))
         .setDirection(FlowDirection.Column);

@@ -28,7 +28,8 @@ import gay.oss.cw3.simulation.world.World;
  */
 public class SimulationUI extends RootUI {
     private Scenario scenario;
-    private boolean playing;
+    private boolean flagPlaying;
+    private boolean flagRenderParticles;
 
     /**
      * Construct a new SimulationUI
@@ -90,20 +91,6 @@ public class SimulationUI extends RootUI {
     }
 
     /**
-     * Tell the UI we are paused.
-     */
-    public void pause() {
-        this.playing = false;
-    }
-
-    /**
-     * Tell the UI we resumed.
-     */
-    public void resume() {
-        this.playing = true;
-    }
-
-    /**
      * Get the current World in use by the Scenario.
      * @return World
      */
@@ -124,7 +111,15 @@ public class SimulationUI extends RootUI {
      * @return Whether we are playing
      */
     public boolean isPlaying() {
-        return this.playing;
+        return this.flagPlaying;
+    }
+
+    /**
+     * Check whether we are rendering particles.
+     * @return Whether we are rendering particles
+     */
+    public boolean isShowingParticles() {
+        return this.flagRenderParticles;
     }
 
     /**
@@ -148,5 +143,21 @@ public class SimulationUI extends RootUI {
      */
     public void emit(Event event) {
         this.rootNode.handle(event);
+    }
+
+    /**
+     * Tell the UI whether we are currently playing.
+     * @param playing Current State
+     */
+    public void setFlagPlaying(boolean playing) {
+        this.flagPlaying = playing;
+    }
+
+    /**
+     * Tell the UI whether we are currently displaying particles.
+     * @param renderParticles Current State
+     */
+    public void setParticleState(boolean renderParticles) {
+        this.flagRenderParticles = renderParticles;
     }
 }

@@ -289,7 +289,7 @@ public class WorldRenderer {
      * Draw the World to the screen
      * @param camera Camera
      */
-    public void draw(Camera camera) {
+    public void draw(Camera camera, boolean drawParticles) {
         if (this.terrainModel == null || this.waterModel == null) {
             return;
         }
@@ -324,7 +324,7 @@ public class WorldRenderer {
         this.drawEntities(camera);
 
         // 4. render particles
-        this.drawParticles(camera);
+        if (drawParticles) this.drawParticles(camera);
 
         // 5. render water
         var map = this.world.getMap();
