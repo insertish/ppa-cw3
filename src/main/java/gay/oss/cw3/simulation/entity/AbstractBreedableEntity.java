@@ -1,5 +1,7 @@
 package gay.oss.cw3.simulation.entity;
 
+import gay.oss.cw3.renderer.simulation.particle.Particle;
+import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
@@ -69,5 +71,17 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
     public void startBreedingAttempt() {
         this.lastBreedAttempt = this.getAgeTicks();
         this.removeFullness(this.attributes.get(EntityAttribute.FULLNESS_TO_BREED));
+        for (int i = 0; i < 3; i++) {
+            this.getWorld().getParticleManager().addParticle(
+                    new Particle(
+                            ParticleType.HEART,
+                            this.getLocation(),
+                            this.yOffset() + this.getWorld().getMap().getHeight(this.getLocation().x, this.getLocation().z),
+                            (float) this.getWorld().getRandom().nextGaussian()*0.2f,
+                            (float) this.getWorld().getRandom().nextGaussian()*2f,
+                            (float) this.getWorld().getRandom().nextGaussian()*0.2f
+                    )
+            );
+        }
     }
 }

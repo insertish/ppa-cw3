@@ -1,6 +1,7 @@
 package gay.oss.cw3.renderer.simulation.particle;
 
 import gay.oss.cw3.renderer.objects.Model;
+import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.simulation.Coordinate;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -43,7 +44,7 @@ public class Particle {
     }
 
     public Matrix4f getMatrix() {
-        return new Matrix4f().translation(x, y, z);
+        return new Matrix4f().translation(x, y, z);//.rotateTowards(camera.getEyePositionVector().sub(x, y, z), camera.getUpVector()); FIXME
     }
 
     public ParticleType getType() {
