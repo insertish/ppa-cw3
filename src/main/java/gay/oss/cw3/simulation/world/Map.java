@@ -13,6 +13,7 @@ import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 import gay.oss.cw3.simulation.world.grid.Grid;
+import gay.oss.cw3.simulation.world.grid.RecursiveGrid;
 
 public class Map {
     final static float SEA_FLOOR_HEIGHT = -20f;
@@ -38,7 +39,7 @@ public class Map {
         this.offsets = new EnumMap<>(EntityLayer.class);
 
         for (EntityLayer layer : EntityLayer.values()) {
-            this.entities.put(layer, new BasicGrid<>(width, depth));
+            this.entities.put(layer, new RecursiveGrid<>(width, depth));
             this.offsets.put(layer, new BasicGrid<>(width, depth));
         }
 
