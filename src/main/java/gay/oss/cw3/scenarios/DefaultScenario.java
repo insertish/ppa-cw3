@@ -24,7 +24,7 @@ public class DefaultScenario extends Scenario {
         this.registerEntity(EntityLayer.FOLIAGE, "Grass", new Vector3f(0, 1, 0), Grass.class, 0.15f, false, true, new BiomeType[] { BiomeType.Plains, BiomeType.Forest });
         this.registerEntity(EntityLayer.FOLIAGE, "Kelp", new Vector3f(0, 0, 1), Kelp.class, 0.15f, true, false, null);
         this.registerEntity(EntityLayer.AERIAL_ANIMALS, "Herbivore Bird", new Vector3f(1, 0, 0), HerbivoreBird.class, 0.005f, false, true, null);
-        this.registerEntity(EntityLayer.AERIAL_ANIMALS, "Bird of Prey", new Vector3f(1, 0, 0), BirdOfPrey.class, 0.005f, false, true, null);
+        this.registerEntity(EntityLayer.AERIAL_ANIMALS, "Falcon", new Vector3f(1, 0, 0), BirdOfPrey.class, 0.005f, false, true, null);
 
         if (this.isOpenGL) {
             // Configure models.
@@ -48,7 +48,7 @@ public class DefaultScenario extends Scenario {
             renderer.autoLoadModel(Kelp.class, "kelp.jpg", "kelp", 100f, RenderMode.UseLOD);
             renderer.autoLoadModel(HerbivoreFish.class, "fish.png", "fish", 0.01f, RenderMode.UseLOD);
             renderer.autoLoadModel(HerbivoreBird.class, "bird.png", "bird", 0.5f, RenderMode.UseLOD);
-            renderer.autoLoadModel(BirdOfPrey.class, "bird.png", "bird", 1.5f, RenderMode.UseLOD);
+            renderer.autoLoadModel(BirdOfPrey.class, "falcon.png", "falcon", 1.0f, RenderMode.UseLOD);
             //renderer.autoLoadModel(Grass.class, "pine.png", "pine", 10);
         }
     }
