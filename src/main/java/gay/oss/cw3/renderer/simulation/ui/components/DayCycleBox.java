@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.joml.Vector4f;
 
+import gay.oss.cw3.renderer.Resources;
 import gay.oss.cw3.renderer.objects.Texture;
-import gay.oss.cw3.renderer.simulation.Resources;
 import gay.oss.cw3.renderer.simulation.ui.SimulationUI;
 import gay.oss.cw3.renderer.ui.UI;
 import gay.oss.cw3.renderer.ui.framework.Box;

@@ -1,4 +1,4 @@
-package gay.oss.cw3.renderer.simulation;
+package gay.oss.cw3.renderer;
 
 import java.io.IOException;
 import java.util.HashMap;

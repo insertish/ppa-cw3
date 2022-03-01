@@ -1,7 +1,6 @@
-package gay.oss.cw3.renderer.simulation;
+package gay.oss.cw3.renderer.objects;
 
 import gay.oss.cw3.renderer.Util;
-import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.simulation.world.Map;
 
 /**

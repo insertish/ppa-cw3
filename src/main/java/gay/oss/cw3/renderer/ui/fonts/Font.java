@@ -6,9 +6,9 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 
+import gay.oss.cw3.renderer.Resources;
 import gay.oss.cw3.renderer.objects.Texture;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
-import gay.oss.cw3.renderer.simulation.Resources;
 import gay.oss.cw3.renderer.ui.UI;
 
 /**

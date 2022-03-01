@@ -1,5 +1,6 @@
 package gay.oss.cw3.renderer.simulation;
 
+import gay.oss.cw3.renderer.Resources;
 import gay.oss.cw3.renderer.objects.Material;
 import gay.oss.cw3.renderer.objects.Mesh;
 import gay.oss.cw3.renderer.shaders.LevelOfDetail;
