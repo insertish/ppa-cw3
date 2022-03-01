@@ -10,6 +10,7 @@ import gay.oss.cw3.renderer.simulation.ui.components.HelpMenuBox;
 import gay.oss.cw3.renderer.simulation.ui.components.PlayStateBox;
 import gay.oss.cw3.renderer.simulation.ui.components.TickText;
 import gay.oss.cw3.renderer.ui.RootUI;
+import gay.oss.cw3.renderer.ui.events.Event;
 import gay.oss.cw3.renderer.ui.fonts.Font;
 import gay.oss.cw3.renderer.ui.fonts.FontPixel;
 import gay.oss.cw3.renderer.ui.framework.Box;
@@ -53,8 +54,8 @@ public class SimulationUI extends RootUI {
                     Anchor.TopLeft,
                     new FlowLayout(Arrays.asList(
                         new Node[] {
-                            /*new PlayStateBox(this)
-                                .setMinSize(64),*/
+                            new PlayStateBox(this)
+                                .setMinSize(64),
                             new DayCycleBox(this)
                                 .setMinSize(64),
                             new Box(new TickText(font, 24, this))
@@ -74,16 +75,16 @@ public class SimulationUI extends RootUI {
                     Anchor.BottomLeft,
                     new FlowLayout(Arrays.asList(
                         new Node[] {
-                            new Text(font, "press H for help menu", 16)
+                            new Text(font, "Press H for Help Menu", 28)
                         }
                     ))
                     .setDirection(FlowDirection.Column)
                 )
                 // Display a help menu in the centre.
-                /*.add(
+                .add(
                     Anchor.CenterMiddle,
                     new HelpMenuBox(font)
-                )*/
+                )
         )
         .setPadding(24);
     }
@@ -139,5 +140,13 @@ public class SimulationUI extends RootUI {
             System.err.println("Failed to reinitialise simulation UI!");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Emit an Event to the root Node.
+     * @param event Event
+     */
+    public void emit(Event event) {
+        this.rootNode.handle(event);
     }
 }

@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Event representing keyboard input
  */
-public class KeyEvent {
+public class KeyEvent extends Event {
     private int key;
     private int action;
     private int modifiers;
