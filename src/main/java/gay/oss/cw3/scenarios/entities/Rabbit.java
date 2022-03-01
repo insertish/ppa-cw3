@@ -40,6 +40,7 @@ public class Rabbit extends AbstractBreedableEntity {
 
     @Override
     public void tick() {
+        super.tick();
         if (this.isAlive()) {
             this.getBrain().tick();
             this.removeFullness(0.01);

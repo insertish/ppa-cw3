@@ -1,6 +1,5 @@
 package gay.oss.cw3.simulation.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import gay.oss.cw3.renderer.simulation.particle.ParticleType;
@@ -281,5 +280,16 @@ public abstract class Entity {
     /**
      * Ticks this entity.
      */
-    public abstract void tick();
+    public void tick() {
+        if (this.isAlive()) {
+            if (this.world.getRandom().nextDouble() < this.chanceOfOldAgeDamage()) {
+                this.addHealth(-1);
+            }
+        }
+    }
+
+    private double chanceOfOldAgeDamage() {
+        double age = this.ageTicks / this.getAttributes().get(EntityAttribute.LIFE_EXPECTANCY);
+        return (age == 0 ? 0 : Math.pow(4, 10 * age - 10)) * 0.25;
+    }
 }
