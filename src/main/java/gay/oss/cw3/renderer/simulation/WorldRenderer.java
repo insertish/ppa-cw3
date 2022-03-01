@@ -136,15 +136,14 @@ public class WorldRenderer {
 
         // Pull out all entities to render.
         // We should aim to take as little time here as possible.
-        synchronized (this.world) {
-            for (Entity entity : this.world.getEntities()) {
-                var clazz = entity.getClass();
-                var list = layers.get(clazz);
-                if (list != null) {
-                    var loc = entity.getLocation();
-                    list.add(new Vector3f(loc.x, entity.yOffset(), loc.z));
-                    knownLayer.put(clazz, entity.getLayer());
-                }
+        List<Entity> entities = new ArrayList<>(this.world.getEntities());
+        for (Entity entity : entities) {
+            var clazz = entity.getClass();
+            var list = layers.get(clazz);
+            if (list != null) {
+                var loc = entity.getLocation();
+                list.add(new Vector3f(loc.x, entity.yOffset(), loc.z));
+                knownLayer.put(clazz, entity.getLayer());
             }
         }
 

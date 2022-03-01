@@ -1,28 +1,32 @@
-package gay.oss.cw3.simulation;
+package gay.oss.cw3.simulation.world.grid;
 
+import gay.oss.cw3.simulation.Coordinate;
 import org.jetbrains.annotations.Nullable;
 
-public class Grid<T> {
-    public final Object lock = new Object();
+public class BasicGrid<T> implements Grid<T> {
+    protected final Object lock = new Object();
 
-    private final Object[][] grid;
-    private final int width;
-    private final int depth;
+    protected final Object[][] grid;
+    protected final int width;
+    protected final int depth;
 
-    public Grid(int width, int depth) {
+    public BasicGrid(int width, int depth) {
         this.grid = new Object[width][depth];
         this.width = width;
         this.depth = depth;
     }
 
+    @Override
     public int getWidth() {
         return this.width;
     }
 
+    @Override
     public int getDepth() {
         return this.depth;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T set(int x, int z, T obj) {
         synchronized (lock) {
@@ -33,10 +37,7 @@ public class Grid<T> {
         }
     }
 
-    public T set(Coordinate location, T obj) {
-        return this.set(location.x, location.z, obj);
-    }
-
+    @Override
     public void setWithoutOverwrite(Coordinate location, T obj) {
         synchronized (lock) {
             final @Nullable T previous;
@@ -48,6 +49,7 @@ public class Grid<T> {
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public @Nullable T get(int x, int z) {
         synchronized (lock) {
@@ -56,11 +58,9 @@ public class Grid<T> {
         }
     }
 
+    @Override
     public @Nullable T get(Coordinate location) {
         return this.get(location.x, location.z);
     }
 
-    public boolean isInBounds(int x, int z) {
-        return !(x < 0 || z < 0 || x >= width || z >= depth);
-    }
 }

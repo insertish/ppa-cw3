@@ -157,8 +157,8 @@ public class World {
     public List<Coordinate> findFreeLocationsAboveWater(final EntityLayer layer, final Coordinate around, final int radius) {
         return this.findMatchingLocations(around, radius, coord ->
                 this.isInBounds(coord)
-                        && this.getEntity(layer, coord.x, coord.z) == null
                         && this.isAboveWater(coord)
+                        && this.getEntity(layer, coord.x, coord.z) == null
         );
     }
 

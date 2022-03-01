@@ -8,10 +8,11 @@ import java.util.Random;
 import gay.oss.cw3.lib.FastNoiseLite;
 import gay.oss.cw3.renderer.ColorAverageCollector;
 import gay.oss.cw3.renderer.Util;
-import gay.oss.cw3.simulation.Grid;
+import gay.oss.cw3.simulation.world.grid.BasicGrid;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
+import gay.oss.cw3.simulation.world.grid.Grid;
 
 public class Map {
     final static float SEA_FLOOR_HEIGHT = -20f;
@@ -37,12 +38,12 @@ public class Map {
         this.offsets = new EnumMap<>(EntityLayer.class);
 
         for (EntityLayer layer : EntityLayer.values()) {
-            this.entities.put(layer, new Grid<>(width, depth));
-            this.offsets.put(layer, new Grid<>(width, depth));
+            this.entities.put(layer, new BasicGrid<>(width, depth));
+            this.offsets.put(layer, new BasicGrid<>(width, depth));
         }
 
-        this.heightMap = new Grid<>(width, depth);
-        this.biomeMap = new Grid<>(width, depth);
+        this.heightMap = new BasicGrid<>(width, depth);
+        this.biomeMap = new BasicGrid<>(width, depth);
     }
 
     public boolean isInBounds(int x, int z) {
