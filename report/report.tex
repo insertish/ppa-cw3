@@ -97,11 +97,118 @@
 
             One of the first things we did on the project was to bootstrap an OpenGL project and jump straight into 3D, adding an additional dimension to the simulation makes it easier to both see and appreciate the different interactions and behaviours between species.
 
-            \subsubsection{Rendering Overview}
+            \subsection{OpenGL: Nothing to Drawing}
 
-            Typically the setup for an OpenGL context and the subsequent rendering is as follows: configure any native bindings we need (initialise LWJGL \cite{LWJGL}, the library we are using to pull in native bindings), create a new Window and OpenGL context within it, compile required shader programs, upload meshes and textures to the GPU ahead of rendering, and then we drop into a permanent loop which only breaks once the Window requests close or the user initiated some action to close that we caught.
+                Typically the setup for an OpenGL context and the subsequent rendering is as follows: configure any native bindings we need (initialise LWJGL \cite{LWJGL}, the library we are using to pull in native bindings), create a new Window and OpenGL context within it, compile required shader programs, upload meshes and textures to the GPU ahead of rendering, and then we drop into a permanent loop which only breaks once the Window requests close or the user initiated some action to close that we caught.
 
-            \subsubsection{Writing and Compiling Shaders}
+                \subsubsection{Writing and Compiling Shaders}
+
+                    All of the shaders we've had to write are written in GLSL \cite{GLSL}, it is a rather straightforward language used for working with the GPU. Vertices are first processed in the aptly named the ``vertex shader'' where we apply transformation matrices and get everything ready to draw, then the ``fragment shader'' where we figure out how each pixel should be coloured. 
+
+                \subsubsection{Camera and View Projection}
+
+                    For the camera, we decided to just have simple zoom and grab. The eye position is calculated by first finding the distance and height from the point we are looking at.
+
+                    We use $zoom$ to denote the linear zoom factor, $ground$ to denote the angle between the tangent and the water plane, and we use $view$ to denote the angle rotation around the centre point.
+
+                    \[
+                        \begin{array}{l}
+                            tangent = 5 + 1.1^{zoom} \\
+                            distance = tangent \cdot \cos(ground) \\
+                            height = tangent \cdot \sin(ground)
+                        \end{array}
+                    \]
+
+                    Then we find the actual eye position by taking an offset from the position that we are looking at and factoring in the rotation around the centre point.
+
+                    \[
+                        \vec{eye} = (x + d cos(view), y + h, z + d sin(view))
+                    \]
+
+                    Afterwards, we leverage JOML \cite{JOML} which is a linear algebra library for Java to create a ViewProjection matrix. We specify a perspective of a roughly $ 75^\circ $ field of view with a near plane of $ 0.01 $f, and far plane of $ 1000.0 $f. The camera is positioned at $ \vec{eye} $ and is looking at the centre.
+
+                \subsubsection{Uniforms and the MVP}
+
+                    Given the View Projection matrix, we can multiply it by our Model transformation matrix to find the modelViewProjection, this can be multiplied by the per-vertex coordinates to give the screen-space coordinates for rendering.
+                    Matrices are uploaded to the shader through the use of uniforms (memory locations that the shader can access), it is quite straightforward but one key detail we optimise for is that we cache the location of uniform names per-shader in order to be able to skip the look-up every time we render.
+
+                \subsubsection{Lighting the Scene}
+
+                    For this project, we chose to just do simple directional lighting which was used to represent the day-night cycle. The light has 3 properties each of which are exposed and can be modified on the fly during the simulation: Light Direction / Position, Light Ambient and Light Diffuse. We use a subset of the Phong lighting model, (see \autoref{fig:phong}), but chose not to implement specular lighting.
+    
+                    To get started, we first have to make sure we have all of the data we need from the vertex shader:
+                    
+                    \begin{lstlisting}
+mat4 model;
+fragPos = vec3(model *
+    vec4(vertexPos, 1.0));
+fragNormal = vertexNormal *
+    mat3(transpose(inverse(model)));\end{lstlisting}
+
+                    Here we transform the vertex into world-space and also transform the vertex normal, but we run into a minor issue if we were to just use the model projection (see \autoref{fig:normals}), we must use the inverse-transpose matrix to preserve the correct magntiude and retain the correct direction of the normal post-transformation, an article by Lighthouse3D explains the necessity of doing this \cite{lighthouse3d}.
+
+                    Then we can calculate the lighting in the fragment shader, we start off by finding the ambient light on the object, this is pretty simple and we just pass it through:
+
+                    \begin{lstlisting}
+vec3 ambient = light.ambient;\end{lstlisting}
+
+                    Next we prepare the light direction and normal vectors for processing, we normalise the normal vector we calculated earlier and then determine the light direction (it could either be an absolute position or relative direction):
+
+                    \begin{lstlisting}
+vec3 lightDir;
+if (light.dir.w == 0.0) {
+    lightDir = normalize(
+        light.dir.xyz - fragPos);
+} else {
+    lightDir = normalize(-light.dir.xyz);
+}\end{lstlisting}
+
+                    We can now find the dot product of the normal vector and the light direction, this gives us the strength of the diffuse lighting at that point.
+
+                    \begin{lstlisting}
+float diff = max(dot(norm, dir), 0.0);
+vec3 diffuse = diff * light.diffuse;\end{lstlisting}
+
+                    Finally, we combine all of the lighting calculations together:
+
+                    \begin{lstlisting}
+return objectColour *
+    vec4(ambient + diffuse, 1.0);\end{lstlisting}
+
+            \subsection{Uploading and Rendering}
+            
+                \subsubsection{Mesh to GPU}
+            
+                    To draw actual objects to the screen, we have to first prepare and upload meshes, we begin by creating a Vertex Array Object \cite{vao} which stores all of the information we provide it ready to render in the future. Each attribute (vertices, normals, UVs, etc) array is given its own Vertex Buffer Object \cite{vbo} to which it is uploaded.
+                
+                \subsubsection{Textures to GPU}
+                
+                    OpenGL makes consuming textures very easy, we first load the texture we want using STB Image \cite{stb} which is included in LWJGL, then we configure the texture properties such as alignment and scaling before uploading the buffer we loaded as-is. Some key things to look out for were that textures were always bound to the TEXTURE0 slot since we didn’t need anything more for each mesh, and that OpenGL UV coordinates start from the bottom left which means we flipped all texture resources upside down before loading them. (see \autoref{fig:uvmapping})
+            
+            \subsection{Optimising Render Pipeline}
+
+                Within our simulation, we quite often have to render hundreds to thousands of objects at a time, so we had to make sure that the simulation could still run on lower-end systems while delivering at least some what of a smooth performance, or at the very least allowed the user to easily look around when the simulation is paused.
+
+                \subsubsection{Face Culling}
+
+                    One of the easiest optimisations to do, although your meshes have to also conform, is to tell the GPU to simply ignore any faces that would not typically be visible. This uses a neat trick by which we order vertices in faces in a clockwise or anti-clockwise manner, so if the GPU detects a specific winding, it can simply reject drawing those faces. In a lot of cases, this should double performance since typically models are quite uniform in how many faces are on each side.
+
+                \subsubsection{Indexing}
+
+                    Indexing is a technique used to create meshes where we generate all of the individual vertex data points and then create an Element Array Buffer which is a list of integers, when drawing triangles we take 3 integers at once which are treated as an index into the attribute arrays that are then used to create the triangle face.
+
+                \subsubsection{Instancing}
+
+                    Another technique to reduce the time on the CPU and let the GPU work in parallel, is to send all the transformation matrices required at once to draw any amount of uniquely positioned meshes. On modern hardware (supporting OpenGL 4.3+), which does not include Mac and Mac M1, we can take advantage of a new extension allowing the use of Shader Storage Buffer Objects \cite{ssbo}. SSBOs allow us to upload a huge amount of data to the shader where it can be consumed as if it were a normal uniform, if the feature is present on the machine \cite{extension-list}, the shader code is modified at runtime to add support for the use of SSBOs. Once enabled, we can instead use glDrawElementsInstanced instead of individually drawing the mesh at each transformation. This has a noticeable effect on devices that support the feature.
+
+                \subsubsection{Mesh Optimisation}
+
+                    One of the biggest bottlenecks on lower-end hardware is just the sheer amount of faces and vertices we want to render, to combat this, we pre-processed all of the meshes we use using Blender by using the Decimate filter (see \autoref{fig:decimate}).
+
+                \subsubsection{Dynamic Level of Detail}
+
+                    Continuing from the previous section: For high level of detail (camera is nearby), we chose to aim for about 1 to 2k faces per object, then halved it for medium and low levels of detail. Before performing a render pass of entities, we first calculate the distance between the camera’s eye position (calculated earlier) and the entity’s current location, then we resolve this to a suitable level of detail such as high, medium, low, or do not render at all.
+
 
         % other provided tasks that we haven't done:
         % \subsection{Weather}
@@ -110,119 +217,57 @@
     \end{multicols}
 
     \newpage
-
-    % IGNORE OLD CONTENT:
-    % WILL BE TOUCHING
+    
     \begin{thebibliography}{9}
+        
         \bibitem{LWJGL}
         Lightweight Java Game Library \\
         \url{https://www.lwjgl.org/}
+        \bibitem{GLSL}
+        OpenGL Shading Language \\
+        \url{https://www.khronos.org/opengl/wiki/OpenGL_Shading_Language}
+        \bibitem{JOML}
+        Java OpenGL Math Library \\
+        \url{https://github.com/JOML-CI/JOML}
+        \bibitem{learnopengl-lighting}
+        LearnOpenGL - Basic Lighting \\
+        \url{https://learnopengl.com/Lighting/Basic-Lighting}
+        \bibitem{lighthouse3d}
+        The Normal Matrix - Lighthouse3D \\
+        \url{https://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/}
+        \bibitem{vao}
+        Vertex Specification - OpenGL Wiki \#Vertex Array Object \\
+        \url{https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object}
+        \bibitem{vbo}
+        Vertex Specification - OpenGL Wiki \#Vertex Buffer Object \\
+        \url{https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Buffer_Object}
+        \bibitem{opengl-tutorial-textured-cube}
+        A Textured Cube - OpenGL Tutorial \\
+        \url{https://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/}
+        \bibitem{stb}
+        org.lwjgl.stb (LWJGL 3.3.1) \\
+        \url{https://javadoc.lwjgl.org/org/lwjgl/stb/package-summary.html}
+        \bibitem{ssbo}
+        Shader Storage Buffer Object - OpenGL Wiki \\
+        \url{https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object}
+        \bibitem{extension-list}
+        Khronos OpenGL® Registry - The Khronos Group Inc \\
+        \url{https://www.khronos.org/registry/OpenGL/index_gl.php}
 
+        % \textbf{\\ References in code.}
 
-        \bibitem{beastman}
-        Brand New Animal Wiki. Beastman \\
-        \url{https://brand-new-animal.fandom.com/wiki/Beastman}
-        \bibitem{animacity}
-        Brand New Animal Wiki. Animacity \\
-        \url{https://brand-new-animal.fandom.com/wiki/Anima_City}
-        \bibitem{marie}
-        Brand New Animal Wiki. Marie Itami \\
-        \url{https://brand-new-animal.fandom.com/wiki/Marie_Itami}
-        \bibitem{bna}
-        IMDb. BNA (TV Mini Series 2020) \\
-        \url{https://www.imdb.com/title/tt12013558/}
-        \bibitem{utopia}
-        IMDb. Utopia (TV Series 2013-2014) \\
-        \url{https://www.imdb.com/title/tt2384811/}
-        \bibitem{excalidraw}
-        Excalidraw. \\
-        \url{https://excalidraw.com/}
-        \bibitem{bluej}
-        GitHub. maven-bluej / BlueJ.java \\
-        \url{https://github.com/KCLOSS/maven-bluej/blob/master/BlueJ.java}
-        \bibitem{river-map}
-        Google Maps. Jezioro Świerklaniec, Poland \\
-        \url{https://www.google.com/maps/@50.4293559,18.9742453,16.12z}
-        \bibitem{common-weights}
-        PDF. Set of average weights for furniture, appliances and other items \url{https://democracy.york.gov.uk/documents/s2116/Annex\%20C\%20REcycling\%20Report\%20frnweights2005.pdf}
-        \bibitem{pyrocynical}
-        YouTube. The best (and worst) show you haven't seen \\ \url{https://youtu.be/PFx2QM0Z8Qo}
-        \bibitem{bluej-issue}
-        GitHub. BlueJ Bug Reproductions (wip) \\ \url{https://github.com/insertish/bluej-bug-demo}
-        \bibitem{font}
-        Fontsource. VT323 \\ \url{https://fontsource.org/fonts/vt323}
+        % \bibitem{code-ref-1}
+        % \codeword{Ansi.java} StackOverflow. How to print color in console using System.out.println? \\
+        % \url{https://stackoverflow.com/a/5762502}
 
-        \textbf{\\ References in code.}
+        % \textbf{\\ Libraries used:}
+        % \bibitem{library-1}
+        % \cmd{com.moandjiezana.toml} \url{https://github.com/mwanji/toml4j}
 
-        \bibitem{code-ref-1}
-        \codeword{Ansi.java} StackOverflow. How to print color in console using System.out.println? \\
-        \url{https://stackoverflow.com/a/5762502}
-        \bibitem{code-ref-2}
-        \codeword{LocalisedIO.java} StackOverflow. What is the equivalent of Regex-replace-with-function-evaluation in Java 7? \url{https://stackoverflow.com/a/27359491}
-        \bibitem{code-ref-3}
-        \codeword{JTerminalFrame.java} How to detect a key press in Java \\
-        \url{https://stackoverflow.com/a/21970006}
-        \bibitem{code-ref-4}
-        \codeword{JTerminalView.java} How to "do something" on Swing component resizing? \\
-        \url{https://stackoverflow.com/a/8917978}
-        \bibitem{code-ref-5}
-        \codeword{JTerminalView.java} Java Documentation. Font Concepts \\
-        \url{https://docs.oracle.com/javase/tutorial/2d/text/fontconcepts.html}
-        \bibitem{code-ref-6}
-        \codeword{JTerminalView.java} Java Documentation. Java Thread Primitive Deprecation \url{https://docs.oracle.com/javase/1.5.0/docs/guide/misc/threadPrimitiveDeprecation.html}
-        \bibitem{code-ref-7}
-        \codeword{JTerminalView.java} StackOverflow. Drawing Canvas on JFrame \\
-        \url{https://stackoverflow.com/a/17922749}
-        \bibitem{code-ref-8}
-        \codeword{TerminalEmulator.java} StackOverflow. Passing values between 2 threads without intrrrupting each other \url{https://stackoverflow.com/a/23413506}
-
-        \textbf{\\ Libraries used:}
-        \bibitem{library-1}
-        \cmd{com.moandjiezana.toml} \url{https://github.com/mwanji/toml4j}
-        \bibitem{library-2}
-        \cmd{commons-io} \url{https://commons.apache.org/proper/commons-io}
-        \bibitem{library-3}
-        \cmd{kuusisto.tinysound} (fork by DrogoniEntity) \url{https://github.com/DrogoniEntity/TinySound}
-        \bibitem{library-4}
-        \cmd{com.projectdarkstar.ext.jorbis} \\
-        \url{https://search.maven.org/artifact/com.projectdarkstar.ext.jorbis/jorbis}
-        \bibitem{library-5}
-        \cmd{com.googlecode.soundlibs.tritonus-share} \\
-        \url{https://search.maven.org/artifact/com.googlecode.soundlibs/tritonus-share/0.3.7.4/bundle}
-        \bibitem{library-6}
-        \cmd{com.googlecode.soundlibs.vorbisspi} \\
-        \url{https://search.maven.org/artifact/com.googlecode.soundlibs/vorbisspi/1.0.3.3/bundle}
-
-        \textbf{\\ Sounds used:}
-        \bibitem{sound-money-bag}
-        Freesound. "Money Bag" by PhilSavlem (licensed under CC0) \\
-        \url{https://freesound.org/people/PhilSavlem/sounds/338260/}
-        \bibitem{sound-waves-1}
-        Freesound. "bay of fundy 01.flac" by tim.kahn (licensed CC BY 3.0) \\
-        \url{https://freesound.org/people/tim.kahn/sounds/127569/}
-        \bibitem{sound-waves-2}
-        Freesound. "bay of fundy 02.flac" by tim.kahn (licensed CC BY 3.0) \\
-        \url{https://freesound.org/people/tim.kahn/sounds/127568/}
-        \bibitem{sound-bgm-1}
-        Freesound. "2020-03-17 Lofi Trip Hop" by Doctor\_Dreamchip (licensed CC BY 3.0) \\
-        \url{https://freesound.org/people/Doctor_Dreamchip/sounds/511279/}
-        \bibitem{sound-bgm-2}
-        Freesound. "Remix of GioMilko Freesound \#417960.flac" by Timbre (licensed CC BY-NC 3.0) \\
-        \url{https://freesound.org/people/Timbre/sounds/418692/}
-        \bibitem{sound-bgm-3}
-        Freesound. "loopable Lo-fied remix of Tenshi\_Mixer freesound \#585947.flac" by Timbre (licensed CC BY-NC 3.0) \url{https://freesound.org/people/Timbre/sounds/586988/}
-        \bibitem{sound-forest-birds}
-        Freesound. "Birds In The Forest" by BurghRecords (licensed under CC0) \\
-        \url{https://freesound.org/people/BurghRecords/sounds/456123/}
-        \bibitem{sound-worm-hole}
-        Freesound. "Bed of entanglement" by CosmicD (licensed CC BY 3.0) \\
-        \url{https://freesound.org/people/CosmicD/sounds/133007/}
-        \bibitem{sound-city-1}
-        Freesound. "VOC\_150325-0973-1\_HK\_citywalk.wav" by kevp888 (licensed CC BY 3.0) \\
-        \url{https://freesound.org/people/kevp888/sounds/440973/}
-        \bibitem{sound-city-2}
-        Freesound. "VOC\_150325-0972\_HK\_citywalk.wav" by kevp888 (licensed CC BY 3.0) \\
-        \url{https://freesound.org/people/kevp888/sounds/440974/}
+        % \textbf{\\ Sounds used:}
+        % \bibitem{sound-money-bag}
+        % Freesound. "Money Bag" by PhilSavlem (licensed under CC0) \\
+        % \url{https://freesound.org/people/PhilSavlem/sounds/338260/}
 
     \end{thebibliography}
     
@@ -232,157 +277,22 @@
     \captionsetup{justification=centering,margin=3cm}
     \begin{figure}
         \centering
-        \includegraphics[width=\textwidth]{images/emoji.jpg}
-        \caption{Sample emoji output} \label{fig:emoji}
+        \includegraphics[width=\textwidth]{images/phong.png}
+        \caption{Phong Lighting Model \cite{learnopengl-lighting}} \label{fig:phong}
     \end{figure}
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=\textwidth]{../src/main/resources/map/base.png}
-%         \caption{World Map} \label{fig:map}
-%     \end{figure}
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=\textwidth]{images/runaway-raccoon-302.jpg}
-%         \caption{Shot of Animacity as seen in Episode 1 at 3:02 of Brand New Animal \cite{bna}} \label{fig:runaway-raccoon}
-%     \end{figure}
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=\textwidth]{images/festival-marie.jpg}
-%         \caption{Michiru Kagemori and Marie Itami pictured left to right in Episode 1 at 12:51 of Brand New Animal \cite{bna}} \label{fig:festival-marie}
-%     \end{figure}
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=\textwidth]{images/help-command.jpg}
-%         \caption{Output from the help command} \label{fig:help-command}
-%     \end{figure}
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=\textwidth]{images/terminal.jpg}
-%         \caption{The terminal emulator} \label{fig:terminal}
-%     \end{figure}
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=\textwidth]{images/map-ingame.jpg}
-%         \caption{Output from the map command} \label{fig:map-ingame}
-%     \end{figure}
-%     \begin{figure}
-%         \lstinputlisting[language=Java]
-%         {../src/main/java/uk/insrt/coursework/zuul/events/Event.java}
-%         \caption{Event.java (uk.insrt.coursework.zuul.events.Event)} \label{fig:event}
-%     \end{figure}
-%     \begin{figure}
-%         \lstinputlisting[language=Java]
-%         {../src/main/java/uk/insrt/coursework/zuul/io/IOSystem.java}
-%         \caption{IOSystem.java (uk.insrt.coursework.zuul.io.IOSystem)} \label{fig:io-system}
-%     \end{figure}
-%     \begin{figure}
-%         \lstinputlisting[language=Java]
-%         {../src/main/java/uk/insrt/coursework/zuul/io/StandardIO.java}
-%         \caption{StandardIO.java (uk.insrt.coursework.zuul.io.StandardIO)} \label{fig:standard-io}
-%     \end{figure}
-%     \begin{figure}
-%         \lstinputlisting[language=Java]
-%         {../src/main/java/uk/insrt/coursework/zuul/io/LocalisedIO.java}
-%         \caption{LocalisedIO.java (uk.insrt.coursework.zuul.io.LocalisedIO)} \label{fig:localised-io}
-%     \end{figure}
-%     \begin{figure}
-%         \lstinputlisting[language=Java]
-%         {../src/main/java/uk/insrt/coursework/zuul/events/EventSystem.java}
-%         \caption{EventSystem.java (uk.insrt.coursework.zuul.events.EventSystem)} \label{fig:event-system}
-%     \end{figure}
-%     \begin{figure}
-%         \lstinputlisting[language=Java]
-%         {../src/main/java/uk/insrt/coursework/zuul/dialogue/DialogueOption.java}
-%         \caption{DialogueOption.java (uk.insrt.coursework.zuul.dialogue.DialogueOption)} \label{fig:dialogue}
-%     \end{figure}
-%     \begin{figure}
-%         \lstinputlisting[language=Java]
-%         {../src/main/java/uk/insrt/coursework/zuul/ui/EventDraw.java}
-%         \caption{EventDraw.java (uk.insrt.coursework.zuul.ui.EventDraw)} \label{fig:event-draw}
-%     \end{figure}
-%     \begin{figure}
-%         \begin{lstlisting}[language=Java]
-% public<E extends Event> void addListener(Class<E> event,
-%     IEventListener<E> listener) {
-%     this.getList(event).add(listener);
-% }\end{lstlisting}
-%         \caption{Excerpt from EventSystem.java (uk.insrt.coursework.zuul.events.EventSystem)} \label{fig:generic-method}
-%     \end{figure}
-%     \begin{figure}
-%         \begin{lstlisting}[language=Java]
-% /**
-%  * Get the current weight of this inventory.
-%  * @return Weight (in kg)
-%  */
-% public double getWeight() {
-%     return this
-%         .items
-%         .stream()
-%         .mapToDouble(Entity::getWeight)
-%         .sum();
-% }
-
-% /**
-%  * Check if the inventory is full.
-%  * @return True if the weight is greater than the max weight
-%  */
-% public boolean isFull() {
-%     return this.getWeight() >= this.getMaxWeight();
-% }
-
-% /**
-%  * Add an entity to this inventory.
-%  * 
-%  * There must be sufficient space for the entity.
-%  * @param entity Target Entity
-%  * @return Whether we successfully added the new entity.
-%  */
-% public boolean add(Entity entity) {
-%     if (this.getWeight() + entity.getWeight() > this.maxWeight) {
-%         return false;
-%     }
-
-%     this.items.add(entity);
-%     return true;
-% }\end{lstlisting}
-%         \caption{Excerpt from Inventory.java (uk.insrt.coursework.zuul.entities.Inventory)} \label{fig:inventory}
-%     \end{figure}
-%     \begin{figure}
-%         \begin{lstlisting}[language=Java]
-% /**
-%  * Write a string value to the text buffer.
-%  * @param value String value to write
-%  */
-% public void write(String value) {
-%     // Write each character sequentially.
-%     for (int i=0;i<value.length();i++) {
-%         char c = value.charAt(i);
-
-%         // If we encounter an Ansi escape character, then take the
-%         // substring from this point on and determine if it is a valid
-%         // escape code. If it is, apply any changes before continuing.
-%         if (c == '\u001B') {
-%             Matcher matcher = Ansi.AnsiPattern.matcher(value.substring(i));
-%             if (matcher.find()) {
-%                 int v = Integer.parseInt(matcher.group(1));
-%                 i += 3 + (v > 9 ? 1 : 0);
-
-%                 if (v == 0) {
-%                     this.bg = Color.BLACK;
-%                     this.fg = Color.WHITE;
-%                 } else if (v >= 30 && v < 38) {
-%                     this.fg = Ansi.fromEscapeCode(v);
-%                 } else if (v >= 40 && v < 48) {
-%                     this.bg = Ansi.fromEscapeCode(v);
-%                 }
-
-%                 continue;
-%             }
-%         }
-
-%         this.write(c);
-%     }
-% }\end{lstlisting}
-%         \caption{Excerpt from TextBuffer.java (uk.insrt.coursework.zuul.ui.TextBuffer)} \label{fig:ansi-match}
-%     \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{images/transforming_normals.png}
+        \caption{Transforming Normal Vectors \cite{learnopengl-lighting}} \label{fig:normals}
+    \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{images/opengluv.png}
+        \caption{OpenGL UV mapping \cite{opengl-tutorial-textured-cube}} \label{fig:uvmapping}
+    \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{images/decimate.png}
+        \caption{Decimate Filter in Blender} \label{fig:decimate}
+    \end{figure}
 \end{document}
