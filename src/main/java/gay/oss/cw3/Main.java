@@ -13,6 +13,7 @@ import gay.oss.cw3.renderer.Util;
 import gay.oss.cw3.renderer.Window;
 import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.renderer.simulation.ui.SimulationUI;
+import gay.oss.cw3.renderer.ui.events.KeyEvent;
 import gay.oss.cw3.scenarios.DefaultScenario;
 import gay.oss.cw3.scenarios.Scenario;
 
@@ -46,6 +47,7 @@ public class Main {
 
         // Handle key events
         window.setKeyCallback((key, action, modifiers) -> {
+            this.ui.emit(new KeyEvent(key, action, modifiers));
             if (action == GLFW_PRESS) onKeyPress(key, modifiers);
         });
 

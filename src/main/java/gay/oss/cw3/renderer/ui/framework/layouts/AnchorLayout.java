@@ -67,7 +67,10 @@ public class AnchorLayout extends Node {
     public void handle(Event event) {
         for (Anchor anchor : Anchor.values()) {
             if (event.isCanceled()) break;
-            this.children.get(anchor).handle(event);
+            Node child = this.children.get(anchor);
+            if (child != null) {
+                child.handle(event);
+            }
         }
     }
 }
