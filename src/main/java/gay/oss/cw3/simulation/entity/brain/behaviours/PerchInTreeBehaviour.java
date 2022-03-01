@@ -1,6 +1,5 @@
 package gay.oss.cw3.simulation.entity.brain.behaviours;
 
-import gay.oss.cw3.scenarios.entities.Bird;
 import gay.oss.cw3.scenarios.entities.Tree;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;

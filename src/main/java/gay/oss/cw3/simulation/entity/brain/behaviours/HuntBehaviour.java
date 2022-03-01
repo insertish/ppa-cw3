@@ -1,6 +1,7 @@
 package gay.oss.cw3.simulation.entity.brain.behaviours;
 
 import gay.oss.cw3.simulation.entity.Entity;
+import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 import java.util.Random;
 
@@ -14,6 +15,7 @@ public class HuntBehaviour extends MovementBehaviour {
     private final Random random = new Random();
     private final double targetFullnessFraction;
     private final Class<? extends Entity>[] targetClasses;
+    private final EntityLayer layer;
 
     private Entity target;
     private int ticksCouldntMove = 0;
@@ -27,8 +29,17 @@ public class HuntBehaviour extends MovementBehaviour {
      * @param targetClasses             the classes that are valid hunting targets
      */
     @SafeVarargs
+    public HuntBehaviour(Entity entity, double speed, EntityLayer layer, double targetFullnessFraction, Class<? extends Entity>... targetClasses) {
+        super(speed, entity);
+        this.layer = layer;
+        this.targetFullnessFraction = targetFullnessFraction;
+        this.targetClasses = targetClasses;
+    }
+
+    @SafeVarargs
     public HuntBehaviour(Entity entity, double speed, double targetFullnessFraction, Class<? extends Entity>... targetClasses) {
         super(speed, entity);
+        this.layer = entity.getLayer();
         this.targetFullnessFraction = targetFullnessFraction;
         this.targetClasses = targetClasses;
     }
@@ -42,7 +53,7 @@ public class HuntBehaviour extends MovementBehaviour {
             return false;
         }
 
-        var potentialTargets = this.entity.getAdjacentEntities(5);
+        var potentialTargets = this.entity.getWorld().getEntitiesAround(this.layer, this.entity, this.entity.getLocation(), 5);
         if (potentialTargets.isEmpty()) {
             return false;
         }
@@ -72,6 +83,7 @@ public class HuntBehaviour extends MovementBehaviour {
         if (this.entity.getLocation().distanceTo(this.target.getLocation()) < 2) {
             this.ticksCouldntMove = 0;
             this.entity.moveToOverwriting(this.target.getLocation());
+            this.target.setAlive(false);
             this.entity.addFullness(this.target.getFullness()*0.7);
             return;
         }
@@ -88,6 +100,7 @@ public class HuntBehaviour extends MovementBehaviour {
             } else if (entityAtLoc == this.target) {
                 this.ticksCouldntMove = 0;
                 this.entity.moveToOverwriting(newLoc);
+                this.target.setAlive(false);
                 this.entity.addFullness(this.target.getFullness()*0.7);
             } else {
                 this.ticksCouldntMove++;
