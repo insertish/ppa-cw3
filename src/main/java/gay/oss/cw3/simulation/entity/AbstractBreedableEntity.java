@@ -71,17 +71,15 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
     public void startBreedingAttempt() {
         this.lastBreedAttempt = this.getAgeTicks();
         this.removeFullness(this.attributes.get(EntityAttribute.FULLNESS_TO_BREED));
-        for (int i = 0; i < 3; i++) {
-            this.getWorld().getParticleManager().addParticle(
-                    new Particle(
-                            ParticleType.HEART,
-                            this.getLocation(),
-                            this.yOffset() + this.getWorld().getMap().getHeight(this.getLocation().x, this.getLocation().z),
-                            (float) this.getWorld().getRandom().nextGaussian()*0.2f,
-                            (float) this.getWorld().getRandom().nextGaussian()*2f,
-                            (float) this.getWorld().getRandom().nextGaussian()*0.2f
-                    )
-            );
-        }
+        this.getWorld().getParticleManager().addParticle(
+                new Particle(
+                        ParticleType.HEART,
+                        this.getLocation(),
+                        this.yOffset() + this.getWorld().getMap().getHeight(this.getLocation().x, this.getLocation().z),
+                        (float) this.getWorld().getRandom().nextGaussian()*0.2f,
+                        this.getWorld().getRandom().nextFloat(),
+                        (float) this.getWorld().getRandom().nextGaussian()*0.2f
+                )
+        );
     }
 }
