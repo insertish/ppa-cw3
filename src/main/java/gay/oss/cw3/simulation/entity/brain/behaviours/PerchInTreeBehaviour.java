@@ -63,7 +63,7 @@ public class PerchInTreeBehaviour extends MovementBehaviour {
     }
 
     private void findTree() {
-        this.tree = entity.getAdjacentEntities(EntityLayer.FOLIAGE, 40).stream()
+        this.tree = this.entity.getWorld().getEntitiesAround(EntityLayer.FOLIAGE, null, this.entity.getLocation(), 40).stream()
                 .filter(Tree.class::isInstance)
                 .map(Tree.class::cast)
                 .findAny()

@@ -89,6 +89,20 @@ public class World {
         return this.entities;
     }
 
+    /**
+     * Returns a list of entities within a square of the given radius around a coordinate, except an entity.
+     *
+     * @param layer     the layer to look in
+     * @param except    the entity to exclude (can be null)
+     * @param around    the coordinate to centre the search around
+     * @param radius    the half-side-length of the square to search around
+     *
+     * @return          a list of nearby entities
+     */
+    public List<Entity> getEntitiesAround(EntityLayer layer, @Nullable Entity except, Coordinate around, int radius) {
+        return this.map.getEntities(layer).getInRadius(except, around, radius);
+    }
+
     public int getTime() {
         return time;
     }

@@ -1,7 +1,11 @@
 package gay.oss.cw3.simulation.world.grid;
 
 import gay.oss.cw3.simulation.Coordinate;
+import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BasicGrid<T> implements Grid<T> {
     protected final Object lock = new Object();
@@ -56,6 +60,22 @@ public class BasicGrid<T> implements Grid<T> {
             if (!this.isInBounds(x, z)) return null;
             return (T) this.grid[x][z];
         }
+    }
+
+    @Override
+    public List<T> getInRadius(@Nullable T except, Coordinate around, int radius) {
+        int x = around.x;
+        int z = around.z;
+
+        List<T> entries = new ArrayList<>();
+        for (int i=-radius;i<radius+1;i++) {
+            for (int j=-radius;j<radius+1;j++) {
+                T e = this.get(x + i, z + j);
+                if (e != null && e != except) entries.add(e);
+            }
+        }
+
+        return entries;
     }
 
     @Override

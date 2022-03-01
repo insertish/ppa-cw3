@@ -39,7 +39,7 @@ public class EatFruitFromTreesBehaviour extends MovementBehaviour {
             return false;
         }
 
-        this.target = this.entity.getAdjacentEntities(EntityLayer.FOLIAGE, 10).stream()
+        this.target = this.entity.getWorld().getEntitiesAround(EntityLayer.FOLIAGE, null, this.entity.getLocation(), 10).stream()
                 .filter(Tree.class::isInstance)
                 .map(Tree.class::cast)
                 .filter(Tree::hasFruit)

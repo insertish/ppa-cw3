@@ -212,38 +212,15 @@ public abstract class Entity {
     }
 
     /**
-     * Finds a list of entities within the square of radius given around this entity.
-     *
-     * @param layer     the layer to look in
-     * @param radius    the half-side-length of the square to search around
-     *
-     * @return          a list of nearby entities
-     */
-    public List<Entity> getAdjacentEntities(EntityLayer layer, int radius) {
-        Coordinate location = this.getLocation();
-        int x = location.x;
-        int z = location.z;
-
-        List<Entity> entities = new ArrayList<>();
-        for (int i=-radius;i<radius+1;i++) {
-            for (int j=-radius;j<radius+1;j++) {
-                Entity e = this.world.getEntity(layer, x + i, z + j);
-                if (e != null && e != this) entities.add(e);
-            }
-        }
-
-        return entities;
-    }
-
-    /**
-     * Convenience overload for {@link #getAdjacentEntities(EntityLayer, int)} that checks on the entity's own layer.
+     * Convenience wrapper for {@link World#getEntitiesAround(EntityLayer, Entity, Coordinate, int)} that checks
+     * around this entity on its layer.
      *
      * @param radius the half-side-length of the square to search in
      *
      * @return a list of nearby entities
      */
     public List<Entity> getAdjacentEntities(int radius) {
-        return this.getAdjacentEntities(this.getLayer(), radius);
+        return this.getWorld().getEntitiesAround(this.getLayer(), this, this.getLocation(), radius);
     }
 
     /**

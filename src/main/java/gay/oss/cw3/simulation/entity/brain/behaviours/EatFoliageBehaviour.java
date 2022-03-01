@@ -40,7 +40,7 @@ public class EatFoliageBehaviour extends MovementBehaviour {
             return false;
         }
 
-        var potentialTargets = this.entity.getAdjacentEntities(EntityLayer.FOLIAGE, 10);
+        var potentialTargets = this.entity.getWorld().getEntitiesAround(EntityLayer.FOLIAGE, null, this.entity.getLocation(), 10);
         if (potentialTargets.isEmpty()) {
             return false;
         }
