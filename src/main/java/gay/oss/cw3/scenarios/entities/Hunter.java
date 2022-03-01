@@ -1,6 +1,6 @@
 package gay.oss.cw3.scenarios.entities;
 
-import gay.oss.cw3.scenarios.DefaultScenario;
+import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Entity;
@@ -57,5 +57,10 @@ public class Hunter extends AbstractBreedableEntity {
         var result = new Hunter(this.getWorld(), coordinate);
         result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
         return result;
+    }
+
+    @Override
+    public ParticleType deathParticleType() {
+        return ParticleType.SKULL;
     }
 }

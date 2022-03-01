@@ -3,6 +3,7 @@ package gay.oss.cw3.simulation.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.brain.EntityBrain;
 import gay.oss.cw3.simulation.world.World;
@@ -271,6 +272,10 @@ public abstract class Entity {
      */
     public float yOffset() {
         return 0f;
+    }
+
+    public ParticleType deathParticleType() {
+        return null;
     }
 
     /**

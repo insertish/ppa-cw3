@@ -69,6 +69,21 @@ public class World {
         }
 
         entity.setAlive(false);
+
+        var deathParticle = entity.deathParticleType();
+
+        if (deathParticle != null) {
+            this.getParticleManager().addParticle(
+                    new Particle(
+                            deathParticle,
+                            entity.getLocation(),
+                            entity.yOffset() + this.getMap().getHeight(entity.getLocation().x, entity.getLocation().z),
+                            (float) this.getRandom().nextGaussian() * 0.2f,
+                            this.getRandom().nextFloat() * 2f,
+                            (float) this.getRandom().nextGaussian() * 0.2f
+                    )
+            );
+        }
     }
 
     public @Nullable Entity getEntity(EntityLayer layer, int x, int z) {

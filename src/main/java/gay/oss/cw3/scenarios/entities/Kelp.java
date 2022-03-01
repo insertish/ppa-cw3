@@ -1,5 +1,6 @@
 package gay.oss.cw3.scenarios.entities;
 
+import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
@@ -64,5 +65,10 @@ public class Kelp extends Entity {
         var height = this.getWorld().getMap().getHeight(this.getLocation().x, this.getLocation().z);
         var offset = this.getWorld().getMap().getWaterLevel() - height - 10f;
         return height > height+offset ? 0f : offset;
+    }
+
+    @Override
+    public ParticleType deathParticleType() {
+        return ParticleType.GRASS;
     }
 }

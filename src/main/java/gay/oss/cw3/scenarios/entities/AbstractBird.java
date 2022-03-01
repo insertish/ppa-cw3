@@ -1,5 +1,6 @@
 package gay.oss.cw3.scenarios.entities;
 
+import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.AbstractBreedableEntity;
 import gay.oss.cw3.simulation.entity.Entity;
@@ -65,6 +66,11 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
         final double fractional = value - Math.floor(value);
 
         return this.getWorld().getRandom().nextDouble() <= fractional ? floor + 1 : floor;
+    }
+
+    @Override
+    public ParticleType deathParticleType() {
+        return ParticleType.SKULL;
     }
 
     /**

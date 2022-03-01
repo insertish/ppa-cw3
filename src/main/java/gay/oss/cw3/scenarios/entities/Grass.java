@@ -1,5 +1,6 @@
 package gay.oss.cw3.scenarios.entities;
 
+import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.entity.EntityAttribute;
@@ -44,5 +45,10 @@ public class Grass extends Entity {
             }
 
         }
+    }
+
+    @Override
+    public ParticleType deathParticleType() {
+        return ParticleType.GRASS;
     }
 }
