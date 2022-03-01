@@ -108,6 +108,9 @@ public class WorldRenderer {
         // Setup skybox and materials for rendering
         this.skybox = new Skybox();
 
+        // Prepare particle models
+        this.particleManager.computeModels();
+
         // Setup instanced renderer
         this.instancedRenderer = new Instanced();
     }
@@ -249,8 +252,6 @@ public class WorldRenderer {
     }
 
     private void drawParticles(Camera camera) {
-        this.particleManager.computeModels();
-
         List<Particle> particles = this.particleManager.getParticles();
 
         Map<Model, List<Matrix4f>> particlesPerModel = particles
