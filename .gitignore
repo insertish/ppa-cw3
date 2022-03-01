@@ -23,3 +23,13 @@ run
 
 *.un~
 libs
+
+# Tex
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+
+*.pdf
+!report/Final Report.pdf

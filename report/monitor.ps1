@@ -1,0 +1,1 @@
+latexmk -pdf -interaction=batchmode -pvc report.tex
