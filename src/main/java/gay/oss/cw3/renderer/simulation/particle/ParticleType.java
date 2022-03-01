@@ -21,7 +21,7 @@ public enum ParticleType {
     private static Model createHeartModel() {
         try {
             return new Model(
-                    MeshUtil.makeIndexedPlane(1.0f, 1.0f, true, 1),
+                    Mesh.loadObjFromResource("particles/particle").build(),
                     new Material(Resources.getShader("entity"), Resources.getTexture("particles/heart.png"))
             );
         } catch (Exception e) {
