@@ -53,6 +53,7 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
         super.moveTo(location);
     }
 
+    //FIXME
     @Override
     public float yOffset() {
         var factor = (2.0 - Math.min(this.getVelocity().length(), 2.0)) / 2.0;
@@ -73,6 +74,7 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
      *
      * <p>The specific rules used here are from <a href="http://www.kfish.org/boids/pseudocode.html">this website</a>.</p>
      */
+    //FIXME
     protected class BoidBehaviour implements Behaviour {
         private final int sightRadius;
 
