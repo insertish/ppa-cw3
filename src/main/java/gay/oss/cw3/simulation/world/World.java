@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import gay.oss.cw3.renderer.simulation.particle.Particle;
+import gay.oss.cw3.renderer.simulation.particle.ParticleManager;
+import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import org.jetbrains.annotations.Nullable;
 
 import gay.oss.cw3.simulation.Coordinate;
@@ -19,6 +22,7 @@ public class World {
     private final Map map;
     private final List<Entity> entities;
     private final List<Entity> entitiesToSpawn;
+    private final ParticleManager particleManager;
     private final Random random = new Random();
     private int time = 0;
 
@@ -28,6 +32,7 @@ public class World {
 
         this.entities = Collections.synchronizedList(new ArrayList<>());
         this.entitiesToSpawn = Collections.synchronizedList(new ArrayList<>());
+        particleManager = new ParticleManager();
     }
 
     public void tick() {
@@ -49,6 +54,8 @@ public class World {
 
         this.entities.addAll(this.entitiesToSpawn);
         this.entitiesToSpawn.clear();
+
+        this.particleManager.tick();
     }
 
     public void spawn(Entity entity) {
@@ -178,5 +185,9 @@ public class World {
 
     public Random getRandom() {
         return random;
+    }
+
+    public ParticleManager getParticleManager() {
+        return particleManager;
     }
 }

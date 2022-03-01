@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import gay.oss.cw3.renderer.simulation.particle.Particle;
+import gay.oss.cw3.renderer.simulation.particle.ParticleManager;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -39,6 +41,7 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 public class WorldRenderer {
     private final World world;
     private final HashMap<Class<?>, ModelEntity> models;
+    private final ParticleManager particleManager;
 
     private Model terrainModel;
     private Model waterModel;
@@ -54,6 +57,7 @@ public class WorldRenderer {
         this.world = world;
         this.models = new HashMap<>();
         this.lighting = new Lighting();
+        this.particleManager = world.getParticleManager();
     }
 
     /**
@@ -237,6 +241,37 @@ public class WorldRenderer {
         }
     }
 
+    private void drawParticles(Camera camera) {
+        this.particleManager.computeModels();
+
+        // Pull out all entities to render.
+        // We should aim to take as little time here as possible.
+        List<Particle> particles = this.particleManager.getParticles();
+
+        Map<Model, List<Matrix4f>> particlesPerModel = particles.stream().collect(Collectors.groupingBy(particleManager::getModelForParticle, Collectors.mapping(Particle::getMatrix, Collectors.toList())));
+
+        // Batch render each set of models.
+        for (Model model : particlesPerModel.keySet()) {
+            // Prepare level of detail map.
+            List<Matrix4f> matrices = particlesPerModel.get(model);
+
+            // If we need to render transparently, disable culling and
+            // prevent any writes to the depth buffer to prevent weird artifacts.
+            glDepthMask(false);
+            glDisable(GL_CULL_FACE);
+
+            if (!matrices.isEmpty()) {
+                model.use();
+                camera.upload();
+                this.instancedRenderer.draw(model.getMesh(), matrices);
+            }
+
+            // Re-enable culling and writing to depth buffer after we are done.
+            glDepthMask(true);
+            glEnable(GL_CULL_FACE);
+        }
+    }
+
     private SmoothedRandom random = new SmoothedRandom(1, 0.002f);
 
     /**
@@ -275,7 +310,10 @@ public class WorldRenderer {
         // 2. render entities
         this.drawEntities(camera);
 
-        // 3. render water
+        // 3. render particles
+        this.drawParticles(camera);
+
+        // 4. render water
         var map = this.world.getMap();
         this.waterModel
             .getTransformation()
