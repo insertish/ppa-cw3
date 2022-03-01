@@ -24,8 +24,8 @@ public enum ParticleType {
     private static Model createHeartModel() {
         try {
             return new Model(
-                    Mesh.loadObjFromResource("particles/particle").build(),
-                    new Material(Resources.getShader("entity"), Resources.getTexture("particles/heart.png"))
+                    Mesh.loadObjFromResource("particles/particleX").build(),
+                    new Material(Resources.getShader("particle"), Resources.getTexture("particles/heart.png"))
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,8 +36,8 @@ public enum ParticleType {
     private static Model createSkullModel() {
         try {
             return new Model(
-                    Mesh.loadObjFromResource("particles/particle").build(),
-                    new Material(Resources.getShader("entity"), Resources.getTexture("particles/skull.png"))
+                    Mesh.loadObjFromResource("particles/particleX").build(),
+                    new Material(Resources.getShader("particle"), Resources.getTexture("particles/skull.png"))
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,8 +48,8 @@ public enum ParticleType {
     private static Model createGrassModel() {
         try {
             return new Model(
-                    Mesh.loadObjFromResource("particles/particle").build(),
-                    new Material(Resources.getShader("entity"), Resources.getTexture("particles/grass.png"))
+                    Mesh.loadObjFromResource("particles/particleX").build(),
+                    new Material(Resources.getShader("particle"), Resources.getTexture("particles/grass.png"))
             );
         } catch (Exception e) {
             e.printStackTrace();

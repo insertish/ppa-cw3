@@ -70,16 +70,6 @@ public class Model {
     }
 
     /**
-     * Draw this model given a specific view projection.
-     * @param viewProjection View Projection Matrix
-     */
-    public void draw(Matrix4f viewProjection) {
-        this.use();
-        Camera.upload(viewProjection, this.transformation);
-        this.mesh.draw();
-    }
-
-    /**
      * Draw this model using the provided Camera's view projection.
      * @param camera Camera
      */

@@ -244,18 +244,22 @@ public class WorldRenderer {
     private void drawParticles(Camera camera) {
         this.particleManager.computeModels();
 
-        // Pull out all entities to render.
-        // We should aim to take as little time here as possible.
         List<Particle> particles = this.particleManager.getParticles();
 
-        Map<Model, List<Matrix4f>> particlesPerModel = particles.stream().collect(Collectors.groupingBy(particleManager::getModelForParticle, Collectors.mapping(Particle::getMatrix, Collectors.toList())));
+        Map<Model, List<Matrix4f>> particlesPerModel = particles
+            .stream()
+            .collect(Collectors
+                .groupingBy(
+                    particleManager::getModelForParticle,
+                    Collectors.mapping(p -> p.getMatrix(camera), Collectors.toList())
+                )
+            );
 
         // Batch render each set of models.
         for (Model model : particlesPerModel.keySet()) {
-            // Prepare level of detail map.
             List<Matrix4f> matrices = particlesPerModel.get(model);
 
-            // If we need to render transparently, disable culling and
+            // Particles need transparency here, disable culling and
             // prevent any writes to the depth buffer to prevent weird artifacts.
             glDepthMask(false);
             glDisable(GL_CULL_FACE);

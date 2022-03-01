@@ -15,6 +15,8 @@ import gay.oss.cw3.renderer.interfaces.IScrollCallback;
  * Helper class for calculating the view projection matrix.
  */
 public class Camera {
+    private Matrix4f view;
+    private Matrix4f projection;
     private Matrix4f viewProjection;
 
     private double fov = 0.42 * Math.PI;
@@ -28,19 +30,40 @@ public class Camera {
     private double groundAngle = Math.PI / 3;
 
     /**
+     * Calculate the view matrix.
+     * @return View Matrix
+     */
+    public Matrix4f getViewMatrix() {
+        // 1. Calculate eye position vector.
+        Vector3f eyePosition = this.getEyePositionVector();
+
+        // 2. Create view matrix.
+        return new Matrix4f()
+            .lookAt(eyePosition.x, eyePosition.y, eyePosition.z,
+                    this.x, this.y, this.z,
+                    0.0f, 1.0f, 0.0f);
+    }
+
+    /**
+     * Calculate the projection matrix given the aspect ratio.
+     * @param aspectRatio Current Window aspect ratio
+     * @return Projection Matrix
+     */
+    public Matrix4f getProjectionMatrix(float aspectRatio) {
+        return new Matrix4f()
+            .perspective((float) fov, aspectRatio, 0.01f, 1000.0f);
+    }
+
+    /**
      * Given the current aspect ratio of the window, calculate the view projection matrix.
      * @param aspectRatio Current Window aspect ratio
      */
     public void calculate(float aspectRatio) {
-        // 1. Calculate eye position vector.
-        Vector3f eyePosition = this.getEyePositionVector();
-
-        // 2. Create view projection.
-        this.viewProjection = new Matrix4f()
-            .perspective((float) fov, aspectRatio, 0.01f, 1000.0f)
-            .lookAt(eyePosition.x, eyePosition.y, eyePosition.z,
-                    this.x, this.y, this.z,
-                    0.0f, 1.0f, 0.0f);
+        this.view = this.getViewMatrix();
+        this.projection = this.getProjectionMatrix(aspectRatio);
+        this.viewProjection = this
+            .getProjectionMatrix(aspectRatio)
+            .mul(this.getViewMatrix());
     }
 
     /**
@@ -146,7 +169,7 @@ public class Camera {
      * Upload the current view projection with no additional data.
      */
     public void upload() {
-        Camera.upload(this.viewProjection, null);
+        Camera.upload(this.view, this.projection, this.viewProjection, null);
     }
 
     /**
@@ -154,7 +177,7 @@ public class Camera {
      * @param transformation Model Transformation Matrix
      */
     public void upload(Matrix4f transformation) {
-        Camera.upload(this.viewProjection, transformation);
+        Camera.upload(this.view, this.projection, this.viewProjection, transformation);
     }
 
     /**
@@ -274,7 +297,17 @@ public class Camera {
     }
 
     /**
-     * Upload view projection, model and model view projection matrices.
+     * Compute the Camera's eye direction Vector.
+     * @return Direction Vector
+     */
+    public Vector3f getEyeDirectionVector() {
+        return this.getEyePositionVector()
+            .sub(this.x, this.y, this.z)
+            .normalize();
+    }
+
+    /**
+     * Upload projection matrices.
      * @param viewProjection View Projection Matrix
      * @param transformation Model Transformation Matrix
      */
@@ -286,5 +319,20 @@ public class Camera {
             program.setUniform("model", transformation);
             program.setUniform("modelViewProjection", new Matrix4f(viewProjection).mul(transformation));
         }
+    }
+
+    /**
+     * Upload projection matrices.
+     * @param view View Matrix
+     * @param projection Projection Matrix
+     * @param viewProjection View Projection Matrix
+     * @param transformation Model Transformation Matrix
+     */
+    public static void upload(Matrix4f view, Matrix4f projection, Matrix4f viewProjection, Matrix4f transformation) {
+        var program = ShaderProgram.getCurrent();
+        program.setUniform("projection", projection);
+        program.setUniform("viewProjection", viewProjection);
+
+        Camera.upload(viewProjection, transformation);
     }
 }

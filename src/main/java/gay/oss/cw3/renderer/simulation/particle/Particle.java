@@ -43,8 +43,10 @@ public class Particle {
         return this.age <= type.lifetime;
     }
 
-    public Matrix4f getMatrix() {
-        return new Matrix4f().translation(x, y, z);//.rotateTowards(camera.getEyePositionVector().sub(x, y, z), camera.getUpVector()); FIXME
+    public Matrix4f getMatrix(Camera camera) {
+        return new Matrix4f()
+            .translation(x, y, z)
+            .rotateTowards(camera.getEyeDirectionVector(), new Vector3f(0, 1, 0));
     }
 
     public ParticleType getType() {
