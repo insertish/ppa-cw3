@@ -64,7 +64,7 @@
     % Cover Page
     \maketitle
     \vfill
-    \centering \includegraphics[width=\textwidth]{../screenshot.png}
+    {\centering \includegraphics[width=\textwidth]{../screenshot.png}}
     
     \newpage
 
@@ -75,17 +75,33 @@
 
         \subsection{Species Interactions}
         
-        \section{Challenge Tasks}
+        \subsection{Challenge Tasks}
+
+            We completed the following challenge tasks:
+
+            \begin{itemize}
+                \item Multi-layered simulation: simulating plants and other foliage as well as aerial animals.
+                \item Brain / Behaviour Model: advanced per-entity behaviour.
+                \item 3D Rendered Simulation: 3D representation of the simulation world.
+            \end{itemize}
 
         % Layered simulation and interactions between them
-        \subsection{Multi-layered Simulation (Foliage + Aerial)}
+        \section{Multi-layered Simulation}
         % this is one of the provided challenge tasks
 
         % Could talk about implementation of AI
-        \subsection{Brain and Behaviour Model}
+        \section{Brain / Behaviour Model}
 
         % Graphics Section
-        \subsection{3D Rendered Simuation}
+        \section{3D Rendered Simuation}
+
+            One of the first things we did on the project was to bootstrap an OpenGL project and jump straight into 3D, adding an additional dimension to the simulation makes it easier to both see and appreciate the different interactions and behaviours between species.
+
+            \subsubsection{Rendering Overview}
+
+            Typically the setup for an OpenGL context and the subsequent rendering is as follows: configure any native bindings we need (initialise LWJGL \cite{LWJGL}, the library we are using to pull in native bindings), create a new Window and OpenGL context within it, compile required shader programs, upload meshes and textures to the GPU ahead of rendering, and then we drop into a permanent loop which only breaks once the Window requests close or the user initiated some action to close that we caught.
+
+            \subsubsection{Writing and Compiling Shaders}
 
         % other provided tasks that we haven't done:
         % \subsection{Weather}
@@ -98,6 +114,11 @@
     % IGNORE OLD CONTENT:
     % WILL BE TOUCHING
     \begin{thebibliography}{9}
+        \bibitem{LWJGL}
+        Lightweight Java Game Library \\
+        \url{https://www.lwjgl.org/}
+
+
         \bibitem{beastman}
         Brand New Animal Wiki. Beastman \\
         \url{https://brand-new-animal.fandom.com/wiki/Beastman}
