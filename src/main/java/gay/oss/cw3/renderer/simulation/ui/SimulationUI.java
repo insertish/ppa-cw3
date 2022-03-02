@@ -9,6 +9,7 @@ import gay.oss.cw3.renderer.simulation.ui.components.EntityList;
 import gay.oss.cw3.renderer.simulation.ui.components.HelpMenuBox;
 import gay.oss.cw3.renderer.simulation.ui.components.PlayStateBox;
 import gay.oss.cw3.renderer.simulation.ui.components.TickText;
+import gay.oss.cw3.renderer.simulation.ui.components.WelcomeBox;
 import gay.oss.cw3.renderer.ui.RootUI;
 import gay.oss.cw3.renderer.ui.events.Event;
 import gay.oss.cw3.renderer.ui.fonts.Font;
@@ -20,6 +21,7 @@ import gay.oss.cw3.renderer.ui.framework.layouts.Anchor;
 import gay.oss.cw3.renderer.ui.framework.layouts.AnchorLayout;
 import gay.oss.cw3.renderer.ui.framework.layouts.FlowDirection;
 import gay.oss.cw3.renderer.ui.framework.layouts.FlowLayout;
+import gay.oss.cw3.renderer.ui.framework.layouts.StackedLayout;
 import gay.oss.cw3.scenarios.Scenario;
 import gay.oss.cw3.simulation.world.World;
 
@@ -49,43 +51,51 @@ public class SimulationUI extends RootUI {
     private void init() throws Exception {
         Font font = new FontPixel();
         this.rootNode = new Box(
-            new AnchorLayout()
-                // Display the day cycle and tick counter in the top left.
-                .add(
-                    Anchor.TopLeft,
-                    new FlowLayout(Arrays.asList(
-                        new Node[] {
-                            new PlayStateBox(this)
-                                .setMinSize(64),
-                            new DayCycleBox(this)
-                                .setMinSize(64),
-                            new Box(new TickText(font, 24, this))
-                                .setPadding(8)
-                                .setColour(new Vector4f(0, 0, 0, 0.5f))
-                        }
-                    ))
-                    .setGap(8)
-                )
-                // Display an entity list in the bottom right.
-                .add(
-                    Anchor.BottomRight,
-                    new EntityList(this.scenario, font)
-                )
-                // Display a mini help menu in the bottom left.
-                .add(
-                    Anchor.BottomLeft,
-                    new FlowLayout(Arrays.asList(
-                        new Node[] {
-                            new Text(font, "Press H for Help Menu", 28)
-                        }
-                    ))
-                    .setDirection(FlowDirection.Column)
-                )
-                // Display a help menu in the centre.
-                .add(
-                    Anchor.CenterMiddle,
-                    new HelpMenuBox(font)
-                )
+            new StackedLayout(new Node[] {
+                new AnchorLayout()
+                    // Display the day cycle and tick counter in the top left.
+                    .add(
+                        Anchor.TopLeft,
+                        new FlowLayout(Arrays.asList(
+                            new Node[] {
+                                new PlayStateBox(this)
+                                    .setMinSize(64),
+                                new DayCycleBox(this)
+                                    .setMinSize(64),
+                                new Box(new TickText(font, 24, this))
+                                    .setPadding(8)
+                                    .setColour(new Vector4f(0, 0, 0, 0.5f))
+                            }
+                        ))
+                        .setGap(8)
+                    )
+                    // Display an entity list in the bottom right.
+                    .add(
+                        Anchor.BottomRight,
+                        new EntityList(this.scenario, font)
+                    )
+                    // Display a mini help menu in the bottom left.
+                    .add(
+                        Anchor.BottomLeft,
+                        new FlowLayout(Arrays.asList(
+                            new Node[] {
+                                new Text(font, "Press H for Help Menu", 28)
+                            }
+                        ))
+                        .setDirection(FlowDirection.Column)
+                    )
+                    // Display a help menu in the centre.
+                    .add(
+                        Anchor.CenterMiddle,
+                        new HelpMenuBox(font)
+                    ),
+                new AnchorLayout()
+                    // Display a welcome menu on start.
+                    .add(
+                        Anchor.CenterMiddle,
+                        new WelcomeBox(font)
+                    )
+            })
         )
         .setPadding(24);
     }

@@ -131,7 +131,7 @@ public class Main {
         );
 
         // Off-load World tick to another thread
-        this.resume();
+        // this.resume();
     }
 
     /**
