@@ -1,8 +1,16 @@
-ppa coursework 3
+# Coursework 3: Predator / Prey Simulation
 
-<img src="https://cdn.discordapp.com/attachments/891314624643862528/939955126431531058/unknown.png" style="height:160px" />
+![](screenshot.png)
+
+![](screenshots/world1.jpg)
+![](screenshots/world2.jpg)
+![](screenshots/world3.jpg)
+![](screenshots/close1.jpg)
+![](screenshots/close2.jpg)
+![](screenshots/close3.jpg)
+![](screenshots/ui-welcome.png)
+![](screenshots/ui-help.png)
 
 ### Project Guidelines
 
 - Use [conventional commit style](https://www.conventionalcommits.org/en/v1.0.0-beta.2/).
-- do a little trolling

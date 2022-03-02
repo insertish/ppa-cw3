@@ -47,7 +47,7 @@ public class Main {
         Util.initialiseLWJGL();
 
         // Configure Window
-        window = Window.create(1280, 720, "Deez");
+        window = Window.create(1920, 1080, "Loading assets; waiting to start rendering...");
         window.configureGL();
         window.makeVisible();
 
@@ -203,7 +203,7 @@ public class Main {
         }
 
         // Update title with render time.
-        this.window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime() + " - Zoom: " + this.camera.getZoom());
+        this.window.setTitle("This is the simulation ever - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime() + " - Zoom: " + this.camera.getZoom());
 
         // Swap framebuffers.
         this.window.swap();
