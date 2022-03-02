@@ -27,7 +27,7 @@ public class Bunny extends AbstractBreedableEntity {
      */
     public Bunny(World world, Coordinate location) {
         super(world, location, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
-        this.getBrain().addBehaviour(new FleeBehaviour(this, 1.6, 10, Hunter.class));
+        this.getBrain().addBehaviour(new FleeBehaviour(this, 1.6, 10, Hunter.class, BirdOfPrey.class));
         this.getBrain().addBehaviour(new SleepBehaviour(this, false));
         this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.1, 0.7, Grass.class));
         this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0, 5));
