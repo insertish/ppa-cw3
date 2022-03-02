@@ -21,6 +21,8 @@ switch (OperatingSystem.current()) {
 
 // project.ext.lwjglNatives = "natives-windows"
 // project.ext.lwjglNatives = "natives-linux"
+// project.ext.lwjglNatives = "natives-macos"
+// project.ext.lwjglNatives = "natives-macos-arm64"
 
 group = project.group_name
 archivesBaseName = project.name
@@ -55,7 +57,6 @@ dependencies {
     implementation "org.lwjgl:lwjgl-nuklear"
     implementation "org.lwjgl:lwjgl-openal"
     implementation "org.lwjgl:lwjgl-opengl"
-    implementation "org.lwjgl:lwjgl-openvr"
     implementation "org.lwjgl:lwjgl-opus"
     implementation "org.lwjgl:lwjgl-par"
     implementation "org.lwjgl:lwjgl-stb"
@@ -67,7 +68,6 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-nuklear::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-openvr::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opus::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
