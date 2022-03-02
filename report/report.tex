@@ -75,6 +75,21 @@
     \begin{multicols}{2}
         \section{The Simulation}
 
+        \subsection{Running the Simulation}
+
+            On most platforms, the simulation should run in BlueJ \cite{BlueJ} as expected by right-clicking the \codeword{Main} class and selecting \codeword{runSimulation()} (as seen in \autoref{fig:bluej}).
+            This may fail if you either restart the simulation or are using a Mac M1 as GLFW expects us to be running on \codeword{THREAD0}.
+
+            On Mac M1, you can run it as such:
+
+            \begin{lstlisting}
+java -XstartOnFirstThread -jar ppa-cw3-1.0.0-bluej-all-natives.jar\end{lstlisting}
+
+            In general, running outside of BlueJ:
+
+            \begin{lstlisting}
+java -jar ppa-cw3-all-natives.jar\end{lstlisting}
+
         \subsection{Species List}
 
             The following species are present:
@@ -354,6 +369,9 @@ return objectColour *
     
     \begin{thebibliography}{9}
         
+        \bibitem{BlueJ}
+        BlueJ \\
+        \url{https://bluej.org/}
         \bibitem{LWJGL}
         Lightweight Java Game Library \\
         \url{https://www.lwjgl.org/}
@@ -388,7 +406,7 @@ return objectColour *
         Khronos OpenGL® Registry - The Khronos Group Inc \\
         \url{https://www.khronos.org/registry/OpenGL/index_gl.php}
         \bibitem{FastNoiseLite}
-        FastNoiseLite - Fast Portable Noise Library\\
+        FastNoiseLite - Fast Portable Noise Library \\
         \url{https://github.com/Auburn/FastNoiseLite}
 
         \textbf{\\ References in code.}
@@ -521,6 +539,11 @@ return objectColour *
         \centering
         \includegraphics[width=\textwidth]{../screenshots/ui-help.png}
         \caption{UI: Help Menu} \label{fig:screenshot-ui-help}
+    \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{images/bluej.png}
+        \caption{Simulation running in BlueJ \cite{BlueJ}} \label{fig:bluej}
     \end{figure}
     \begin{figure}
         \centering
