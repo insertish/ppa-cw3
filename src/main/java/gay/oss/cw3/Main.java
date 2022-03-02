@@ -225,4 +225,11 @@ public class Main {
         
         instance.destroy();
     }
+
+    /**
+     * Short-hand for running the simulation.
+     */
+    public static void runSimulation() {
+        Main.main(new String[] {});
+    }
 }
