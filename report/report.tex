@@ -88,9 +88,20 @@
         % Layered simulation and interactions between them
         \section{Multi-layered Simulation}
         % this is one of the provided challenge tasks
+        We decided that when simulating plants, it would be advantageous to use the same entity system as used for animals to leverage the systems already in place for them. However, it would be necessary for plants and animals to occupy the same space on the simulation grid. 
+        
+        To allow for this, we created a layered system where different entities could reside on different layers, passing 'over' one another. An Enum was used to define the layers.
+        
+        After implementing this system for plants, we expanded the system, adding an 'aerial entities' layer. This allowed for birds to fly over other entities without blocking thier movement. A vertical offset was also set for each layer, to allow the aerial layer's entities to be rendered in the air.
 
         % Could talk about implementation of AI
         \section{Brain / Behaviour Model}
+
+        The AI behaviours of entities are implemented using a system based around 'Behaviours' and 'Brains'.
+        
+        Behaviours are a basic unit of AI - something like fleeing predators, or hunting prey, or idly wandering around are implemented as behaviours. Behaviours are attached to an entity using the Entity Brain system. The Brain has a list of Behaviours in order of priority. Once per tick, the highest priority Behaviour that reports it can run is run.
+        
+        The Behaviours and Brains system makes it simple to compose complex AI by attaching simple Behaviours to an entity. This also reduces code duplication, as many entities may need to use the same AI building blocks.
 
         % Graphics Section
         \section{3D Rendered Simuation}
