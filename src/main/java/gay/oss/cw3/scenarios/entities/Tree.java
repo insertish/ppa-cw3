@@ -41,11 +41,11 @@ public class Tree extends Entity {
         if (this.isAlive()) {
             // photosynthesis
             if (this.getWorld().getDayCycle() != DayCycle.NIGHT) {
-                this.addFullness(0.01);
+                this.addFullness(0.1);
             }
 
             // fruiting
-            if (this.getFullness() >= 3.0) {
+            if (this.getFullness() >= 5.0) {
                 this.fruits++;
                 this.removeFullness(FRUIT_FULLNESS);
             }
