@@ -5,10 +5,10 @@ import gay.oss.cw3.renderer.Util;
 import static gay.oss.cw3.renderer.Util.intColourToFloats;
 
 public enum DayCycle {
-    MORNING(0xffffff, 0x8ba8b5),
+    MORNING(0xffffff, 0x9bb8c5),
     AFTERNOON(0xfffcbf, 0xffffff),
-    EVENING(0xe6b891, 0x354960),
-    NIGHT(0x4a5757, 0x0d1d42);
+    EVENING(0xe6b891, 0x455970),
+    NIGHT(0x4a5757, 0x1d1d42);
 
     private final float[] sunColour;
     private final float[] skyColour;
