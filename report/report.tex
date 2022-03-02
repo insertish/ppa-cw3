@@ -15,6 +15,7 @@
 
 \usepackage{blindtext}
 \usepackage{dirtree}
+\usepackage{amsmath}
 
 \usepackage{xcolor}
 \colorlet{cBlue}{blue!80}
@@ -83,9 +84,11 @@
             We completed the following challenge tasks:
 
             \begin{itemize}
+                \setlength\itemsep{0.01em}
                 \item Multi-layered simulation: simulating plants and other foliage as well as aerial animals.
                 \item Brain / Behaviour Model: advanced per-entity behaviour.
                 \item 3D Rendered Simulation: 3D representation of the simulation world.
+                \item World Generation: generating a 3D world with biomes.
             \end{itemize}
 
         % Layered simulation and interactions between them
@@ -223,6 +226,20 @@ return objectColour *
 
                     Continuing from the previous section: For high level of detail (camera is nearby), we chose to aim for about 1 to 2k faces per object, then halved it for medium and low levels of detail. Before performing a render pass of entities, we first calculate the distance between the camera’s eye position (calculated earlier) and the entity’s current location, then we resolve this to a suitable level of detail such as high, medium, low, or do not render at all.
 
+                    \[
+                        \begin{array}{l}
+                            d = \begin{bmatrix}
+                                \vec{eye} - \vec{model}
+                            \end{bmatrix} \\
+                            LoD = \begin{cases}
+                                \text{High}, &d \leq 20 \\
+                                \text{Medium}, &d \leq 70 \\
+                                \text{Low}, &d \leq 250 \\
+                                \text{Do Not Render}, &d > 250
+                            \end{cases}
+                        \end{array}
+                    \]
+
 
         % other provided tasks that we haven't done:
         % \subsection{Weather}
@@ -230,18 +247,60 @@ return objectColour *
         
         \section{World Generation}
         The simulation takes place on a procedurally-generated world. This allows for different starting conditions and therefore different results for each run.
-        
-        Generation of the world is done in four stages:
+        Generation of is done in four stages:
         
         \subsection{Biome Generation}
         
-        Firstly, a \cite{FastNoiseLite} instance is created, and used to create a randomised biome map. This affects the ground colour and what entities may spawn later on.
+        We use FastNoiseLite \cite{FastNoiseLite} to create noise and hence a randomised biome map. This affects the ground colour and what entities may spawn later on. We use Cellular noise with the parameters:
+
+        \begin{itemize}
+            \setlength\itemsep{0.01em}
+            \item $frequency = 0.015$
+            \item Hybrid Cellular Distance Function
+            \item Cell Value Return Type
+        \end{itemize}
         
         \subsection{Heightmap}
         
-        A second noise is used to create the heightmap. This creates variation in the vertical level of the ground, creating an interesting terrain with high and low areas. Areas under a certain height level are considered to be underwater; underwater areas have a different ecosystem.
+        A second noise is used to create the heightmap. This creates variation in the vertical level of the ground, creating an interesting terrain with high and low areas. Areas under a certain height level are considered to be underwater; underwater areas have a different ecosystem. Noise parameters:
+
+        \begin{itemize}
+            \setlength\itemsep{0.01em}
+            \item OpenSimplex2S
+            \item $frequency = 0.05$
+            \item FBm Fractal Type
+            \item $octaves_f = 4$
+            \item $lacunarity_f = 0.6$
+            \item $gain_f = 1.8$
+            \item $weighted\_strength_f = -0.4$
+        \end{itemize}
         
         The heightmap is adjusted so that areas outside a circle around the centre of the world are smoothly pulled down to sea level. This creates the effect of an island-shaped world generation.
+
+        To do this, let $height_i$ be the initial height, $height_t$ be the target height, $x$ and $y$ are the absolute coordinates, $width$ and $depth$ represent the size of the world, $dist_b$ be the beach distance, and $dist_s$ be the sea distance.
+
+        \[
+            \begin{aligned}
+                x_a &= x - \frac{width}{2} \\
+                z_a &= z - \frac{depth}{2} \\
+                dist_c &= \sqrt{x_a^2 + z_a^2} \\
+                dist_c &= \begin{cases}
+                    height_i, &dist_c < dist_b \\
+                    height_t, &dist_c \ge dist_s
+                \end{cases} \\
+                x &= \frac{dist_c - dist_b}{dist_s - dist_b} \\
+                factor &= \begin{cases}
+                    4 \cdot x^3, &x < 0.5 \\
+                    1 - \frac{(-2 \cdot x + 2)^3}{2}, &x \ge 0.5
+                \end{cases}
+            \end{aligned}
+        \]
+
+        Hence we find our final height:
+
+        \[
+            h = (1 - factor) \cdot height_i + factor * height_t
+        \]
         
         \subsection{Offsets}
         
@@ -311,6 +370,8 @@ return objectColour *
         \cmd{org.joml:joml} \url{https://github.com/JOML-CI/JOML}
         \bibitem{library-3}
         \cmd{de.javagl:obj} \url{https://github.com/javagl/Obj}
+        \bibitem{library-4}
+        \cmd{lib/FastNoiseLite.java} \url{https://github.com/Auburn/FastNoiseLite}
 
         \textbf{\\ Resources used:}
         % Models used:
