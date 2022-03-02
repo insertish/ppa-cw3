@@ -1,6 +1,7 @@
 package gay.oss.cw3;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F11;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_N;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_P;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
@@ -170,6 +171,9 @@ public class Main {
                 if ((modifiers & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
                     this.renderUI = !this.renderUI;
                 }
+                break;
+            case GLFW_KEY_F11:
+                this.window.toggleFullscreen();
                 break;
         }
     }

@@ -54,6 +54,7 @@ public class HelpMenuBox extends Box {
                         new Text(font, "SPACE: Toggle Simulation", fontSize),
                         new Text(font, "LMB DRAG: Rotate Camera", fontSize),
                         new Text(font, "SCROLL: Zoom Camera", fontSize),
+                        new Text(font, "F11: Toggle Fullscreen", fontSize),
                         new Text(font, "ESCAPE: Quit Simulation", fontSize),
                     }
                 ))

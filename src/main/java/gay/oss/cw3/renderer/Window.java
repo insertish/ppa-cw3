@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
+import static org.lwjgl.glfw.GLFW.GLFW_DONT_CARE;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_DEBUG_CONTEXT;
@@ -15,6 +16,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwRawMouseMotionSupported;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
@@ -23,6 +26,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -59,6 +63,7 @@ public class Window {
     private int width;
     private int height;
     private @NotNull String title;
+    private boolean fullscreen;
 
     /**
      * Construct a new Window
@@ -216,6 +221,24 @@ public class Window {
      */
     public void setTitle(String title) {
         glfwSetWindowTitle(this.pointer, title);
+    }
+
+    /**
+     * Toggle fullscreen state
+     */
+    public void toggleFullscreen() {
+        var monitor = glfwGetPrimaryMonitor();
+        var mode = glfwGetVideoMode(monitor);
+
+        if (fullscreen) {
+            int x = (mode.width() - 1280) / 2;
+            int y = (mode.height() - 720) / 2;
+            glfwSetWindowMonitor(this.pointer, 0, x, y, 1280, 720, GLFW_DONT_CARE);
+        } else {
+            glfwSetWindowMonitor(this.pointer, monitor, 0, 0, mode.width(), mode.height(), GLFW_DONT_CARE);
+        }
+
+        this.fullscreen = !this.fullscreen;
     }
 
     /**
