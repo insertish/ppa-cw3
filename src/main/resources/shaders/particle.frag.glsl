@@ -1,4 +1,4 @@
-#version 330 core
+#[glsl_version]
 
 in vec2 fragUV;
 

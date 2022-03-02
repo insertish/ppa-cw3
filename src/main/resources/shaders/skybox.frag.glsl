@@ -1,4 +1,4 @@
-#version 330 core
+#[glsl_version]
 in vec3 texCoords;
 
 out vec4 color;

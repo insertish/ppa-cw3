@@ -1,4 +1,4 @@
-#version 330 core
+#[glsl_version]
 layout (location = 0) in vec3 vertexPos;
 
 out vec3 texCoords;

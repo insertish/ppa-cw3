@@ -1,4 +1,4 @@
-#version 330 core
+#[glsl_version]
 #include "lighting.frag"
 
 out vec4 color;

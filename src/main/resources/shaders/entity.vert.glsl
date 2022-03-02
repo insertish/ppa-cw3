@@ -1,4 +1,4 @@
-#version 430 core
+#[glsl_version]
 #include "lighting.header.vert"
 
 layout (location = 0) in vec3 vertexPos;

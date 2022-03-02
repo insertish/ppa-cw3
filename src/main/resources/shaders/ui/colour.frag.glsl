@@ -1,4 +1,4 @@
-#version 330 core
+#[glsl_version]
 out vec4 color;
 uniform vec4 colour;
 

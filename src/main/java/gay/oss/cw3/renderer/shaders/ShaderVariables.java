@@ -53,6 +53,10 @@ public class ShaderVariables {
                 return ssboSupported
                     ? "#include \"lighting.body.instanced.vert\""
                     : "#include \"lighting.body.vert\"";
+            case "glsl_version":
+                return ssboSupported
+                    ? "#version 430 core"
+                    : "#version 330 core";
             default:
                 System.err.println("Unknown shader variable! #[" + key + "]");
                 return "";
