@@ -11,16 +11,16 @@ import gay.oss.cw3.simulation.world.World;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
- * An animal entity representing a rabbit.
+ * An animal entity representing a bunny.
  *
- * <p>Rabbits are herbivores who eat grass and are hunted by {@link Hunter foxes}.</p>
+ * <p>Bunnies are herbivores who eat grass and are hunted by {@link Hunter snakes}.</p>
  * 
  * @author Pawel Makles (K21002534)
  * @author William Bradford Larcombe (K21003008)
  */
 public class Bunny extends AbstractBreedableEntity {
     /**
-     * Create a new rabbit entity.
+     * Create a new bunny entity.
      *
      * @param world             the world the entity will reside in
      * @param location          the entity's initial location

@@ -15,9 +15,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * An animal entity representing a fox.
+ * An animal entity representing a snake.
  *
- * <p>Foxes are carnivores who hunt {@link Bunny rabbits}.</p>
+ * <p>Snakes are carnivores who hunt {@link Bunny bunnies}.</p>
  * 
  * @author Pawel Makles (K21002534)
  * @author William Bradford Larcombe (K21003008)
