@@ -224,6 +224,30 @@ return objectColour *
         % other provided tasks that we haven't done:
         % \subsection{Weather}
         % \subsection{Disease}
+        
+        \section{World Generation}
+        The simulation takes place on a procedurally-generated world. This allows for different starting conditions and therefore different results for each run.
+        
+        Generation of the world is done in four stages:
+        
+        \subsection{Biome Generation}
+        
+        Firstly, a \cite{FastNoiseLite} instance is created, and used to create a randomised biome map. This affects the ground colour and what entities may spawn later on.
+        
+        \subsection{Heightmap}
+        
+        A second noise is used to create the heightmap. This creates variation in the vertical level of the ground, creating an interesting terrain with high and low areas. Areas under a certain height level are considered to be underwater; underwater areas have a different ecosystem.
+        
+        The heightmap is adjusted so that areas outside a circle around the centre of the world are smoothly pulled down to sea level. This creates the effect of an island-shaped world generation.
+        
+        \subsection{Offsets}
+        
+        Each position on the world grid is then given a random offset and rotation. These are applied to entities in each grid position later, when rendering, breaking up the monotony of the grid and making it look more natural.
+        
+        \subsection{Entity Spawning}
+        
+        Finally, entities are spawned into the world. Each entity type is assigned a set of parameters for spawning, such as biome restrictions, chance to spawn per grid tile, and land/water restrictions. These are used to determine what entities should be spawned.
+        
 
     \end{multicols}
 
@@ -264,6 +288,9 @@ return objectColour *
         \bibitem{extension-list}
         Khronos OpenGL® Registry - The Khronos Group Inc \\
         \url{https://www.khronos.org/registry/OpenGL/index_gl.php}
+        \bibitem{FastNoiseLite}
+        FastNoiseLite - Fast Portable Noise Library\\
+        \url{https://github.com/Auburn/FastNoiseLite}
 
         % \textbf{\\ References in code.}
 
