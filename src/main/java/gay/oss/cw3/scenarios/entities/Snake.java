@@ -22,14 +22,14 @@ import org.jetbrains.annotations.Nullable;
  * @author Pawel Makles (K21002534)
  * @author William Bradford Larcombe (K21003008)
  */
-public class Hunter extends AbstractBreedableEntity {
+public class Snake extends AbstractBreedableEntity {
     /**
      * Creates a new fox entity.
      *
      * @param world             the world the entity will reside in
      * @param location          the entity's initial location
      */
-    public Hunter(World world, Coordinate location) {
+    public Snake(World world, Coordinate location) {
         super(world, location, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new SleepBehaviour(this, true));
         this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, 10, Bunny.class));
@@ -64,7 +64,7 @@ public class Hunter extends AbstractBreedableEntity {
 
     @Override
     public @Nullable Entity createChild(Entity otherParent, Coordinate coordinate) {
-        var result = new Hunter(this.getWorld(), coordinate);
+        var result = new Snake(this.getWorld(), coordinate);
         result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
         return result;
     }

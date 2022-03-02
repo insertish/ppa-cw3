@@ -13,7 +13,7 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 /**
  * An animal entity representing a bunny.
  *
- * <p>Bunnies are herbivores who eat grass and are hunted by {@link Hunter snakes}.</p>
+ * <p>Bunnies are herbivores who eat grass and are hunted by {@link Snake snakes}.</p>
  * 
  * @author Pawel Makles (K21002534)
  * @author William Bradford Larcombe (K21003008)
@@ -27,7 +27,7 @@ public class Bunny extends AbstractBreedableEntity {
      */
     public Bunny(World world, Coordinate location) {
         super(world, location, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
-        this.getBrain().addBehaviour(new FleeBehaviour(this, 1.6, 10, Hunter.class, BirdOfPrey.class));
+        this.getBrain().addBehaviour(new FleeBehaviour(this, 1.6, 10, Snake.class, BirdOfPrey.class));
         this.getBrain().addBehaviour(new SleepBehaviour(this, false));
         this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.1, 0.7, Grass.class));
         this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0, 5));
