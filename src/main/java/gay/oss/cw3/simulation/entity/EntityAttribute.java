@@ -32,7 +32,7 @@ public enum EntityAttribute {
      * The fullness that an entity uses up in breeding. Due to conservation of energy this should usually be half or
      * more of the default fullness of the entity.
      */
-    FULLNESS_TO_BREED(2.0, 1.0, 10.0, 0.2),
+    FULLNESS_TO_BREED(2.0, 1.0, Double.POSITIVE_INFINITY, 0.2),
     /**
      * The age at which an entity is 25% likely to die of old age each tick.
      */

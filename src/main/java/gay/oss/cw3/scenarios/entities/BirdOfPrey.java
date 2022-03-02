@@ -24,15 +24,15 @@ public class BirdOfPrey extends AbstractBird {
      */
     public BirdOfPrey(World world, Coordinate location) {
         super(world, location, EntityLayer.AERIAL_ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
-        //this.getBrain().addBehaviour(new SleepBehaviour(this, true));
-        this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityLayer.ANIMALS, 0.7, 30, HerbivoreFish.class, Bunny.class));
-        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.3, 10));
+        this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityLayer.ANIMALS, 0.8, 30, Ferret.class, HerbivoreFish.class, Bunny.class));
+        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.3, 30));
         this.getBrain().addBehaviour(new PerchInTreeBehaviour(1.0, this));
         this.getBrain().addBehaviour(new BoidBehaviour(30));
 
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
-        this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 200);
+        this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
         this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+        this.getAttributes().set(EntityAttribute.MAX_FULLNESS, 40);
         this.getAttributes().set(EntityAttribute.FULLNESS_TO_BREED, this.getMaxFullness() / 2.0);
         this.setFullness(this.getMaxFullness());
         this.setHealth(this.getMaxHealth());
