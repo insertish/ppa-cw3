@@ -34,8 +34,8 @@ public class Hunter extends AbstractBreedableEntity {
         this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.8));
 
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
-        this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
-        this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
+        this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 200);
+        this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 400);
         this.getAttributes().set(EntityAttribute.FULLNESS_TO_BREED, this.getMaxFullness() / 2.0);
         this.getAttributes().set(EntityAttribute.LIFE_EXPECTANCY, 5000);
         this.setFullness(this.getMaxFullness());

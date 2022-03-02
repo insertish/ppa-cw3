@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * A behaviour that makes entities mate with other entities and have children.
@@ -56,7 +57,11 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         this.target = null;
         this.ticksCouldntMove = 0;
 
-        var potentialTargets = this.entity.getAdjacentEntities(this.viewDistance);
+        var potentialTargets = this.entity.getAdjacentEntities(this.viewDistance).stream()
+                .filter(entity.getClass()::isInstance)
+                .map(entity.getClass()::cast)
+                .collect(Collectors.toList());
+
         if (potentialTargets.isEmpty()) {
             return false;
         }
@@ -64,7 +69,6 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         var potentialTarget = potentialTargets.get(random.nextInt(potentialTargets.size()));
         if (
                 potentialTarget.isAlive()
-                        && this.entity.getClass().isInstance(potentialTarget)
                         && this.entity.isCompatible(potentialTarget)
                         && ((T) potentialTarget).canBreed()
                         && ((T) potentialTarget).isCompatible(this.entity)
