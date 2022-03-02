@@ -20,7 +20,7 @@ public class Tree extends Entity {
      * The amount of hunger stored in a fruit.
      */
     public static final double FRUIT_FULLNESS = 2.5;
-    private boolean hasFruit = false;
+    private int fruits = 0;
 
     /**
      * Creates a new Tree entity.
@@ -45,8 +45,8 @@ public class Tree extends Entity {
             }
 
             // fruiting
-            if (this.getFullness() >= 5.0 && !this.hasFruit()) {
-                this.hasFruit = true;
+            if (this.getFullness() >= 3.0) {
+                this.fruits++;
                 this.removeFullness(FRUIT_FULLNESS);
             }
 
@@ -56,7 +56,7 @@ public class Tree extends Entity {
                 if (!locations.isEmpty()) {
                     var coord = locations.get(this.getWorld().getRandom().nextInt(locations.size()));
                     this.getWorld().spawn(new Tree(this.getWorld(), coord));
-                    this.hasFruit = false;
+                    this.fruits--;
                 }
             }
         }
@@ -71,13 +71,13 @@ public class Tree extends Entity {
      * @return whether this entity currently has fruit
      */
     public boolean hasFruit() {
-        return this.hasFruit;
+        return this.fruits > 0;
     }
 
     /**
      * Remove a fruit from this entity
      */
     public void removeFruit() {
-        this.hasFruit = false;
+        this.fruits--;
     }
 }
