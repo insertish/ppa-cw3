@@ -50,6 +50,7 @@ public class HelpMenuBox extends Box {
                         new Text(font, "H: Toggle Help Menu", fontSize),
                         new Text(font, "N: Generate New World", fontSize),
                         new Text(font, "P: Toggle Particles", fontSize),
+                        new Text(font, "CTRL + U: Toggle UI", fontSize),
                         new Text(font, "SPACE: Toggle Simulation", fontSize),
                         new Text(font, "LMB DRAG: Rotate Camera", fontSize),
                         new Text(font, "SCROLL: Zoom Camera", fontSize),

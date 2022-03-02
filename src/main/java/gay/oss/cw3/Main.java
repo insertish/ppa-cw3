@@ -4,6 +4,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_N;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_P;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_U;
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_CONTROL;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -31,6 +33,7 @@ public class Main {
     private Thread tickThread;
 
     private boolean renderParticles = true;
+    private boolean renderUI = true;
 
     /**
      * Prepare the simulation and configure LWJGL / OpenGL for rendering
@@ -160,6 +163,11 @@ public class Main {
                 this.renderParticles = !this.renderParticles;
                 this.ui.setParticleState(this.renderParticles);
                 break;
+            case GLFW_KEY_U:
+                if ((modifiers & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
+                    this.renderUI = !this.renderUI;
+                }
+                break;
         }
     }
 
@@ -183,7 +191,9 @@ public class Main {
         this.scenario.getRenderer().draw(this.camera, this.renderParticles);
 
         // Draw the UI.
-        this.ui.draw(window.getWidth(), window.getHeight());
+        if (renderUI) {
+            this.ui.draw(window.getWidth(), window.getHeight());
+        }
 
         // Update title with render time.
         this.window.setTitle("Deez - Frame: " + (System.currentTimeMillis() - start) + "ms - Tick: " + this.scenario.getWorld().getTime() + " - Zoom: " + this.camera.getZoom());
