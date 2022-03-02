@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehaviour {
     private final Random random = new Random();
     private final Predicate<Coordinate> birthPositionPredicate;
+    private final int viewDistance;
     private final T entity;
 
     private T target;
@@ -23,25 +24,26 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
 
     /**
      * Create a new BreedBehaviour.
-     *
-     * @param entity                    the entity
+     *  @param entity                    the entity
      * @param speed                     the movement speed modifier
      * @param birthPositionPredicate    a predicate for valid positions to spawn the child
+     * @param viewDistance
      */
-    public BreedBehaviour(T entity, double speed, Predicate<Coordinate> birthPositionPredicate) {
+    public BreedBehaviour(T entity, double speed, Predicate<Coordinate> birthPositionPredicate, int viewDistance) {
         super(speed, entity);
         this.entity = entity;
         this.birthPositionPredicate = birthPositionPredicate;
+        this.viewDistance = viewDistance;
     }
 
     /**
      * Create a new BreedBehaviour.
-     *
-     * @param entity    the entity
+     *  @param entity    the entity
      * @param speed     the movement speed modifier
+     * @param viewDistance
      */
-    public BreedBehaviour(T entity, double speed) {
-        this(entity, speed, ((Entity)entity)::canMoveTo);
+    public BreedBehaviour(T entity, double speed, int viewDistance) {
+        this(entity, speed, ((Entity)entity)::canMoveTo, viewDistance);
     }
 
     @SuppressWarnings("unchecked") // `isInstance` check means that (T) cast is safe
@@ -54,7 +56,7 @@ public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehavi
         this.target = null;
         this.ticksCouldntMove = 0;
 
-        var potentialTargets = this.entity.getAdjacentEntities(5);
+        var potentialTargets = this.entity.getAdjacentEntities(this.viewDistance);
         if (potentialTargets.isEmpty()) {
             return false;
         }

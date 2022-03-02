@@ -24,10 +24,10 @@ public class Rabbit extends AbstractBreedableEntity {
      */
     public Rabbit(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
-        this.getBrain().addBehaviour(new FleeBehaviour(this, 1.0, 10, Hunter.class));
+        this.getBrain().addBehaviour(new FleeBehaviour(this, 1.6, 10, Hunter.class));
         this.getBrain().addBehaviour(new SleepBehaviour(this, false));
-        this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.0, 0.7, Grass.class));
-        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
+        this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.1, 0.7, Grass.class));
+        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0, 5));
         this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 1.0));
 
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);

@@ -16,31 +16,34 @@ public class HuntBehaviour extends MovementBehaviour {
     private final double targetFullnessFraction;
     private final Class<? extends Entity>[] targetClasses;
     private final EntityLayer layer;
+    private final int viewDistance;
 
     private Entity target;
     private int ticksCouldntMove = 0;
 
     /**
      * Creates a new HuntBehaviour.
-     *
-     * @param entity                    the entity
+     *  @param entity                    the entity
      * @param speed                     the movement speed modifier
      * @param targetFullnessFraction    the fullness that this entity will try to reach by hunting
+     * @param viewDistance
      * @param targetClasses             the classes that are valid hunting targets
      */
     @SafeVarargs
-    public HuntBehaviour(Entity entity, double speed, EntityLayer layer, double targetFullnessFraction, Class<? extends Entity>... targetClasses) {
+    public HuntBehaviour(Entity entity, double speed, EntityLayer layer, double targetFullnessFraction, int viewDistance, Class<? extends Entity>... targetClasses) {
         super(speed, entity);
         this.layer = layer;
         this.targetFullnessFraction = targetFullnessFraction;
+        this.viewDistance = viewDistance;
         this.targetClasses = targetClasses;
     }
 
     @SafeVarargs
-    public HuntBehaviour(Entity entity, double speed, double targetFullnessFraction, Class<? extends Entity>... targetClasses) {
+    public HuntBehaviour(Entity entity, double speed, double targetFullnessFraction, int viewDistance, Class<? extends Entity>... targetClasses) {
         super(speed, entity);
         this.layer = entity.getLayer();
         this.targetFullnessFraction = targetFullnessFraction;
+        this.viewDistance = viewDistance;
         this.targetClasses = targetClasses;
     }
 
@@ -53,7 +56,7 @@ public class HuntBehaviour extends MovementBehaviour {
             return false;
         }
 
-        var potentialTargets = this.entity.getWorld().getEntitiesAround(this.layer, this.entity, this.entity.getLocation(), 5);
+        var potentialTargets = this.entity.getWorld().getEntitiesAround(this.layer, this.entity, this.entity.getLocation(), this.viewDistance);
         if (potentialTargets.isEmpty()) {
             return false;
         }

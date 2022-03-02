@@ -27,7 +27,7 @@ public class HerbivoreFish extends AbstractBreedableEntity {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new SleepBehaviour(this, false));
         this.getBrain().addBehaviour(new EatFoliageBehaviour(this, 1.0, 0.7, Kelp.class));
-        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0));
+        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.0, 5));
         this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
 
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 1);

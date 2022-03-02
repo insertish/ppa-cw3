@@ -29,14 +29,15 @@ public class Hunter extends AbstractBreedableEntity {
     public Hunter(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new SleepBehaviour(this, true));
-        this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, Rabbit.class));
-        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6));
-        this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.6));
+        this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, 10, Rabbit.class));
+        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.2, 30));
+        this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.8));
 
         this.getAttributes().set(EntityAttribute.MAX_HEALTH, 2);
         this.getAttributes().set(EntityAttribute.MINIMUM_BREEDING_AGE, 100);
         this.getAttributes().set(EntityAttribute.TICKS_BETWEEN_BREEDING_ATTEMPTS, 50);
         this.getAttributes().set(EntityAttribute.FULLNESS_TO_BREED, this.getMaxFullness() / 2.0);
+        this.getAttributes().set(EntityAttribute.LIFE_EXPECTANCY, 5000);
         this.setFullness(this.getMaxFullness());
         this.setHealth(this.getMaxHealth());
     }
@@ -51,6 +52,11 @@ public class Hunter extends AbstractBreedableEntity {
                 this.addHealth(-1);
             }
         }
+    }
+
+    @Override
+    public void setAlive(boolean alive) {
+        super.setAlive(alive);
     }
 
     @Override

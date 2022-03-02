@@ -27,7 +27,7 @@ public class HerbivoreBird extends AbstractBird {
         //this.getBrain().addBehaviour(new SleepBehaviour(this, true));
         //this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, Rabbit.class));
         this.getBrain().addBehaviour(new EatFruitFromTreesBehaviour(this, 1.0, 0.7));
-        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6));
+        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6, 5));
         this.getBrain().addBehaviour(new PerchInTreeBehaviour(1.0, this));
         this.getBrain().addBehaviour(new BoidBehaviour(30));
 
