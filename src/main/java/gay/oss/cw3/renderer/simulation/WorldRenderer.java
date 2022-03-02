@@ -47,6 +47,8 @@ public class WorldRenderer {
     private Model waterModel;
     private Skybox skybox;
 
+    private CloudRenderer cloudRenderer;
+
     private Lighting lighting;
     private Instanced instancedRenderer;
 
@@ -110,6 +112,9 @@ public class WorldRenderer {
 
         // Prepare particle models
         this.particleManager.computeModels();
+
+        // Setup Cloud renderer
+        this.cloudRenderer = new CloudRenderer();
 
         // Setup instanced renderer
         this.instancedRenderer = new Instanced();
@@ -349,5 +354,8 @@ public class WorldRenderer {
         glCullFace(GL_FRONT);
         this.waterModel.draw(camera);
         glCullFace(GL_BACK);
+
+        // 6. draw cloud layer
+        this.cloudRenderer.draw(camera, this.world.getTime());
     }
 }

@@ -118,4 +118,28 @@ public class Util {
                 b / 256f
         };
     }
+
+    public static float adjustHeightToPlane(final float height, final int x, final int z, final int width, final int depth, final float BEACH_DISTANCE_FRACTION, final float SEA_DISTANCE_FRACTION, final float TARGET_HEIGHT) {
+        final int adjustedX = x - width/2;
+        final int adjustedZ = z - depth/2;
+        final float beachDistance = BEACH_DISTANCE_FRACTION*0.5f*width;
+        final float seaDistance = SEA_DISTANCE_FRACTION*0.5f*width;
+        float distToCentre = (float) Math.sqrt((adjustedX * adjustedX) + (adjustedZ * adjustedZ));
+
+        if (distToCentre < beachDistance) {
+            return height;
+        }
+
+        if (distToCentre > seaDistance) {
+            return TARGET_HEIGHT;
+        }
+
+        var factor = easeInOutCubic((distToCentre-beachDistance)/(seaDistance-beachDistance));
+
+        return (1f-factor)*height + factor*TARGET_HEIGHT;
+    }
+
+    private static float easeInOutCubic(float x) {
+        return x < 0.5f ? 4f * x * x * x : (float) (1f - Math.pow(-2f * x + 2f, 3f) / 2f);
+    }
 }

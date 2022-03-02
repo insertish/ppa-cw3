@@ -141,7 +141,9 @@ public class Map {
 
         for (int x=0;x<this.width;x++) {
             for (int z=0;z<this.depth;z++) {
-                this.heightMap.set(x, z, adjustGroundHeightToSeaFloor(heightNoise.GetNoise(x, z) * 40.0f, x, z));
+                float height = heightNoise.GetNoise(x, z) * 40.0f;
+                this.heightMap.set(x, z,
+                    Util.adjustHeightToPlane(height, x, z, width, depth, BEACH_DISTANCE_FRACTION, SEA_DISTANCE_FRACTION, SEA_FLOOR_HEIGHT));
             }
         }
 
@@ -165,30 +167,6 @@ public class Map {
                 }
             }
         }
-    }
-
-    private float adjustGroundHeightToSeaFloor(final float height, final int x, final int z) {
-        final int adjustedX = x - this.width/2;
-        final int adjustedZ = z - this.depth/2;
-        final float beachDistance = BEACH_DISTANCE_FRACTION*0.5f*this.width;
-        final float seaDistance = SEA_DISTANCE_FRACTION*0.5f*this.width;
-        float distToCentre = (float) Math.sqrt((adjustedX * adjustedX) + (adjustedZ * adjustedZ));
-
-        if (distToCentre < beachDistance) {
-            return height;
-        }
-
-        if (distToCentre > seaDistance) {
-            return SEA_FLOOR_HEIGHT;
-        }
-
-        var factor = easeInOutCubic((distToCentre-beachDistance)/(seaDistance-beachDistance));
-
-        return (1f-factor)*height + factor*SEA_FLOOR_HEIGHT;
-    }
-
-    private static float easeInOutCubic(float x) {
-        return x < 0.5f ? 4f * x * x * x : (float) (1f - Math.pow(-2f * x + 2f, 3f) / 2f);
     }
 
     public void generate() {

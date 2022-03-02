@@ -56,7 +56,6 @@ public class Texture {
         this.height = height[0];
 
         this.id = glGenTextures();
-
         glBindTexture(GL_TEXTURE_2D, id);
 
         // We use nearest neighbour scaling in all cases.

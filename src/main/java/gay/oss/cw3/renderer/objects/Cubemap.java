@@ -58,8 +58,6 @@ public class Cubemap {
         int i = 0;
         for (String face : FACES) {
             final InputStream dataStream = Texture.class.getResourceAsStream("/cubemaps/" + path + "/" + face + "." + ext);
-            System.out.println("/cubemaps/" + path + "/" + face + "." + ext);
-
             final byte[] data = dataStream.readAllBytes(); // throws IOException
             final ByteBuffer nativeDataBuf = MemoryUtil.memAlloc(data.length);
             nativeDataBuf.put(data);
