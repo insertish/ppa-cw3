@@ -83,6 +83,7 @@
                 \setlength\itemsep{0.01em}
                 \item \textbf{Bird} (\autoref{fig:bird-model})
                 \item \textbf{Bunny} (\autoref{fig:bunny-model})
+                \item \textbf{Ferret} (\autoref{fig:ferret-model})
                 \item \textbf{Falcon} (\autoref{fig:falcon-model})
                 \item \textbf{Fish} (\autoref{fig:fish-model})
                 \item \textbf{Grass} (\autoref{fig:grass-model})
@@ -93,7 +94,27 @@
 
         \subsection{Species Interactions}
 
-            THIS SECTION IS TODO
+            \subsubsection{Herbivorous Interactions}
+            
+            Bunnies and Ferrets both interact with grass by eating it. This is governed by the EatFoliageBehaviour. Fish interact with Kelp in the same way, eating it.
+            
+            Herbivorous Birds interact with Trees by eating the fruit off them - this is governed by the EatFruitFromTreesBehaviour. Unlike the grass-eating or kelp-eating of other animals, birds do not harm the trees by eating their fruit.
+            
+            \subsubsection{Carnivorous Interactions}
+            
+            The HuntBehaviour provides animals with the ability to hunt down other animals for food.
+            
+            Falcons will hunt down and eat Bunnies, Fish, and Ferrets.
+            
+            Snakes will hunt down and eat Bunnies.
+            
+            \subsubsection{Other Interactions}
+            
+            Due to the threat posed by their predators, most prey animals will flee them (with their FleeBehaviour): Bunnies flee Snakes and Falcons, and Ferrets flee Falcons. Fish can't see the falcons coming from above the water, and so never get a chance to flee!
+            
+            \subsubsection{Intra-Species Interactions}
+            
+            All animals (Birds, Bunnies, Ferrets, Falcons, Fish, and Snakes) seek out other members of their species to mate with and produce children. This is governed by the BreedBehaviour.
         
         \subsection{Challenge Tasks}
 
