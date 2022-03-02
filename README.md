@@ -2,6 +2,10 @@
 
 ![](screenshot.png)
 
+This project can be built with Gradle.
+
+To build a jar for distribution (on current platform), run `gradlew shadowJar`.
+
 ### World Overviews
 
 ![](screenshots/world1.jpg)
@@ -21,9 +25,10 @@
 
 ### Original Project
 
-Below is a picture of what they gave us to work with, we threw out most, if not all of the code and just made the thing above lol
+Below is a picture of what they gave us to work with, we threw out most of the provided code and just went off to do our own thing really lol
 
 ![](screenshots/base-project.png)
+![](screenshots/base-project-comparison.png)
 
 ## Project Guidelines
 
