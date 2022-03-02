@@ -26,7 +26,7 @@ public class BirdOfPrey extends AbstractBird {
         super(world, location, 0, true, EntityLayer.AERIAL_ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         //this.getBrain().addBehaviour(new SleepBehaviour(this, true));
         this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, EntityLayer.ANIMALS, 0.7, 30, Bunny.class));
-        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 0.6, 5));
+        this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.3, 5));
         this.getBrain().addBehaviour(new PerchInTreeBehaviour(1.0, this));
         this.getBrain().addBehaviour(new BoidBehaviour(30));
 
