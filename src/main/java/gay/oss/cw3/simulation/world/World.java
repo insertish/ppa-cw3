@@ -18,6 +18,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
  * The world handles the simulation.
+ *
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class World {
     private final Map map;

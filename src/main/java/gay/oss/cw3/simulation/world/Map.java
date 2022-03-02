@@ -16,6 +16,9 @@ import gay.oss.cw3.simulation.world.grid.Grid;
 
 /**
  * The map holds things which exist in the world.
+ *
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Map {
     final static float SEA_FLOOR_HEIGHT = -20f;

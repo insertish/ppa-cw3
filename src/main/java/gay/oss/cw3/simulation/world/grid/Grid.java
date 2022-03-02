@@ -9,6 +9,9 @@ import java.util.List;
  * An interface representing a two-dimensional grid of objects.
  *
  * @param <T> the type stored in this grid
+ *
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public interface Grid<T> {
     /**

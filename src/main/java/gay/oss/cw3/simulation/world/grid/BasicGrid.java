@@ -10,6 +10,9 @@ import java.util.List;
  * A simple implementation of {@link Grid}
  *
  * @param <T> the type stored in this grid
+ *
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class BasicGrid<T> implements Grid<T> {
     protected final Object lock = new Object();
