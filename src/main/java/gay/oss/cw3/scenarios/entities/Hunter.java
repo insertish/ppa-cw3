@@ -27,7 +27,7 @@ public class Hunter extends AbstractBreedableEntity {
      * @param location          the entity's initial location
      */
     public Hunter(World world, Coordinate location) {
-        super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
+        super(world, location, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new SleepBehaviour(this, true));
         this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, 10, Bunny.class));
         this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.2, 30));

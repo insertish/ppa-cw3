@@ -27,12 +27,10 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
      * @param world             the world the entity will reside in
      * @param layer             the entity's layer
      * @param location          the entity's initial location
-     * @param initialAgeTicks   the entity's initial age
-     * @param alive             whether the entity is alive
      * @param sex               the sex of this entity
      */
-    public AbstractBird(World world, Coordinate location, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
-        super(world, location, initialAgeTicks, alive, layer, sex);
+    public AbstractBird(World world, Coordinate location, EntityLayer layer, Sex sex) {
+        super(world, location, layer, sex);
     }
 
     /**
