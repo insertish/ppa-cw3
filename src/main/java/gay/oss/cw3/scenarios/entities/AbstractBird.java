@@ -27,12 +27,10 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
      * @param world             the world the entity will reside in
      * @param layer             the entity's layer
      * @param location          the entity's initial location
-     * @param initialAgeTicks   the entity's initial age
-     * @param alive             whether the entity is alive
      * @param sex               the sex of this entity
      */
-    public AbstractBird(World world, Coordinate location, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
-        super(world, location, initialAgeTicks, alive, layer, sex);
+    public AbstractBird(World world, Coordinate location, EntityLayer layer, Sex sex) {
+        super(world, location, layer, sex);
     }
 
     /**
@@ -54,13 +52,6 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
         super.moveTo(location);
     }
 
-    //FIXME
-    @Override
-    public float yOffset() {
-        var factor = (2.0 - Math.min(this.getVelocity().length(), 2.0)) / 2.0;
-        return (float) -(this.getLayer().yOffset * factor);
-    }
-
     private int probabalisticallyRound(double value) {
         final int floor = (int) Math.floor(value);
         final double fractional = value - Math.floor(value);
@@ -78,9 +69,8 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
      *
      * <p>Boids simulate flocking behaviour with a simple set of rules.</p>
      *
-     * <p>The specific rules used here are from <a href="http://www.kfish.org/boids/pseudocode.html">this website</a>.</p>
+     * <p>The first three rules used here are adapted from <a href="http://www.kfish.org/boids/pseudocode.html">this website</a>.</p>
      */
-    //FIXME
     protected class BoidBehaviour implements Behaviour {
         private final int sightRadius;
 
@@ -109,37 +99,59 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
 
         @Override
         public void tick() {
-            final List<HerbivoreBird> targets = AbstractBird.this.getAdjacentEntities(this.sightRadius).stream()
-                    .filter(HerbivoreBird.class::isInstance)
-                    .map(HerbivoreBird.class::cast)
+            final List<AbstractBird> targets = AbstractBird.this.getAdjacentEntities(this.sightRadius).stream()
+                    .filter(AbstractBird.class::isInstance)
+                    .map(AbstractBird.class::cast)
                     .collect(Collectors.toList());
 
+            AbstractBird.this.velocity.add(calculateMovementTowardsFlockCentre(targets));
+            AbstractBird.this.velocity.add(calculateMovementAwayFromOtherBoids(targets));
+            AbstractBird.this.velocity.add(calculateMovementTowardsFlockVelocity(targets));
+            AbstractBird.this.velocity.add(calculateMovementAwayFromWorldBorder());
+            AbstractBird.this.velocity.add(calculateWindVelocity());
+
+            var newLoc = AbstractBird.this.getLocation().add(probabalisticallyRound(AbstractBird.this.velocity.x), probabalisticallyRound(AbstractBird.this.velocity.y));
+
+            if (AbstractBird.this.canMoveTo(newLoc)) {
+                AbstractBird.this.moveToWithoutModifyingVelocity(newLoc);
+            }
+        }
+
+        private Vector2d calculateMovementTowardsFlockCentre(List<AbstractBird> targets) {
             final Coordinate flockCentre = targets.stream()
                     .map(Entity::getLocation)
                     .reduce(Coordinate.ORIGIN, Coordinate::add)
                     .multiply(1.0 / targets.size());
 
-            final Vector2d movementTowardsFlockCentre = new Vector2d(
+            return new Vector2d(
                     flockCentre.x - AbstractBird.this.getLocation().x,
                     flockCentre.z - AbstractBird.this.getLocation().z
             ).div(100);
+        }
 
+        private Vector2d calculateMovementAwayFromOtherBoids(List<AbstractBird> targets) {
             final Vector2d movementAwayFromOtherBoids = new Vector2d();
 
-            for (HerbivoreBird target : targets) {
+            for (AbstractBird target : targets) {
                 if (target.getLocation().sqrDistanceTo(AbstractBird.this.getLocation()) <= 2.4) {
                     var dirAway = target.getLocation().subtract(AbstractBird.this.getLocation());
                     movementAwayFromOtherBoids.add(dirAway.x, dirAway.z);
                 }
             }
 
-            final Vector2d movementTowardsFlockVelocity = targets.stream()
-                    .map(HerbivoreBird::getVelocity)
+            return movementAwayFromOtherBoids;
+        }
+
+        private Vector2d calculateMovementTowardsFlockVelocity(List<AbstractBird> targets) {
+            return targets.stream()
+                    .map(AbstractBird::getVelocity)
                     .reduce(new Vector2d(), (a, b) -> new Vector2d(a.x + b.x, a.y + b.y))
                     .div(targets.size())
                     .sub(AbstractBird.this.getVelocity())
                     .div(8);
+        }
 
+        private Vector2d calculateMovementAwayFromWorldBorder() {
             final Vector2d movementAwayFromWorldBorder = new Vector2d();
             final double distToLowXBorder = AbstractBird.this.getLocation().x;
             final double distToLowZBorder = AbstractBird.this.getLocation().z;
@@ -157,16 +169,11 @@ public abstract class AbstractBird extends AbstractBreedableEntity {
                 movementAwayFromWorldBorder.add(0, distToZBorder);
             }
 
-            AbstractBird.this.velocity.add(movementTowardsFlockCentre);
-            AbstractBird.this.velocity.add(movementAwayFromOtherBoids);
-            AbstractBird.this.velocity.add(movementTowardsFlockVelocity);
-            AbstractBird.this.velocity.add(movementAwayFromWorldBorder);
+            return movementAwayFromWorldBorder;
+        }
 
-            var newLoc = AbstractBird.this.getLocation().add(probabalisticallyRound(AbstractBird.this.velocity.x), probabalisticallyRound(AbstractBird.this.velocity.y));
-
-            if (AbstractBird.this.canMoveTo(newLoc)) {
-                AbstractBird.this.moveToWithoutModifyingVelocity(newLoc);
-            }
+        private Vector2d calculateWindVelocity() {
+            return new Vector2d(AbstractBird.this.getWorld().getRandom().nextGaussian()*2, AbstractBird.this.getWorld().getRandom().nextGaussian()*2);
         }
     }
 }

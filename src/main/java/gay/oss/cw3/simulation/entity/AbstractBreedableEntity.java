@@ -21,11 +21,9 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
      * @param world             the world the entity will reside in
      * @param layer             the entity's layer
      * @param location          the entity's initial location
-     * @param initialAgeTicks   the entity's initial age
-     * @param alive             whether the entity is alive
      * @param sex               the sex of this entity
      */
-    public AbstractBreedableEntity(World world, Coordinate location, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
+    public AbstractBreedableEntity(World world, Coordinate location, EntityLayer layer, Sex sex) {
         super(world, layer, location);
         this.sex = sex;
     }
@@ -34,12 +32,10 @@ public abstract class AbstractBreedableEntity extends Entity implements Breedabl
      * Create a new AbstractBreedableEntity.
      *
      * @param world             the world the entity will reside in
-     * @param initialAgeTicks   the entity's initial age
-     * @param alive             whether the entity is alive
      * @param layer             the entity's layer
      * @param sex               the sex of this entity
      */
-    public AbstractBreedableEntity(World world, int initialAgeTicks, boolean alive, EntityLayer layer, Sex sex) {
+    public AbstractBreedableEntity(World world, EntityLayer layer, Sex sex) {
         super(world, layer);
         this.sex = sex;
     }
