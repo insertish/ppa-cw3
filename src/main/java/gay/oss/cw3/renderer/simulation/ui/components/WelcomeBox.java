@@ -76,7 +76,7 @@ public class WelcomeBox extends Box {
 
         this.apply();
         this.setPadding(8);
-        this.setColour(new Vector4f(0, 0, 0, 0.5f));
+        this.setColour(new Vector4f(0, 0, 0, 0.85f));
     }
 
     /**

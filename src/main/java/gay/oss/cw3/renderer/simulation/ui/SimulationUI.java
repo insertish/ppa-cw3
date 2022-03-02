@@ -83,7 +83,9 @@ public class SimulationUI extends RootUI {
                             }
                         ))
                         .setDirection(FlowDirection.Column)
-                    )
+                    ),
+                // We want to render the menus on top of everything else.
+                new AnchorLayout()
                     // Display a help menu in the centre.
                     .add(
                         Anchor.CenterMiddle,
