@@ -16,6 +16,9 @@ import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * The world holds everything which exists in the simulation.
+ */
 public class World {
     private final Map map;
     private final List<Entity> entities;
@@ -24,6 +27,12 @@ public class World {
     private final Random random = new Random();
     private int time = 0;
 
+    /**
+     * Creates a new world.
+     *
+     * @param width     the width of the world map
+     * @param depth     the depth of the world map
+     */
     public World(int width, int depth) {
         this.map = new Map(width, depth);
         this.map.generate();
@@ -33,6 +42,9 @@ public class World {
         particleManager = new ParticleManager();
     }
 
+    /**
+     * Ticks the world. This ticks the entire simulation forward.
+     */
     public void tick() {
         time++;
 
@@ -56,6 +68,11 @@ public class World {
         this.particleManager.tick();
     }
 
+    /**
+     * Spawn a new entity into the world.
+     *
+     * @param entity the entity
+     */
     public void spawn(Entity entity) {
         this.map.getEntities(entity.getLayer()).setWithoutOverwrite(entity.getLocation(), entity);
         this.entitiesToSpawn.add(entity);
@@ -84,14 +101,31 @@ public class World {
         }
     }
 
+    /**
+     * Get the entity at a certain position and layer in the world.
+     *
+     * @param layer the layer
+     * @param x     the x position of the entity
+     * @param z     the z position of the entity
+     * @return      the entity, or null if there is no entity there
+     */
     public @Nullable Entity getEntity(EntityLayer layer, int x, int z) {
         return this.map.getEntities(layer).get(x, z);
     }
 
+    /**
+     * @return the number of entities in the world
+     */
     public int getEntityCount() {
         return this.entities.size();
     }
 
+    /**
+     * Gets the number of entities of a certain class in the world.
+     *
+     * @param clazz the class
+     * @return      the number of entities of that class
+     */
     public int getEntityCount(Class<?> clazz) {
         synchronized (this.entities) {
             return (int) this.entities
@@ -101,10 +135,16 @@ public class World {
         }
     }
 
+    /**
+     * @return the {@link Map} of this world
+     */
     public Map getMap() {
         return this.map;
     }
 
+    /**
+     * @return the list of entities in this world
+     */
     public List<Entity> getEntities() {
         return this.entities;
     }
@@ -123,22 +163,55 @@ public class World {
         return this.map.getEntities(layer).getInRadius(except, around, radius);
     }
 
+    /**
+     * @return the number of ticks that have elapsed in the simulation
+     */
     public int getTime() {
         return time;
     }
 
+    /**
+     * @return the current {@link DayCycle} value of the world
+     */
     public DayCycle getDayCycle() {
         return DayCycle.fromTick(this.time);
     }
 
+    /**
+     * Determines if a coordinate is within bounds for the world.
+     *
+     * @param location  the coordinate
+     *
+     * @return          whether the coordinate is in bounds
+     *
+     * @see Map#isInBounds(int, int)
+     */
     public boolean isInBounds(Coordinate location) {
         return this.map.isInBounds(location.x, location.z);
     }
 
+    /**
+     * Determines if a coordinate is above the water level of this world
+     *
+     * @param location  the coordinate
+     *
+     * @return          whether the coordinate is above the water level
+     *
+     * @see Map#getWaterLevel()
+     */
     public boolean isAboveWater(Coordinate location) {
         return this.map.getHeight(location.x, location.z) > this.map.getWaterLevel();
     }
 
+    /**
+     * Moves an entity to a new position, killing whatever is in the new position.
+     *
+     * @param entity    the entity to move
+     * @param from      the entity's old position
+     * @param to        the position to move the entity to
+     *
+     * @see #moveEntity(Entity, Coordinate, Coordinate)
+     */
     public void moveEntityDisplacing(final Entity entity, final Coordinate from, final Coordinate to) {
         if (from.equals(to)) {
             return;
@@ -155,6 +228,15 @@ public class World {
         }
     }
 
+    /**
+     * Moves an entity to a new position, throwing {@link IllegalStateException} if something already occupies the space.
+     *
+     * @param entity    the entity to move
+     * @param from      the entity's old position
+     * @param to        the position to move the entity to
+     *
+     * @see #moveEntityDisplacing(Entity, Coordinate, Coordinate)
+     */
     public void moveEntity(final Entity entity, final Coordinate from, final Coordinate to) {
         if (from.equals(to)) {
             return;
@@ -168,6 +250,15 @@ public class World {
         this.map.getEntities(entity.getLayer()).setWithoutOverwrite(to, entity);
     }
 
+    /**
+     * Finds positions around a given position that match a certain predicate..
+     *
+     * @param around    the position to search around
+     * @param radius    the radius to search in
+     * @param predicate the predicate
+     *
+     * @return          a list of positions which match
+     */
     public List<Coordinate> findMatchingLocations(final Coordinate around, final int radius, final Predicate<Coordinate> predicate) {
         final List<Coordinate> locations = new ArrayList<>();
 
@@ -184,6 +275,17 @@ public class World {
         return locations;
     }
 
+    /**
+     * Finds positions around a given position above water with no entities in a given layer.
+     *
+     * @param layer     the layer to check in
+     * @param around    the position to search around
+     * @param radius    the radius to search in
+     *
+     * @return          a list of positions which match
+     *
+     * @see #findMatchingLocations(Coordinate, int, Predicate)
+     */
     public List<Coordinate> findFreeLocationsAboveWater(final EntityLayer layer, final Coordinate around, final int radius) {
         return this.findMatchingLocations(around, radius, coord ->
                 this.isInBounds(coord)
@@ -192,10 +294,16 @@ public class World {
         );
     }
 
+    /**
+     * @return the random instance
+     */
     public Random getRandom() {
         return random;
     }
 
+    /**
+     * @return the world's particle manager
+     */
     public ParticleManager getParticleManager() {
         return particleManager;
     }
