@@ -314,7 +314,7 @@ return objectColour *
         
         The heightmap is adjusted so that areas outside a circle around the centre of the world are smoothly pulled down to sea level. This creates the effect of an island-shaped world generation.
 
-        To do this, let $height_i$ be the initial height, $height_t$ be the target height, $x$ and $y$ are the absolute coordinates, $width$ and $depth$ represent the size of the world, $dist_b$ be the beach distance, and $dist_s$ be the sea distance.
+        To do this, let $height_i$ be the initial height, $height_t$ be the target (sea-floor) height, $x$ and $y$ be the absolute coordinates on the grid, $width$ and $depth$ represent the size of the world, $dist_b$ be the distance at which beaches start, and $dist_s$ be the distance at which the ground level is fully down to the sea.
 
         \[
             \begin{aligned}
@@ -333,7 +333,7 @@ return objectColour *
             \end{aligned}
         \]
 
-        Hence we find our final height:
+        Hence we find our final height with a simple interpolation:
 
         \[
             h = (1 - factor) \cdot height_i + factor * height_t
