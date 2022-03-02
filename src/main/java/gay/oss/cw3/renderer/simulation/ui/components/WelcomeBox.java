@@ -4,15 +4,18 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_H;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.joml.Vector4f;
 
+import gay.oss.cw3.renderer.Resources;
 import gay.oss.cw3.renderer.ui.events.Event;
 import gay.oss.cw3.renderer.ui.events.KeyEvent;
 import gay.oss.cw3.renderer.ui.fonts.Font;
 import gay.oss.cw3.renderer.ui.framework.Box;
 import gay.oss.cw3.renderer.ui.framework.Node;
+import gay.oss.cw3.renderer.ui.framework.components.Image;
 import gay.oss.cw3.renderer.ui.framework.components.Text;
 import gay.oss.cw3.renderer.ui.framework.layouts.Alignment;
 import gay.oss.cw3.renderer.ui.framework.layouts.FlowDirection;
@@ -28,14 +31,18 @@ public class WelcomeBox extends Box {
     /**
      * Construct a new WelcomeBox
      * @param font Font to use for rendering
+     * @throws IOException if resource fails to load
      */
-    public WelcomeBox(Font font) {
+    public WelcomeBox(Font font) throws IOException {
         super(null);
 
         int fontSize = 24;
 
         this.content = new FlowLayout(Arrays.asList(
             new Node[] {
+                new Box(new Image(Resources.getTexture("ui/wave.png")))
+                    .setMinSize(64),
+                new Box(null).setMinHeight(4),
                 new Text(font, "WELCOME!", fontSize + 4),
                 new Box(null).setMinHeight(4),
                 new Box(null)
@@ -43,7 +50,7 @@ public class WelcomeBox extends Box {
                     .setMinHeight(2)
                     .setColour(new Vector4f(1, 1, 1, 1)),
                 new Box(null).setMinHeight(fontSize),
-                new Text(font, "First time?", fontSize),
+                new Text(font, "First Time?", fontSize + 12),
                 new FlowLayout(Arrays.asList(
                     new Node[] {
                         new Text(font, "Press", fontSize),
