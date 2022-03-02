@@ -47,7 +47,7 @@ public class Main {
         Util.initialiseLWJGL();
 
         // Configure Window
-        window = Window.create(1920, 1080, "Loading assets; waiting to start rendering...");
+        window = Window.create(1280, 720, "Loading assets; waiting to start rendering...");
         window.configureGL();
         window.makeVisible();
 
