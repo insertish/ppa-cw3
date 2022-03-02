@@ -14,6 +14,9 @@ import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 import gay.oss.cw3.simulation.world.grid.Grid;
 
+/**
+ * The map holds things which exist in the world.
+ */
 public class Map {
     final static float SEA_FLOOR_HEIGHT = -20f;
     final float BEACH_DISTANCE_FRACTION = 0.6f; // set to 1f to disable islandification
@@ -30,6 +33,11 @@ public class Map {
     private final Grid<Float> heightMap;
     private final Grid<BiomeType> biomeMap;
 
+    /**
+     * Create a new Map
+     * @param width the width
+     * @param depth the depth
+     */
     public Map(int width, int depth) {
         this.width = width;
         this.depth = depth;
@@ -46,42 +54,101 @@ public class Map {
         this.biomeMap = new BasicGrid<>(width, depth);
     }
 
+    /**
+     * Determines if a coordinate is within bounds for the map.
+     *
+     * @param x  the x coordinate
+     * @param z  the z coordinate
+     *
+     * @return   whether the coordinate is in bounds
+     *
+     * @see World#isInBounds(gay.oss.cw3.simulation.Coordinate)
+     */
     public boolean isInBounds(int x, int z) {
         return !(x < 0 || z < 0 || x >= width || z >= depth);
     }
 
+    /**
+     * @return the width of the world
+     */
     public int getWidth() {
         return this.width;
     }
 
+    /**
+     * @return the depth of the world
+     */
     public int getDepth() {
         return this.depth;
     }
 
+    /**
+     * @return the water level of the map
+     */
     public float getWaterLevel() {
         return this.waterLevel;
     }
 
+    /**
+     * Get the grid of entities for a certain layer.
+     *
+     * @param layer the layer
+     * @return      the grid of entities
+     */
     public Grid<Entity> getEntities(EntityLayer layer) {
         return this.entities.get(layer);
     }
 
+    /**
+     * Get the terrain height at a certain position.
+     *
+     * @param x the x coordinate
+     * @param z the z coordinate
+     * @return  the terrain height
+     */
     public float getHeight(int x, int z) {
         return this.heightMap.get(x, z);
     }
 
+    /**
+     * Get the grid of position offset values for a certain layer.
+     *
+     * @param layer the layer
+     * @return      the grid of position offsets for this layer
+     */
     public Grid<float[]> getOffsets(EntityLayer layer) {
         return this.offsets.get(layer);
     }
 
+    /**
+     * Get the biome at a certain position.
+     *
+     * @param x the x coordinate
+     * @param z the z coordinate
+     * @return  the biome type
+     */
     public BiomeType getBiome(int x, int z) {
         return this.biomeMap.get(x, z);
     }
 
+    /**
+     * Get the biome colour at a certain position.
+     *
+     * @param x the x coordinate
+     * @param z the z coordinate
+     * @return  the biome colour
+     */
     public float[] getBiomeColour(int x, int z) {
         return this.biomeMap.get(x, z).getColour();
     }
 
+    /**
+     * Gets the average biome colour around a certain position.
+     *
+     * @param xCentre the x coordinate
+     * @param zCentre the z coordinate
+     * @return        the average colour
+     */
     public float[] getAverageBiomeColour(int xCentre, int zCentre) {
         final int radius = 5;
         final List<float[]> colours = new ArrayList<>();
@@ -103,6 +170,11 @@ public class Map {
         return Util.oklabToRgb(avgResults);
     }
 
+    /**
+     * Generate the terrain.
+     *
+     * @param seed the random seed
+     */
     public void generate(int seed) {
         // 1. Generate the biomes
         FastNoiseLite biomeNoise = new FastNoiseLite(seed);
@@ -169,6 +241,9 @@ public class Map {
         }
     }
 
+    /**
+     * Generate the map with a random seed.
+     */
     public void generate() {
         this.generate(new Random().nextInt());
     }

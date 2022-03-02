@@ -17,7 +17,7 @@ import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
- * The world holds everything which exists in the simulation.
+ * The world handles the simulation.
  */
 public class World {
     private final Map map;
