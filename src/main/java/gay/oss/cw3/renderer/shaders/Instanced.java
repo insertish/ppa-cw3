@@ -15,6 +15,9 @@ import gay.oss.cw3.renderer.objects.Mesh;
 
 /**
  * Instanced mesh renderer, this currently represents an OpenGL SSBO.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Instanced {
     private int ssbo;

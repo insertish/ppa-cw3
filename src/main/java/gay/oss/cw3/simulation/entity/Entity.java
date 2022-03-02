@@ -11,6 +11,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 /**
  * An Entity is a basic actor in the world. It has a position in the world, an age, and a health value. It can die,
  * if its health goes to zero. It can run custom logic per-tick.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public abstract class Entity {
     private final World world;

@@ -8,6 +8,9 @@ import gay.oss.cw3.renderer.shaders.Camera;
 /**
  * A model represents a single mesh with a material and transformation.
  * This is a helper class for drawing objects in their simplest manner.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Model {
     private final Mesh mesh;

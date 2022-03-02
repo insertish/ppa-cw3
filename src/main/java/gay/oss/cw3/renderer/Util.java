@@ -5,6 +5,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Common utility functions for working with graphics
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Util {
     /**
@@ -119,6 +122,18 @@ public class Util {
         };
     }
 
+    /**
+     * Given a certain height, adjust its value to conform with a plane.
+     * @param height Height value
+     * @param x X position
+     * @param z Z position
+     * @param width World Width
+     * @param depth World Depth
+     * @param BEACH_DISTANCE_FRACTION Fraction used for beach
+     * @param SEA_DISTANCE_FRACTION Fraction used for sea
+     * @param TARGET_HEIGHT Target plane height
+     * @return Computed Height
+     */
     public static float adjustHeightToPlane(final float height, final int x, final int z, final int width, final int depth, final float BEACH_DISTANCE_FRACTION, final float SEA_DISTANCE_FRACTION, final float TARGET_HEIGHT) {
         final int adjustedX = x - width/2;
         final int adjustedZ = z - depth/2;
@@ -139,6 +154,11 @@ public class Util {
         return (1f-factor)*height + factor*TARGET_HEIGHT;
     }
 
+    /**
+     * Perform easeInOutCubic on a given value.
+     * @param x Input
+     * @return Output
+     */
     private static float easeInOutCubic(float x) {
         return x < 0.5f ? 4f * x * x * x : (float) (1f - Math.pow(-2f * x + 2f, 3f) / 2f);
     }

@@ -4,6 +4,12 @@ import gay.oss.cw3.renderer.Util;
 
 import static gay.oss.cw3.renderer.Util.intColourToFloats;
 
+/**
+ * Enumeration of day-night cycle.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
+ */
 public enum DayCycle {
     MORNING(0xffffff, 0x9bb8c5),
     AFTERNOON(0xfffcbf, 0xffffff),
@@ -13,11 +19,20 @@ public enum DayCycle {
     private final float[] sunColour;
     private final float[] skyColour;
 
+    /**
+     * Construct a new DayCycle
+     * @param sunColour Colour used for light from sun
+     * @param skyColour Colour used for rendering the skybox
+     */
     DayCycle(int sunColour, int skyColour) {
         this.sunColour = intColourToFloats(sunColour);
         this.skyColour = intColourToFloats(skyColour);
     }
 
+    /**
+     * Get the next value from current value.
+     * @return DayCycle
+     */
     public DayCycle next() {
         switch (this) {
             default:
@@ -28,6 +43,11 @@ public enum DayCycle {
         }
     }
 
+    /**
+     * Get the averaged colour of the sun between the current and next cycle
+     * @param progressionToNext Fractional progression the next stage
+     * @return RGB colour array
+     */
     public float[] getSunColour(float progressionToNext) {
         float[] current = Util.rgbToOklab(this.sunColour);
         float[] next = Util.rgbToOklab(this.next().sunColour);
@@ -39,6 +59,11 @@ public enum DayCycle {
         });
     }
 
+    /**
+     * Get the averaged colour of the sky between the current and next cycle
+     * @param progressionToNext Fractional progression the next stage
+     * @return RGB colour array
+     */
     public float[] getSkyColour(float progressionToNext) {
         float[] current = Util.rgbToOklab(this.skyColour);
         float[] next = Util.rgbToOklab(this.next().skyColour);
@@ -54,6 +79,11 @@ public enum DayCycle {
     public static final int DAY_TICKS = 100;
     private static final DayCycle[] ENTRIES = DayCycle.values();
 
+    /**
+     * Get the current DayCycle from the number of ticks simulated.
+     * @param tick World Time
+     * @return DayCycle
+     */
     public static DayCycle fromTick(int tick) {
         return ENTRIES[(tick / DAY_TICKS) % ENTRIES.length];
     }

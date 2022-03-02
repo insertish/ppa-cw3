@@ -13,6 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A herbivore bird entity that eats fruits from trees.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class HerbivoreBird extends AbstractBird {
 

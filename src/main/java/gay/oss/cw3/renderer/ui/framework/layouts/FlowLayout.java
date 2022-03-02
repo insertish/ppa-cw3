@@ -15,6 +15,9 @@ import gay.oss.cw3.renderer.ui.framework.Node;
  * More information about Flexbox:
  * https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
  * </p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class FlowLayout extends Node {
     private List<Node> children;

@@ -8,7 +8,20 @@ import gay.oss.cw3.scenarios.entities.*;
 import gay.oss.cw3.simulation.world.attributes.BiomeType;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
+/**
+ * This is the default scenario of the simulation.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
+ */
 public class DefaultScenario extends Scenario {
+    /**
+     * Construct a new DefaultScenario
+     * @param width World Width
+     * @param depth World Depth
+     * @param isOpenGL whether we are currently in OpenGL mode
+     * @throws Exception if one or more resources fail to load
+     */
     public DefaultScenario(int width, int depth, boolean isOpenGL) throws Exception {
         super(width, depth, isOpenGL);
     }
@@ -39,7 +52,7 @@ public class DefaultScenario extends Scenario {
             // raccoon.png 0.01f
             // snake.png 0.01f
             // fish.png 0.01f
-            // kelp.jpg
+            // kelp.jpg 100f
 
             //renderer.autoLoadModel(Hunter.class, "hunter.jpg");
             renderer.autoLoadModel(Hunter.class, "snake.png", "snake", 0.03f, RenderMode.UseLOD);

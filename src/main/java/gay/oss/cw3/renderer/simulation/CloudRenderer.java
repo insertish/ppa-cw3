@@ -37,7 +37,10 @@ import gay.oss.cw3.renderer.shaders.Camera;
 import gay.oss.cw3.renderer.shaders.ShaderProgram;
 
 /**
- * Very basic cloud renderer
+ * Very basic cloud renderer.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class CloudRenderer {
     private FastNoiseLite noise;

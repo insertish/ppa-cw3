@@ -1,17 +1,16 @@
 package gay.oss.cw3.simulation.entity.brain.behaviours;
 
-import java.util.Random;
-
 import gay.oss.cw3.simulation.entity.Entity;
-import gay.oss.cw3.simulation.world.attributes.DayCycle;
 
 /**
  * A behaviour to flee threats.
  *
  * <p>It is recommended to place this at the highest priority.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class FleeBehaviour extends MovementBehaviour {
-    private final Random random = new Random();
     private final int fearDistance;
     private final Class<? extends Entity>[] fearedClasses;
 

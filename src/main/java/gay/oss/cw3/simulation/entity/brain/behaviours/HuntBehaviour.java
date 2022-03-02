@@ -10,6 +10,9 @@ import java.util.Random;
  *
  * <p>The other entities must be on the same {@link gay.oss.cw3.simulation.world.attributes.EntityLayer layer}. The
  * victims will be eaten and 70% of their fullness transferred to the entity this behaviour is attached to.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class HuntBehaviour extends MovementBehaviour {
     private final Random random = new Random();

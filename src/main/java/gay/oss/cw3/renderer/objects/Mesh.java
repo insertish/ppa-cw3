@@ -33,6 +33,9 @@ import gay.oss.cw3.renderer.Util;
 /**
  * Wrapper class around an OpenGL Vertex Array Object
  * which includes Vertex Buffer Objects and other related information.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Mesh {
     private static int CURRENT_VAO = 0;

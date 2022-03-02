@@ -6,6 +6,9 @@ import java.util.Random;
  * Helper class for producing a "smoothed random" value.
  * Essentially, we pick an initial value and
  * randomly go up or down based on some variation.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class SmoothedRandom {
     private float value;

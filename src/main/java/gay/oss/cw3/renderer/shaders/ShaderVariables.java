@@ -5,6 +5,9 @@ import static org.lwjgl.glfw.GLFW.glfwExtensionSupported;
 /**
  * Helper class for determining OpenGL capabilities
  * and feeding that information into shaders.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class ShaderVariables {
     private static boolean initialised = false;

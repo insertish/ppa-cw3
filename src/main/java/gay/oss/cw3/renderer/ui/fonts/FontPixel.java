@@ -2,6 +2,9 @@ package gay.oss.cw3.renderer.ui.fonts;
 
 /**
  * Sprite Pixel Font
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class FontPixel extends Font {
     /**

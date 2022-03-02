@@ -11,6 +11,9 @@ import java.util.List;
  *
  * <p>It has a list of behaviours, and will tick the first behaviour in the list which can start/continue. Therefore,
  * behaviours earlier in the list have priority over later ones. <em>Only one behaviour will be used each tick.</em></p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public final class EntityBrain {
     private final List<Behaviour> behaviours = new ArrayList<>();

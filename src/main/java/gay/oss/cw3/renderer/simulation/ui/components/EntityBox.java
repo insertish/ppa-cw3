@@ -15,6 +15,9 @@ import gay.oss.cw3.scenarios.Scenario;
 
 /**
  * UI element representing data from a single Entity type.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class EntityBox extends Box {
     private Scenario scenario;

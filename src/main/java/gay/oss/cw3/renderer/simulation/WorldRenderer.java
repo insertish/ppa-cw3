@@ -3,7 +3,6 @@ package gay.oss.cw3.renderer.simulation;
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_FRONT;
-import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glDepthMask;
 import static org.lwjgl.opengl.GL11.glDisable;
@@ -37,6 +36,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
  * Helper class for rendering the World in 3D space.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class WorldRenderer {
     private final World world;
@@ -256,6 +258,10 @@ public class WorldRenderer {
         }
     }
 
+    /**
+     * Draw particles into the World
+     * @param camera Camera
+     */
     private void drawParticles(Camera camera) {
         List<Particle> particles = this.particleManager.getParticles();
 

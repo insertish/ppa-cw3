@@ -7,6 +7,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
  * A behaviour that makes entities eat foliage around them. Essentially a herbivore equivalent of {@link HuntBehaviour}.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class EatFoliageBehaviour extends MovementBehaviour {
     private final Random random = new Random();

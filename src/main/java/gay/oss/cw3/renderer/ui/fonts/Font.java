@@ -13,6 +13,9 @@ import gay.oss.cw3.renderer.ui.UI;
 
 /**
  * Wrapper around a Texture and ShaderProgram for rendering texture atlas based fonts.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Font {
     private ShaderProgram shader;

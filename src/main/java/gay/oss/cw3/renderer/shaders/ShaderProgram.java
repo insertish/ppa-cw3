@@ -31,6 +31,9 @@ import org.lwjgl.system.MemoryStack;
 
 /**
  * Wrapper class around OpenGL shader program
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class ShaderProgram {
     private static ShaderProgram CURRENT_SHADER;

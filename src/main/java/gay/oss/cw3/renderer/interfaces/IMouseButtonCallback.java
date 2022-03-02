@@ -4,6 +4,9 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * Mouse button callback, this is a partial of GLFWMouseButtonCallbackI.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 @FunctionalInterface
 public interface IMouseButtonCallback {

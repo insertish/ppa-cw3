@@ -8,6 +8,9 @@ import gay.oss.cw3.simulation.entity.Entity;
  * <p>Behaviours are attached to an entity through their {@link EntityBrain Brain}.</p>
  *
  * @see EntityBrain
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public interface Behaviour {
     /**

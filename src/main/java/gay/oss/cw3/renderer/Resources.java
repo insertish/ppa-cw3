@@ -9,6 +9,9 @@ import gay.oss.cw3.renderer.shaders.ShaderProgram;
 
 /**
  * Helper class for loading different types of resources.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Resources {
     /**

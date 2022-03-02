@@ -3,6 +3,9 @@ package gay.oss.cw3.simulation.entity;
 /**
  * EntityAttributes are special values that entities have, stored in their {@link EntityAttributeMap}. They have
  * minimum and maximum values, as well as a default value used for entities with no specified value.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public enum EntityAttribute {
     /**

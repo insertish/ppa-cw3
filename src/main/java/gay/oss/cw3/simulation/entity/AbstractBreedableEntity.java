@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A partial implementation of {@link Breedable} that handles much of the code that applies to all implementations.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public abstract class AbstractBreedableEntity extends Entity implements Breedable {
     private int lastBreedAttempt;

@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
  * A bird-style aerial entity.
  *
  * <p>Birds uniquely keep track of their velocity. This is so that their {@link BoidBehaviour} can run properly.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public abstract class AbstractBird extends AbstractBreedableEntity {
     private Vector2d velocity = new Vector2d();

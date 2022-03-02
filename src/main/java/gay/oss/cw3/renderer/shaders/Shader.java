@@ -14,6 +14,9 @@ import java.util.regex.Pattern;
 
 /**
  * Wrapper class around an OpenGL shader
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Shader {
     private final int id;

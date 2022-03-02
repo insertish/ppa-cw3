@@ -13,6 +13,9 @@ import java.util.Random;
  * <p>Contains many useful things for a behaviour that can move entities around, such as fields to keep track of
  * movement speed and the entity this behaviour is attached to, and a method to calculate the movement vector in a
  * particular direction given, regarding speed.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public abstract class MovementBehaviour implements Behaviour {
     protected final double speed;

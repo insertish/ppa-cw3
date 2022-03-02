@@ -2,10 +2,11 @@ package gay.oss.cw3.simulation.entity;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Predicate;
-
 /**
  * Represents the sex of an entity.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 // binary moment :I
 public enum Sex {

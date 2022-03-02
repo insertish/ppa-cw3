@@ -18,6 +18,9 @@ import org.jetbrains.annotations.Nullable;
  * An animal entity representing a fox.
  *
  * <p>Foxes are carnivores who hunt {@link Bunny rabbits}.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Hunter extends AbstractBreedableEntity {
     /**

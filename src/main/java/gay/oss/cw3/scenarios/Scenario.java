@@ -17,6 +17,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 /**
  * Class representing a particular instance of the
  * World and the information required to render it.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public abstract class Scenario {
     private int width;

@@ -10,6 +10,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
  * Kelp is essentially the aquatic equivalent of {@link Grass}.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Kelp extends Entity {
     /**

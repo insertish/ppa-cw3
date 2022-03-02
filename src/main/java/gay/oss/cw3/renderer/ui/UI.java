@@ -14,6 +14,9 @@ import gay.oss.cw3.renderer.shaders.ShaderProgram;
 
 /**
  * UI helper class
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public abstract class UI {
     private Matrix4f viewProjection;

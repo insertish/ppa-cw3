@@ -1,7 +1,6 @@
 package gay.oss.cw3.simulation.world.grid;
 
 import gay.oss.cw3.simulation.Coordinate;
-import gay.oss.cw3.simulation.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

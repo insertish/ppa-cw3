@@ -10,6 +10,9 @@ import java.util.Random;
  *
  * <p>A direction is chosen when the behaviour starts, and the entity will move in that direction. With a 0.5% chance
  * (roughly every 200 ticks), the entity will change this direction.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class WanderAroundBehaviour extends MovementBehaviour {
     private final Random random = new Random();

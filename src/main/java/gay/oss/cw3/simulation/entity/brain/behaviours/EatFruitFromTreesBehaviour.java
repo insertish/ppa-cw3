@@ -5,12 +5,14 @@ import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 import java.util.Comparator;
-import java.util.Random;
 
 /**
  * A behaviour to make an entity eat fruit from trees.
  *
  * @see Tree
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class EatFruitFromTreesBehaviour extends MovementBehaviour {
     private final double targetFullnessFraction;

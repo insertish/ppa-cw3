@@ -11,6 +11,9 @@ import java.util.Objects;
  * <p>A coordinate can also be thought of as a two-dimensional vector, and many of this class's methods reflect that.</p>
  *
  * <p>Note that coordinates are <em>immutable</em>, and all their 'modifying' methods return new instances.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Coordinate {
     /**

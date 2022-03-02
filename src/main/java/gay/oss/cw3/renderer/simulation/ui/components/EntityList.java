@@ -10,6 +10,9 @@ import gay.oss.cw3.scenarios.Scenario;
 
 /**
  * UI element which shows a list of all entities given a Scenario.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class EntityList extends FlowLayout {
     /**

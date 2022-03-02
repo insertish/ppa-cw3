@@ -13,6 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A carnivore bird entity that hunts and eats rabbits.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class BirdOfPrey extends AbstractBird {
 

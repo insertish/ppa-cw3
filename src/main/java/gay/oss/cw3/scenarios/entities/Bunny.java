@@ -14,6 +14,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
  * An animal entity representing a rabbit.
  *
  * <p>Rabbits are herbivores who eat grass and are hunted by {@link Hunter foxes}.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Bunny extends AbstractBreedableEntity {
     /**

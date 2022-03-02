@@ -9,6 +9,9 @@ import java.util.stream.Collector;
 
 /**
  * Calculate the average values given float arrays of length 3.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class ColorAverageCollector implements Collector<float[], ColorAverageCollector.ResultHolder, float[]> {
     @Override

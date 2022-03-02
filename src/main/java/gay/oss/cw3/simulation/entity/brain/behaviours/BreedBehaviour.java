@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
  * A behaviour that makes entities mate with other entities and have children.
  *
  * @param <T> the type of the entity this behaviour is attached to
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class BreedBehaviour<T extends Entity & Breedable> extends MovementBehaviour {
     private final Random random = new Random();

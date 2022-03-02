@@ -1,7 +1,10 @@
 package gay.oss.cw3.renderer.ui.events;
 
 /**
- * Representation of an Event within the UI framework
+ * Representation of an Event within the UI framework.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public abstract class Event {
     private boolean canceled = false;

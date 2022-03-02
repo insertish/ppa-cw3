@@ -16,6 +16,9 @@ import gay.oss.cw3.simulation.world.attributes.DayCycle;
 
 /**
  * UI element which shows an indicator of the current day cycle.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class DayCycleBox extends Box {
     private SimulationUI simulationUI;

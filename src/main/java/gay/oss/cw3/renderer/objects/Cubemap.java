@@ -27,6 +27,9 @@ import org.lwjgl.system.MemoryUtil;
 
 /**
  * A representation of a texture used for OpenGL.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Cubemap {
     private static Cubemap CURRENT_CUBEMAP;

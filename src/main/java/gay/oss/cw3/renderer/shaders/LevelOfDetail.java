@@ -1,7 +1,10 @@
 package gay.oss.cw3.renderer.shaders;
 
 /**
- * Enumeration representing the level of detail to render a model at
+ * Enumeration representing the level of detail to render a model at.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public enum LevelOfDetail {
     High(20),

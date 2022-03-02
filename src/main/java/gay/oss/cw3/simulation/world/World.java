@@ -9,14 +9,12 @@ import java.util.function.Predicate;
 
 import gay.oss.cw3.renderer.simulation.particle.Particle;
 import gay.oss.cw3.renderer.simulation.particle.ParticleManager;
-import gay.oss.cw3.renderer.simulation.particle.ParticleType;
 import org.jetbrains.annotations.Nullable;
 
 import gay.oss.cw3.simulation.Coordinate;
 import gay.oss.cw3.simulation.entity.Entity;
 import gay.oss.cw3.simulation.world.attributes.DayCycle;
 import gay.oss.cw3.simulation.world.attributes.EntityLayer;
-import gay.oss.cw3.simulation.world.attributes.Season;
 
 public class World {
     private final Map map;
@@ -131,10 +129,6 @@ public class World {
 
     public DayCycle getDayCycle() {
         return DayCycle.fromTick(this.time);
-    }
-
-    public Season getSeason() {
-        return Season.fromTick(this.time);
     }
 
     public boolean isInBounds(Coordinate location) {

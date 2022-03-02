@@ -6,6 +6,9 @@ import java.util.Random;
 
 /**
  * An Entity's EntityAttributeMap stores and provides its values for {@link EntityAttribute EntityAttributes}.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public final class EntityAttributeMap {
     private final Map<EntityAttribute, Double> map = new EnumMap<>(EntityAttribute.class);

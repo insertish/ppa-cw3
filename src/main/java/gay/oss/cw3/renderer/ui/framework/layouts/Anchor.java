@@ -2,6 +2,9 @@ package gay.oss.cw3.renderer.ui.framework.layouts;
 
 /**
  * Anchored position within a container.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public enum Anchor {
     TopLeft(0, 0),

@@ -5,6 +5,9 @@ import org.joml.Vector4f;
 
 /**
  * Helper class for defining lighting shader variables.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Lighting {
     private Vector4f lightDirection;

@@ -7,6 +7,9 @@ import gay.oss.cw3.renderer.ui.framework.Node;
 
 /**
  * Image UI component
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Image extends Node {
     private Texture texture;

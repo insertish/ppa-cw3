@@ -5,6 +5,9 @@ import gay.oss.cw3.simulation.world.Map;
 
 /**
  * Class with a set of utilities for generating different types of meshes.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class MeshUtil {
     /**

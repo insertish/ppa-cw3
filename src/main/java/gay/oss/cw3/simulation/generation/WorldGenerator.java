@@ -17,6 +17,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 
 /**
  * Helper class for generating new worlds
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class WorldGenerator {
     private final World world;

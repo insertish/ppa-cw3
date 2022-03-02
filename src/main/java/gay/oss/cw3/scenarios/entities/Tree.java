@@ -11,6 +11,9 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
 /**
  * Tree entities are quite unique - they spread very slowly, and have no predators. They produce fruit, which other
  * entities may eat. This prevents the trees from spreading but does not harm them.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Tree extends Entity {
     /**

@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @see AbstractBreedableEntity
  * @see gay.oss.cw3.simulation.entity.brain.behaviours.BreedBehaviour
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public interface Breedable {
     /**

@@ -11,6 +11,9 @@ import gay.oss.cw3.simulation.world.attributes.DayCycle;
  * in the afternoon.</p>
  *
  * <p>It is recommended to put this behaviour above most others, but below fleeing behaviours.</p>
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class SleepBehaviour implements Behaviour {
     private final Entity entity;

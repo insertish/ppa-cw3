@@ -6,6 +6,9 @@ import gay.oss.cw3.renderer.shaders.ShaderProgram;
 
 /**
  * A packaging of a {@link ShaderProgram} and a {@link Texture} into one object for convenience.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class Material {
     private final ShaderProgram shaderProgram;

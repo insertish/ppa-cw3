@@ -6,6 +6,9 @@ import gay.oss.cw3.renderer.ui.framework.components.Text;
 
 /**
  * UI element which shows the current World's tick / time.
+ * 
+ * @author Pawel Makles (K21002534)
+ * @author William Bradford Larcombe (K21003008)
  */
 public class TickText extends Text {
     private SimulationUI simulationUI;
