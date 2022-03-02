@@ -6,6 +6,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A simple implementation of {@link Grid}
+ *
+ * @param <T> the type stored in this grid
+ */
 public class BasicGrid<T> implements Grid<T> {
     protected final Object lock = new Object();
 
@@ -13,6 +18,12 @@ public class BasicGrid<T> implements Grid<T> {
     protected final int width;
     protected final int depth;
 
+    /**
+     * Creates a new BasicGrid
+     *
+     * @param width the width
+     * @param depth the depth
+     */
     public BasicGrid(int width, int depth) {
         this.grid = new Object[width][depth];
         this.width = width;
@@ -81,5 +92,4 @@ public class BasicGrid<T> implements Grid<T> {
     public @Nullable T get(Coordinate location) {
         return this.get(location.x, location.z);
     }
-
 }
