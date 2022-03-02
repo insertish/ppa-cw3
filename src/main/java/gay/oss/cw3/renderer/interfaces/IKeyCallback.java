@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Key press callback, this is a partial of GLFWKeyCallbackI.
  */
+@FunctionalInterface
 public interface IKeyCallback {
     /**
      * Will be called when a key is pressed, repeated or released.

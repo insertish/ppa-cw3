@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Mouse button callback, this is a partial of GLFWMouseButtonCallbackI.
  */
+@FunctionalInterface
 public interface IMouseButtonCallback {
     /**
      * Will be called when a mouse button is pressed or released.
@@ -15,3 +16,4 @@ public interface IMouseButtonCallback {
      */
     void invoke(int button, int action, int mods);
 }
+

@@ -3,6 +3,7 @@ package gay.oss.cw3.renderer.interfaces;
 /**
  * Cursor position callback, this is a partial of GLFWCursorPosCallbackI.
  */
+@FunctionalInterface
 public interface ICursorPosCallback {
     /**
      * Will be called when the cursor is moved.
