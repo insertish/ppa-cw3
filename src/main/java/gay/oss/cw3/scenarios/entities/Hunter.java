@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * An animal entity representing a fox.
  *
- * <p>Foxes are carnivores who hunt {@link Rabbit rabbits}.</p>
+ * <p>Foxes are carnivores who hunt {@link Bunny rabbits}.</p>
  */
 public class Hunter extends AbstractBreedableEntity {
     /**
@@ -29,7 +29,7 @@ public class Hunter extends AbstractBreedableEntity {
     public Hunter(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new SleepBehaviour(this, true));
-        this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, 10, Rabbit.class));
+        this.getBrain().addBehaviour(new HuntBehaviour(this, 1.3, 0.7, 10, Bunny.class));
         this.getBrain().addBehaviour(new BreedBehaviour<>(this, 1.2, 30));
         this.getBrain().addBehaviour(new WanderAroundBehaviour(this, 0.8));
 

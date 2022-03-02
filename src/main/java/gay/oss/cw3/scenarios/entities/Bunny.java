@@ -15,14 +15,14 @@ import gay.oss.cw3.simulation.world.attributes.EntityLayer;
  *
  * <p>Rabbits are herbivores who eat grass and are hunted by {@link Hunter foxes}.</p>
  */
-public class Rabbit extends AbstractBreedableEntity {
+public class Bunny extends AbstractBreedableEntity {
     /**
      * Create a new rabbit entity.
      *
      * @param world             the world the entity will reside in
      * @param location          the entity's initial location
      */
-    public Rabbit(World world, Coordinate location) {
+    public Bunny(World world, Coordinate location) {
         super(world, location, 0, true, EntityLayer.ANIMALS, world.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE);
         this.getBrain().addBehaviour(new FleeBehaviour(this, 1.6, 10, Hunter.class));
         this.getBrain().addBehaviour(new SleepBehaviour(this, false));
@@ -52,7 +52,7 @@ public class Rabbit extends AbstractBreedableEntity {
 
     @Override
     public Entity createChild(Entity otherParent, Coordinate location) {
-        var result = new Rabbit(this.getWorld(), location);
+        var result = new Bunny(this.getWorld(), location);
         result.getAttributes().inheritFromParents(this.getAttributes(), otherParent.getAttributes(), 1.0);
         return result;
     }
